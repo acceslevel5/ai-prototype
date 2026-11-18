@@ -1,0 +1,142 @@
+/* ==========================================================================
+   BOG UI — Range Slider
+   Figma: Range Slider (48088:199) · parts (48088:233 track, 48088:454 handle)
+
+   Slider (one handle):
+     <div class="bog-slider" data-format="{v} ₾">
+       <div class="bog-slider__track">
+         <input type="range" min="0" max="50000" step="500" value="12000" aria-label="Amount">
+       </div>
+       <div class="bog-slider__amounts"><span>0 ₾</span><span>50,000 ₾</span></div>     optional
+     </div>
+   Range (two handles): two inputs in the track, the first is "from", the second "to".
+   Segments: data-segments="2–11" adds evenly spaced ticks (and snap, if step matches).
+
+   bog-ui.js paints the orange part between the start (or the low handle) and the handle,
+   and shows the value tooltip above the handle while it's dragged. data-format sets the
+   tooltip text; {v} is the value. Disabled: disable the inputs.
+
+   Feedback: every notch the handle passes (each segment, or each step up to 36 along the track)
+   plays a soft click whose pitch rises left to right, plus a haptic tick on phones.
+   data-feedback="off | sound | haptic" limits it per slider; BOG.feedback.sound / .haptics = false
+   mutes it for the page.
+   ========================================================================== */
+
+.bog-slider {
+  --_rail: var(--layer-inverse-01);
+  --_fill: var(--background-accent, var(--icon-accent));
+  --from: 0%;
+  --to: 50%;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  min-width: 140px;
+  font-family: var(--font-family-bog);
+}
+.bog-slider:has(input:disabled) { --_rail: var(--border-border-03); --_fill: var(--border-border-03); }
+
+.bog-slider__track {
+  position: relative;
+  height: 32px;
+  /* rail 2px · orange fill between --from and --to */
+  background:
+    linear-gradient(var(--_fill) 0 0) var(--from) 50% / calc(var(--to) - var(--from)) 2px no-repeat,
+    linear-gradient(var(--_rail) 0 0) 0 50% / 100% 2px no-repeat;
+}
+/* Ticks: 2×4 marks at each segment boundary (drawn by bog-ui.js) */
+.bog-slider__tick {
+  position: absolute;
+  top: 14px;
+  width: 2px;
+  height: 4px;
+  margin-left: -1px;
+  border-radius: 1px;
+  background: var(--_rail);
+  pointer-events: none;
+}
+
+/* The inputs sit on top of each other; only their thumbs take the pointer */
+.bog-slider__track input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  background: none;
+  pointer-events: none;
+  -webkit-appearance: none;
+          appearance: none;
+}
+.bog-slider__track input:focus { outline: none; }
+.bog-slider__track input::-webkit-slider-runnable-track { height: 32px; background: none; }
+.bog-slider__track input::-moz-range-track { background: none; }
+/* Handle: 32px white circle, hairline border, 12px orange centre */
+.bog-slider__track input::-webkit-slider-thumb {
+  width: 32px;
+  height: 32px;
+  border: 1px solid var(--border-border-03);
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--_fill) 5.5px, var(--layer-white, #fff) 6px);
+  box-shadow: 0 2px 2px rgba(0, 0, 0, 0.08);
+  cursor: grab;
+  pointer-events: auto;
+  transition: box-shadow 150ms ease;
+  -webkit-appearance: none;
+          appearance: none;
+}
+.bog-slider__track input::-moz-range-thumb {
+  box-sizing: border-box;
+  width: 32px;
+  height: 32px;
+  border: 1px solid var(--border-border-03);
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--_fill) 5.5px, var(--layer-white, #fff) 6px);
+  box-shadow: 0 2px 2px rgba(0, 0, 0, 0.08);
+  cursor: grab;
+  pointer-events: auto;
+}
+/* Active: a soft orange halo */
+.bog-slider__track input:active::-webkit-slider-thumb,
+.bog-slider__track input:focus-visible::-webkit-slider-thumb { box-shadow: 0 0 0 6px var(--layer-accent-alpha-02), 0 2px 2px rgba(0, 0, 0, 0.08); cursor: grabbing; }
+.bog-slider__track input:active::-moz-range-thumb { box-shadow: 0 0 0 6px var(--layer-accent-alpha-02); }
+.bog-slider__track input:disabled::-webkit-slider-thumb { background: radial-gradient(circle, var(--icon-disabled) 5.5px, var(--border-border-03) 6px); box-shadow: none; cursor: default; }
+.bog-slider__track input:disabled::-moz-range-thumb { background: radial-gradient(circle, var(--icon-disabled) 5.5px, var(--border-border-03) 6px); box-shadow: none; }
+
+/* Tooltip above the handle while dragging */
+.bog-slider__tip {
+  position: absolute;
+  bottom: calc(100% + 4px);
+  translate: -50% 0;
+  padding: 7px 10.5px;
+  border-radius: 21px;
+  background: var(--layer-inverse-01);
+  color: var(--text-inverse-primary);
+  font-size: 10px;
+  line-height: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 120ms ease;
+}
+.bog-slider__tip::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: calc(50% - 5px);
+  border: 5px solid transparent;
+  border-top-color: var(--layer-inverse-01);
+  border-bottom: 0;
+}
+.bog-slider__tip[data-show] { opacity: 1; }
+
+.bog-slider__amounts {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--spacing-gap-small);
+  color: var(--text-primary);
+  font-size: var(--label-small-size);
+  line-height: var(--label-small-line-height);
+  font-weight: var(--label-small-weight);
+}
+.bog-slider:has(input:disabled) .bog-slider__amounts { color: var(--text-disabled); }

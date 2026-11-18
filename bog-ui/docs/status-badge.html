@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Status Icon Badge — BOG UI</title>
+<link rel="stylesheet" href="../bog-ui.css">
+<link rel="stylesheet" href="docs.css">
+<script src="theme.js"></script>
+<script src="../bog-ui.js" defer></script>
+<script src="components.js" defer></script>
+<style>.dx small{display:block;margin:0 0 8px;color:var(--docs-muted);font-size:11px}.dx{display:grid;gap:24px}.dx-panel{font-family:var(--font-family-bog);font-size:14px;line-height:20px;color:var(--text-primary);padding:16px 4px}</style>
+</head>
+<body>
+<div class="docs">
+  <aside class="docs-nav">
+    <a class="docs-nav__brand" href="../index.html">BOG UI</a>
+    <nav id="bog-nav" data-current="status-badge"></nav>
+  </aside>
+  <main class="docs-main">
+    <header><h1>Status Icon Badge</h1><a class="figma" id="figma-link" href="#" target="_blank" rel="noopener">Open in Figma ↗</a></header>
+    <p class="lead">A round status mark — a check, an alert or an info glyph, or a count — in five sizes. High contrast is a solid circle; low contrast a tinted circle with a coloured glyph, for quieter places. Used by Progress Tracker, Result Page and lists.</p>
+    <h2>Usage</h2>
+    <pre><code>&lt;span class="bog-status-icon" data-status="positive" role="img" aria-label="Done"&gt;&lt;/span&gt;
+&lt;span class="bog-status-icon" data-status="negative" data-size="large"&gt;99+&lt;/span&gt;
+&lt;!-- data-status="positive | warning | negative | info" · data-size="x-small | small | medium | large | x-large" · data-contrast="low" · data-state="skeleton" --&gt;</code></pre>
+    <h2>Variants</h2>
+    <div class="panel"><table id="sb-grid"></table></div>
+<script>
+  const SZ = [["x-small", "16"], ["small", "24"], ["", "32"], ["large", "40"], ["x-large", "64"]];
+  const b = (s, st, low, num, skel) => `<span class="bog-status-icon" data-status="${st}"${s ? ` data-size="${s}"` : ""}${low ? ' data-contrast="low"' : ""}${skel ? ' data-state="skeleton"' : ""}>${num ? "99+" : ""}</span>`;
+  const COLS = [];
+  ["positive", "warning", "negative", "info"].forEach((st) => COLS.push([st + " · icon", st, 0, 0], [st + " · numeric", st, 0, 1], [st + " · low", st, 1, 0], [st + " · low numeric", st, 1, 1]));
+  document.getElementById("sb-grid").innerHTML = "<tr><th></th>" + COLS.map(([n]) => `<th style="font-size:10px">${n}</th>`).join("") + "<th>Skeleton</th></tr>" +
+    SZ.map(([s, n]) => `<tr><th>${n}</th>${COLS.map(([, st, low, num]) => `<td style="text-align:center">${num && (s === "x-small" || s === "small") ? "" : b(s, st, low, num)}</td>`).join("")}<td>${b(s, "info", 0, 0, 1)}</td></tr>`).join("");
+</script>
+  </main>
+</div>
+</body>
+</html>

@@ -1,0 +1,57 @@
+/* ==========================================================================
+   BOG UI — Wheel Picker
+   Figma: Wheel Picker (52704:25075) · _Wheel Picker item (48084:8346)
+
+     <div class="bog-wheel" role="listbox" aria-label="Term" tabindex="0">
+       <div class="bog-wheel__option" role="option">3 month</div>
+       <div class="bog-wheel__option" role="option" aria-selected="true">5 month</div>
+       …
+     </div>
+   Multi: put several .bog-wheel side by side in a .bog-wheel-group.
+
+   It scrolls with snap; the option in the middle is selected (bog-ui.js keeps aria-selected
+   on it and fires "change"). Three options show on each side, smaller and fainter the further
+   they are: 23 px / 60 %, 18 px / 30 %, 15 px / 20 % (Heading/Small 24 px for the selected one).
+   Arrow keys move one option.
+   ========================================================================== */
+
+.bog-wheel-group { display: flex; justify-content: center; gap: var(--spacing-gap-default); }
+.bog-wheel {
+  --_row: 36px;
+  position: relative;
+  height: calc(var(--_row) * 7);
+  overflow-y: auto;
+  scroll-snap-type: y mandatory;
+  scrollbar-width: none;
+  padding: calc(var(--_row) * 3) var(--spacing-padding-default);
+  box-sizing: border-box;
+  color: var(--text-primary);
+  font-family: var(--font-family-bog);
+  outline: none;
+  overscroll-behavior: contain;
+  -webkit-mask: linear-gradient(transparent, #000 20%, #000 80%, transparent);
+          mask: linear-gradient(transparent, #000 20%, #000 80%, transparent);
+}
+.bog-wheel::-webkit-scrollbar { display: none; }
+.bog-wheel__option {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: var(--_row);
+  scroll-snap-align: center;
+  font-size: 11.25px;
+  line-height: 15px;
+  font-weight: var(--heading-small-weight);
+  white-space: nowrap;
+  opacity: 0.2;
+  cursor: pointer;
+  transition: font-size 120ms ease, opacity 120ms ease;
+  user-select: none;
+}
+.bog-wheel__option[data-d="2"] { font-size: 13.5px; line-height: 18px; opacity: 0.3; }
+.bog-wheel__option[data-d="1"] { font-size: 17.25px; line-height: 23px; opacity: 0.6; }
+.bog-wheel__option[aria-selected="true"] {
+  font-size: var(--heading-small-size);
+  line-height: var(--heading-small-line-height);
+  opacity: 1;
+}

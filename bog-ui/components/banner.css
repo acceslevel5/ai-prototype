@@ -1,0 +1,95 @@
+/* ==========================================================================
+   BOG UI — Banner (+ Banner Image Only, Promo Banner)
+   Figma: Banner (55863:25164) · Banner Image Only (56004:15226) · Promo Banner (63809:5024)
+
+   Banner — a suggestion or next step in the content of a screen:
+     <a class="bog-banner" href="#">                                 or <div>; data-state="skeleton"
+       <span class="bog-banner__text">
+         <span class="bog-banner__title">Save automatically</span>
+         <span class="bog-banner__desc">Move 10% of every salary to savings.</span>
+         <span class="bog-banner__amount">1,000.00 ₾</span>                optional
+         <span class="bog-banner__helper">a year at 7.00 %</span>          optional
+       </span>
+       <span class="bog-banner__media"><img src="…" alt=""></span>        optional, 85×64
+       <span class="bog-banner__actions"><span class="bog-btn" data-type="primary" data-size="small">Turn on</span></span>   optional
+       <button class="bog-banner__close" aria-label="Close"></button>   optional (dismissible)
+     </a>
+
+   Banner Image Only:  <a class="bog-banner" data-type="image"><img src="…" alt="Offer"></a>
+   Promo Banner:       <a class="bog-banner" data-type="promo" data-tone="dark | light" style="--image:url(…)">…title, desc, close…</a>
+   Pressed: a darker layer while tapped. × removes the banner (bog-ui.js).
+   ========================================================================== */
+
+.bog-banner {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: var(--spacing-gap-medium) var(--spacing-gap-small);
+  box-sizing: border-box;
+  width: 100%;
+  padding: var(--spacing-padding-default);
+  border-radius: var(--radius-medium);
+  background: var(--layer-layer-02);
+  color: inherit;
+  font-family: var(--font-family-bog);
+  text-decoration: none;
+  overflow: hidden;
+  -webkit-tap-highlight-color: transparent;
+}
+.bog-banner:is(:active, [data-pressed]):not([data-state="skeleton"]) { background: var(--layer-alpha-pressed-01); }
+.bog-banner__text { display: flex; flex-direction: column; gap: var(--spacing-gap-small); min-width: 0; }
+.bog-banner__title { color: var(--text-primary); font-size: var(--label-large-size); line-height: var(--label-large-line-height); font-weight: var(--label-large-weight); }
+.bog-banner__desc { color: var(--text-secondary); font-size: var(--body-medium-size); line-height: var(--body-medium-line-height); font-weight: var(--body-medium-weight); }
+.bog-banner__amount { color: var(--text-primary); font-size: var(--label-large-size); line-height: var(--label-large-line-height); font-weight: var(--label-large-weight); }
+.bog-banner__helper { color: var(--text-success); font-size: var(--label-medium-size); line-height: var(--label-medium-line-height); font-weight: var(--label-medium-weight); }
+.bog-banner__media { width: 85px; height: 64px; overflow: hidden; border-radius: var(--radius-x-small); background: var(--support-skeleton-background) url("../assets/media/placeholder.png") center / cover; }
+.bog-banner__media > img { width: 100%; height: 100%; object-fit: cover; }
+.bog-banner__actions { grid-column: 1 / -1; display: flex; gap: var(--spacing-gap-small); }
+.bog-banner__close {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 32px;
+  height: 32px;
+  border: 0;
+  border-radius: var(--radius-full);
+  background: var(--layer-white);
+  cursor: pointer;
+}
+.bog-banner__close::before { content: ""; position: absolute; inset: 8px; background: var(--icon-black); -webkit-mask: url("../icons/close.svg") center / contain no-repeat; mask: url("../icons/close.svg") center / contain no-repeat; }
+.bog-banner__close::after { content: ""; position: absolute; inset: -4px; }
+.bog-banner:has(.bog-banner__close):not(:has(.bog-banner__media)) .bog-banner__text { padding-right: 32px; }
+
+/* Image only: the picture fills the banner, 343×138 */
+.bog-banner[data-type="image"] { display: block; padding: 0; aspect-ratio: 343 / 138; background: var(--support-skeleton-background) url("../assets/media/placeholder.png") center / 72px no-repeat; }
+.bog-banner[data-type="image"] > img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.bog-banner[data-type="image"]:active::after { content: ""; position: absolute; inset: 0; background: rgba(0, 0, 0, 0.08); }
+
+/* Promo: an image behind the text, shaded on the side of the text */
+.bog-banner[data-type="promo"] {
+  display: flex;
+  flex-direction: column;
+  min-height: 138px;
+  background: linear-gradient(to right, rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0.2) 70%, rgba(0, 0, 0, 0) 100%), var(--image, url("../assets/media/placeholder.png")) center / cover, #8a8d91;
+}
+.bog-banner[data-type="promo"] .bog-banner__title { color: var(--text-white-primary); }
+.bog-banner[data-type="promo"] .bog-banner__desc { color: var(--text-white-primary); }
+.bog-banner[data-type="promo"] .bog-banner__text { padding-right: 32px; }
+.bog-banner[data-type="promo"][data-tone="light"] { background: linear-gradient(to right, rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.2) 70%, rgba(255, 255, 255, 0)), var(--image, url("../assets/media/placeholder.png")) center / cover, #e5e6e7; }
+.bog-banner[data-type="promo"][data-tone="light"] :is(.bog-banner__title, .bog-banner__desc) { color: var(--text-black); }
+.bog-banner[data-type="promo"]:active::after { content: ""; position: absolute; inset: 0; background: rgba(0, 0, 0, 0.08); }
+
+/* Skeleton */
+.bog-banner[data-state="skeleton"] { pointer-events: none; min-height: 88px; }
+.bog-banner[data-state="skeleton"] > * { visibility: hidden; }
+.bog-banner[data-state="skeleton"]::before {
+  content: "";
+  position: absolute;
+  inset: 16px;
+  background:
+    linear-gradient(var(--support-skeleton) 0 0) 0 2px / 96px 12px no-repeat,
+    linear-gradient(var(--support-skeleton) 0 0) 0 26px / 160px 8px no-repeat;
+}
+.bog-banner[data-state="skeleton"]:has(.bog-banner__media)::after { content: ""; position: absolute; top: 12px; right: 16px; width: 85px; height: 64px; border-radius: var(--radius-x-small); background: var(--support-skeleton); }
+.bog-banner[data-type="image"][data-state="skeleton"] { background: var(--support-skeleton-background); }
+.bog-banner[data-type="image"][data-state="skeleton"]::before { display: none; }

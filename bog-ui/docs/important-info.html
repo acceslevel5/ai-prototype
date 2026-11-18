@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Important Information Page — BOG UI</title>
+<link rel="stylesheet" href="../bog-ui.css">
+<link rel="stylesheet" href="docs.css">
+<script src="theme.js"></script>
+<script src="../bog-ui.js" defer></script>
+<script src="components.js" defer></script>
+<style>.dx small{display:block;margin:0 0 8px;color:var(--docs-muted);font-size:11px}.dx{display:grid;gap:24px}.dx-panel{font-family:var(--font-family-bog);font-size:14px;line-height:20px;color:var(--text-primary);padding:16px 4px}</style>
+</head>
+<body>
+<div class="docs">
+  <aside class="docs-nav">
+    <a class="docs-nav__brand" href="../index.html">BOG UI</a>
+    <nav id="bog-nav" data-current="important-info"></nav>
+  </aside>
+  <main class="docs-main">
+    <header><h1>Important Information Page</h1><a class="figma" id="figma-link" href="#" target="_blank" rel="noopener">Open in Figma ↗</a></header>
+    <p class="lead">Terms users must read before they agree — a Bottom Sheet with the full text and a sticky Confirm. While there's more to read (Unread), the last lines fade, an orange button scrolls down and Confirm stays disabled; at the end of the text (Read) Confirm and the agreement checkbox work.</p>
+    <h2>Usage</h2>
+    <pre><code>&lt;div class="bog-sheet__content" data-must-read&gt;
+  &lt;p&gt;…&lt;/p&gt;
+  &lt;button class="bog-must-read__more" aria-label="Scroll down"&gt;&lt;/button&gt;
+&lt;/div&gt;
+&lt;div class="bog-sheet__bar"&gt;
+  …checkbox…
+  &lt;button class="bog-btn" data-type="primary" data-width="fill" data-requires-read disabled&gt;Confirm&lt;/button&gt;
+&lt;/div&gt;
+&lt;!-- bog-ui.js enables [data-requires-read] in the same sheet at the end of the text and fires "mustread" --&gt;</code></pre>
+    <h2>Try it</h2>
+    <p class="lead">Scroll the text (or tap the orange arrow) — Confirm turns on at the end.</p>
+    <div class="panel" style="display:flex;gap:24px;align-items:flex-start;flex-wrap:wrap">
+      <div class="bog-sheet-host" style="position:relative;width:375px;height:812px;flex:none;overflow:hidden;border-radius:24px;background:var(--layer-layer-01);box-shadow:0 0 0 1px var(--border-alpha-01);background:#5b5f5c">
+        <div class="bog-sheet" id="info-sheet" data-open data-home-indicator>
+          <div class="bog-sheet__panel" role="dialog" aria-modal="true" aria-labelledby="info-title" style="max-height:751px">
+            <header class="bog-sheet__nav"><div class="bog-sheet__heading"><h2 class="bog-sheet__title" id="info-title">Important information</h2></div></header>
+            <div class="bog-sheet__content" data-must-read id="info-text"><p>JSC "Bank of Georgia" ("the Bank") will process and transfer your personal data to the Tbilisi City Hall ("the City Hall") for the purpose of issuing the European Youth Card and administering the services and benefits provided to you under the programme:</p><p>name, surname, personal identification number, date of birth and email address. The City Hall will keep the transferred data for as long as it is needed to keep providing the card service.</p><p>You have the rights provided by the Law of Georgia on Personal Data Protection, including the right to withdraw this consent at any time; this does not affect the processing carried out before you withdraw it. The Bank and the City Hall are independent data controllers, each responsible for the legality of its own processing.</p><p>For more about how the Bank processes personal data, see its Personal Data Processing Notification: <a href="#" onclick="return false">bankofgeorgia.ge/en/privacy-notice</a></p><p>If the contract ends for any reason, the City Hall keeps the information of co-branded card users for 3 months so that the European Youth Card service can continue until users reactivate their card. After this period the information is deleted.</p><button class="bog-must-read__more" aria-label="Scroll down"></button></div>
+            <div class="bog-sheet__bar"><label class="bog-checkbox" style="align-self:flex-start"><input type="checkbox" class="bog-checkbox__input" id="info-agree" data-requires-read disabled><span class="bog-checkbox__box"></span><span class="bog-checkbox__label">I agree to the <a href="#" onclick="return false" style="color:var(--text-accent)">Terms &amp; Conditions</a></span></label><button class="bog-btn" data-type="primary" data-width="fill" id="info-confirm" disabled>Confirm</button></div>
+          </div>
+        </div>
+        <div style="position:absolute;inset:auto 0 40% 0;display:grid;place-items:center"><button class="bog-btn" data-type="white" data-sheet-open="info-sheet" id="info-reopen">Open again</button></div>
+      </div>
+    </div>
+<script>
+  const agree = document.getElementById("info-agree"), confirmBtn = document.getElementById("info-confirm");
+  agree.addEventListener("change", () => { confirmBtn.disabled = !agree.checked; });
+  document.getElementById("info-reopen").addEventListener("click", () => {
+    const t = document.getElementById("info-text"); t.removeAttribute("data-read"); t.scrollTop = 0;
+    agree.checked = false; agree.disabled = true; confirmBtn.disabled = true;
+  });
+</script>
+  </main>
+</div>
+</body>
+</html>

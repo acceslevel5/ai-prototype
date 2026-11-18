@@ -1,0 +1,58 @@
+/* ==========================================================================
+   BOG UI — Skeleton
+   Figma: Skeleton (49137:25398 Skeleton Text · 49161:1501 Skeleton Default · 49126:24784 / 51925:39864 elements)
+
+   Placeholders while content loads. Every component also has its own data-state="skeleton";
+   use these for custom layouts.
+
+     <span class="bog-skeleton"></span>                                   48×48 block (set width/height to fit)
+     <span class="bog-skeleton" data-shape="circle"></span>               for avatars and icons
+     <span class="bog-skeleton-text" data-style="heading"></span>          one line of text
+     <div class="bog-skeleton-paragraph"></div>                           title + 4 lines   (data-size="small")
+
+   data-style  display (48) | heading (24) | title (12) | subtitle (12) | body (8, default) | list-body (8)
+               | label (8) | label-xsmall (4) — the bar height that stands in for that text style
+   ========================================================================== */
+
+.bog-skeleton,
+.bog-skeleton-text,
+.bog-skeleton-paragraph,
+.bog-skeleton-paragraph::before,
+.bog-skeleton-paragraph::after {
+  display: block;
+  background: var(--support-skeleton);
+}
+.bog-skeleton {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-x-small);
+}
+.bog-skeleton[data-shape="circle"] { border-radius: var(--radius-full); }
+
+.bog-skeleton-text {
+  width: 96px;
+  height: 8px;
+  border-radius: var(--radius-2x-small);
+}
+.bog-skeleton-text[data-style="display"]      { height: 48px; border-radius: var(--radius-x-small); }
+.bog-skeleton-text[data-style="heading"]      { height: 24px; border-radius: var(--radius-x-small); }
+.bog-skeleton-text[data-style="title"],
+.bog-skeleton-text[data-style="subtitle"]     { height: 12px; }
+.bog-skeleton-text[data-style="label-xsmall"] { height: 4px; }
+
+/* Paragraph: a 96×12 title, then four lines (the last one 55% wide) */
+.bog-skeleton-paragraph {
+  --_line: 8px;
+  position: relative;
+  width: 100%;
+  max-width: 281px;
+  height: calc(12px + 12px + var(--_line) * 7);
+  background:
+    linear-gradient(var(--support-skeleton) 0 0) 0 0 / 96px 12px no-repeat,
+    repeating-linear-gradient(to bottom, var(--support-skeleton) 0 var(--_line), transparent var(--_line) calc(var(--_line) * 2)) 0 24px / 100% calc(var(--_line) * 5) no-repeat,
+    linear-gradient(var(--support-skeleton) 0 0) 0 calc(24px + var(--_line) * 6) / 55% var(--_line) no-repeat;
+  border-radius: 0;
+}
+.bog-skeleton-paragraph::before,
+.bog-skeleton-paragraph::after { content: none; }
+.bog-skeleton-paragraph[data-size="small"] { --_line: 4px; }

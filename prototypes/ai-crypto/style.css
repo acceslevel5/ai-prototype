@@ -1,0 +1,927 @@
+/* BOG AI – Crypto. გვერდი bog-ui კომპონენტებით, AI ასისტენტი — Figma-ს (BOG-Assistent) Liquid Glass სტილით.
+   ზომები/ტაიმინგები ერთ ადგილას (:root), დასახვეწად. */
+
+:root {
+  --app-w: min(100vw, 430px);
+  /* რეალურ ტელეფონზე სტატუს ბარს safe-area იკავებს; დესკტოპზე ვხატავთ 62px-იან iOS სტატუს ბარს */
+  --status-h: max(env(safe-area-inset-top), 12px);
+  --nav-h: 44px;
+  --vvh: 100dvh;
+
+  /* glass (Figma: Liquid Glass - Regular - Small / BG - Medium UI) */
+  --glass-bg: rgba(255, 255, 255, 0.46);
+  --glass-blur: blur(22px) saturate(190%) brightness(1.04);
+  --glass-ring: inset 0 1px 0 rgba(255, 255, 255, 0.95), inset 0 -1px 0 rgba(255, 255, 255, 0.45), inset 0 0 0 0.5px rgba(255, 255, 255, 0.7), 0 0 0 0.5px rgba(0, 0, 0, 0.09), 0 4px 14px rgba(0, 0, 0, 0.07);  /* ზედა ათინათი + წვრილი კიდე + რბილი ჩრდილი */
+  --panel-bg: rgba(248, 248, 250, 0.66);
+  --panel-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.95), inset 0 0 0 1px rgba(255, 255, 255, 0.5), 0 0 0 0.5px rgba(0, 0, 0, 0.1), 0 18px 44px rgba(0, 0, 0, 0.16);
+
+  /* მოძრაობა */
+  --ai-ease: cubic-bezier(0.32, 0.72, 0, 1);  /* iOS-ის მსგავსი spring */
+  --ai-dur: 520ms;
+
+  /* ღილაკის გაშლა (idle → teaser) */
+  --teaser-expand: 700ms;                              /* გაშლის ხანგრძლივობა */
+  --teaser-ease: cubic-bezier(0.34, 1.32, 0.64, 1);   /* მსუბუქი „გადახტომა" ბოლოს */
+  --teaser-text-delay: 260ms;                          /* ტექსტი გაშლის დაწყებიდან */
+  --teaser-char: 14ms;                                 /* ასოებს შორის */
+  --teaser-swap: 240ms;                                /* ფრომფთის შეცვლა */
+  --teaser-glow: 4200ms;                               /* სხივის ერთი გავლა (მარცხნიდან მარჯვნივ) */
+
+  /* პანელის გაშლა (teaser → open) და დაკეცვა */
+  --open-dur: 480ms;                                   /* სიგანე / პოზიცია / კუთხეები */
+  --open-h-dur: 620ms;                                 /* სიმაღლე — ოდნავ გვიან სრულდება, „ჩამოიღვრება" */
+  --open-ease: cubic-bezier(0.4, 0, 0.1, 1);            /* რბილი დასაწყისი და დასასრული (დიდი ფორმის მოძრაობა) */
+  --open-content-delay: 120ms;                         /* კონტენტი გაშლის დაწყებიდან */
+  --open-stagger: 40ms;                                /* ჩიპებს შორის */
+  --close-dur: 440ms;
+  --beam-glow: 1;                                      /* სხივის საერთო სიძლიერე (0–1) */
+  --spot-dur: 2400ms;                                  /* გვერდის მონიშვნა: კიდის ერთი შემოვლა */
+  --ai-scrim: rgba(17, 17, 17, 0.08);
+
+  /* ღილაკიდან გაშლა / ღილაკში დაკეცვა (გრძელი მანძილი — უფრო ნელი და რბილი) */
+  --btn-open-dur: 720ms;
+  --btn-ease: cubic-bezier(0.4, 0, 0.1, 1);
+  --btn-close-dur: 560ms;
+  --btn-close-ease: cubic-bezier(0.45, 0, 0.15, 1);
+  --btn-content-delay: 300ms;                          /* კონტენტი ფორმის გაშლის შემდეგ */
+  --btn-stagger: 55ms;
+
+  /* შემდეგი ნაბიჯების ჩიპები */
+  --next-delay: 120ms;                                 /* ლეიბლიდან პირველ ჩიპამდე */
+  --next-stagger: 80ms;                                /* ჩიპებს შორის */                  /* გვერდის მსუბუქი დაბნელება პანელის ქვეშ (transparent = გარეშე) */
+}
+@media (hover: hover) and (pointer: fine) {
+  :root { --status-h: 62px; }
+}
+
+html, body { margin: 0; height: 100%; overflow: hidden; background: #f2f1f6; }
+body { font-family: var(--font-family-bog); color: var(--text-primary); -webkit-font-smoothing: antialiased; }
+* { -webkit-tap-highlight-color: transparent; }
+button { font-family: inherit; }
+img { -webkit-user-drag: none; user-select: none; }
+
+/* ეკრანი: დესკტოპზე ცენტრში, 375–430px */
+.screen {
+  position: fixed; top: 0; bottom: 0; left: 50%;
+  width: var(--app-w); transform: translateX(-50%);
+  background: #fff; overflow: hidden;
+  user-select: none; -webkit-user-select: none;
+}
+.screen__body::-webkit-scrollbar { display: none; }
+.screen__body {
+  position: absolute; inset: 0;
+  overflow-y: auto; overscroll-behavior: contain; -webkit-overflow-scrolling: touch; scrollbar-width: none;
+  padding: calc(var(--status-h) + var(--nav-h) + 24px) 0 calc(120px + env(safe-area-inset-bottom));
+  box-sizing: border-box;
+}
+html.ai-open .screen__body { overflow: hidden; }
+
+/* ---------- ზედა ზოლი ---------- */
+.topbar {
+  position: absolute; top: 0; left: 0; right: 0; z-index: 5;
+  padding-top: var(--status-h); height: calc(var(--status-h) + 56px); box-sizing: border-box;
+  background: linear-gradient(rgba(255, 255, 255, 0.92) 0%, rgba(255, 255, 255, 0.6) 50%, rgba(255, 255, 255, 0) 100%);
+  pointer-events: none;
+}
+.statusbar { display: none; }
+@media (hover: hover) and (pointer: fine) {
+  .statusbar { display: flex; position: absolute; top: 0; left: 0; right: 0; height: 62px; align-items: center; justify-content: space-between; padding: 0 26px 0 50px; box-sizing: border-box; }
+  .statusbar__time { height: 12.5px; }
+  .statusbar__icons { height: 13px; }
+}
+.topbar__row { display: flex; align-items: center; gap: 12px; height: var(--nav-h); padding: 0 16px; }
+.topbar__spacer { flex: 1; }
+.glass-btn {
+  pointer-events: auto;
+  display: grid; place-items: center; width: 44px; height: 44px; padding: 0; border: 0; border-radius: 50%;
+  background: var(--glass-bg); backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur);
+  box-shadow: var(--glass-ring); cursor: pointer;
+  transition: transform 160ms ease;
+}
+.glass-btn:active { transform: scale(0.92); }
+.glass-btn img { width: 24px; height: 24px; }
+
+/* ---------- გვერდი ---------- */
+.page-tabs { width: auto; margin: 0 16px; }
+.price { padding: 24px 16px 0; }
+.price__label { margin: 0; font-size: var(--body-small-size); line-height: 16px; font-weight: 500; }
+.price .bog-amount { margin-bottom: 4px; }
+
+.chg { display: inline-flex; align-items: center; gap: 2px; margin: 0; font-size: 12px; line-height: 16px; font-weight: 500; white-space: nowrap; }
+.price .chg { display: flex; margin-top: 4px; }
+.chg--up { color: var(--text-success); }
+.chg--down { color: var(--text-error); }
+.chg__icon { width: 16px; height: 16px; background: currentColor; -webkit-mask: url(../../bog-ui/icons/price-up-12.svg) center / 12px no-repeat; mask: url(../../bog-ui/icons/price-up-12.svg) center / 12px no-repeat; }
+.chg--down .chg__icon { -webkit-mask-image: url(../../bog-ui/icons/price-down-12.svg); mask-image: url(../../bog-ui/icons/price-down-12.svg); }
+.chg__label { margin-left: 2px; color: var(--text-helper); }
+.bog-list-item__end .chg { justify-content: flex-end; }
+
+.chart { position: relative; height: 211px; overflow: hidden; }
+.chart__fill { position: absolute; left: 0; top: 54px; width: 100%; height: 157px; }
+.chart__line { position: absolute; left: 0; top: 52px; width: 100.5%; height: 92px; }
+.chart__mark { position: absolute; display: flex; align-items: center; gap: 4px; font-size: 10px; line-height: 16px; color: var(--text-disabled); }
+.chart__mark i { width: 10px; height: 10px; border-radius: 50%; background: #fff; box-shadow: inset 0 0 0 3px #4fd156; }
+.chart__mark--high { left: 42.1%; top: 45px; }
+.chart__mark--low { left: 68.3%; top: 136px; }
+
+.page { display: flex; flex-direction: column; gap: 32px; padding: 16px 16px 0; }
+.page .bog-section__header .bog-segmented { flex: 0 0 auto; width: auto; }
+.tx-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.tx-stat { display: flex; flex-direction: column; align-items: center; padding: 8px; border-radius: var(--radius-medium); background: var(--layer-alpha-01); }
+.tx-stat span { font-size: 11px; line-height: 16px; color: var(--text-helper); }
+.tx-stat b { font-size: 14px; line-height: 20px; font-weight: 600; }
+.tx-stat--done { background: var(--status-success-01); }
+.tx-date { margin: 0; font-size: 12px; line-height: 18px; color: var(--text-helper); }
+#transactions { display: flex; flex-direction: column; gap: 8px; }
+
+/* ტაბ ბარი + ქვედა „scroll edge" */
+.tabbar { position: absolute; left: 0; right: 0; bottom: 0; z-index: 5; padding-bottom: max(16px, env(safe-area-inset-bottom)); }
+.tabbar::before { content: ""; position: absolute; inset: -20px 0 0; z-index: -1; pointer-events: none; background: linear-gradient(rgba(255, 255, 255, 0), #fff 70%); }
+
+/* =====================================================================
+   BOG AI
+   ===================================================================== */
+.ai-layer {
+  position: fixed; top: 0; bottom: 0; left: 50%; z-index: 20;
+  width: var(--app-w); transform: translateX(-50%);
+  pointer-events: none;
+}
+.ai-backdrop { position: absolute; inset: 0; pointer-events: none; background: var(--ai-scrim); opacity: 0; transition: opacity var(--close-dur) ease; }
+html.ai-open .ai-backdrop { pointer-events: auto; opacity: 1; transition-duration: var(--open-dur); }
+
+.ai {
+  --top: var(--status-h);
+  position: absolute; top: var(--top);
+  pointer-events: auto; overflow: hidden; isolation: isolate;
+  background: var(--glass-bg); backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur);
+  box-shadow: var(--glass-ring);
+  transition:
+    left var(--ai-dur) var(--ai-ease), width var(--ai-dur) var(--ai-ease), height var(--ai-dur) var(--ai-ease),
+    border-radius var(--ai-dur) var(--ai-ease), background-color 300ms ease, box-shadow 300ms ease, top var(--ai-dur) var(--ai-ease);
+  user-select: none; -webkit-user-select: none;
+}
+/* 1. idle — 44px ღილაკი, ძებნის მარცხნივ */
+.ai[data-state="idle"] { left: calc(100% - 112px); width: 44px; height: 44px; border-radius: 22px; }
+/* 2. teaser — აბრა უკან-ღილაკიდან ძებნამდე */
+.ai[data-state="teaser"] { left: 72px; width: calc(100% - 140px); height: 44px; border-radius: 22px; }
+.ai.is-expanding { transition-duration: var(--teaser-expand); transition-timing-function: var(--teaser-ease); }
+/* 3. open — პანელი */
+.ai[data-state="open"] {
+  left: 8px; width: calc(100% - 16px); border-radius: 32px;
+  transition:
+    left var(--open-dur) var(--open-ease), width var(--open-dur) var(--open-ease), height var(--open-h-dur) var(--open-ease),
+    border-radius var(--open-dur) var(--open-ease), background-color var(--open-dur) ease, box-shadow var(--open-dur) ease,
+    transform var(--open-dur) var(--open-ease), top var(--open-dur) var(--open-ease);
+  height: var(--panel-h, 320px); /* JS: min(კონტენტი, ხილული სიმაღლე) — რბილად */
+  background: var(--panel-bg); box-shadow: var(--panel-shadow);
+  backdrop-filter: blur(30px) saturate(190%); -webkit-backdrop-filter: blur(30px) saturate(190%);
+}
+/* გაშლის შემდეგ სიმაღლეს JS მართავს (რბილი მიდევნება), CSS transition აღარ */
+.ai[data-state="open"].is-settled { transition-property: left, width, border-radius, background-color, box-shadow, top; transition-duration: var(--open-dur); }
+/* დაკეცვა: კონტენტი სწრაფად ქრება, ფორმა იკუმშება */
+.ai.is-closing { transition-duration: var(--close-dur); transition-timing-function: var(--btn-close-ease); }
+.ai.is-closing .ai__orb { transition-duration: var(--close-dur); transition-timing-function: var(--btn-close-ease); }
+
+/* orb — საერთო ელემენტი სამივე მდგომარეობაში (ზომა/პოზიცია ანიმირდება) */
+.ai__orb {
+  position: absolute; z-index: 3; left: 4.5px; top: 4.5px; width: 35px; height: 35px;
+  transition: all var(--ai-dur) var(--ai-ease);
+  cursor: pointer;
+}
+.ai[data-state="idle"] .ai__orb { animation: orb-breathe 2.4s ease-in-out infinite; }
+.ai[data-state="teaser"] .ai__orb { left: 8px; top: 8px; width: 28px; height: 28px; }
+.ai[data-state="open"] .ai__orb { left: 16px; top: 16px; width: 24px; height: 24px; transition-duration: var(--open-dur); transition-timing-function: var(--open-ease); animation: orb-open var(--open-dur) var(--open-ease) both; }
+@keyframes orb-open { from { transform: rotate(-90deg); } to { transform: none; } }
+.ai.is-chat[data-state="open"] .ai__orb { opacity: 0; transform: scale(0.6); pointer-events: none; }
+@keyframes orb-breathe { 50% { transform: scale(1.06) rotate(8deg); } }
+
+/* teaser */
+.ai__teaser {
+  position: absolute; inset: 0; z-index: 2; padding: 0 10px 0 44px; border: 0; background: none; text-align: left; cursor: pointer;
+  -webkit-mask-image: linear-gradient(90deg, #000 85%, transparent);
+  mask-image: linear-gradient(90deg, #000 85%, transparent);
+}
+.ai-layer:has(.ai__teaser:active) .ai[data-state="teaser"] { transform: scale(0.97); }
+.ai[data-state="teaser"] { transition-property: left, width, height, border-radius, background-color, box-shadow, transform; }
+.ai__teaser-text {
+  position: absolute; left: 44px; right: 10px; top: 13px;
+  display: block; overflow: hidden; white-space: nowrap;
+  font-size: var(--body-small-size); line-height: 18px; font-weight: 500; color: var(--text-placeholder);
+  opacity: 0; transition: opacity 160ms ease;
+}
+.ai[data-state="teaser"] .ai__teaser-text { opacity: 1; }
+.ai__teaser { transition: opacity 220ms ease 200ms; }
+.ai[data-state="open"] .ai__teaser { opacity: 0; transition: opacity 120ms ease; }
+/* პირველი ფრომფთი — ასო-ასო (ასოები span.ch-ში, --c ინდექსით) */
+.ai__teaser-text .ch { display: inline-block; white-space: pre; opacity: 0; animation: ch-in 260ms ease-out both; animation-delay: calc(var(--teaser-text-delay) + var(--c) * var(--teaser-char)); }
+@keyframes ch-in { from { opacity: 0; filter: blur(3px); transform: translateY(3px); } to { opacity: 1; filter: none; transform: none; } }
+/* შემდეგი ფრომფთები — ძველი ზემოთ გადის, ახალი ქვემოდან შემოდის */
+.ai__teaser-text.is-out { animation: teaser-out var(--teaser-swap) ease-in both; }
+.ai__teaser-text.is-in { animation: teaser-in calc(var(--teaser-swap) * 1.6) var(--ai-ease) both; }
+@keyframes teaser-out { to { opacity: 0; transform: translateY(-8px); filter: blur(2px); } }
+@keyframes teaser-in { from { opacity: 0; transform: translateY(8px); filter: blur(2px); } to { opacity: 1; transform: none; filter: none; } }
+
+/* გაშლისას: orb ერთხელ ბრუნავს, კიდეზე AI-ს ფერების ნათება გადის და ქრება */
+.ai.is-expanding .ai__orb { animation: orb-roll var(--teaser-expand) var(--ai-ease) both; transition-duration: var(--teaser-expand); transition-timing-function: var(--teaser-ease); }
+@keyframes orb-roll { from { transform: rotate(-200deg) scale(0.85); } to { transform: none; } }
+/* Beam — იმავე პრინციპით, როგორც libraries.dev/beam (საკუთარი იმპლემენტაცია):
+   ფერები ადგილზე დგას, მოძრაობს მხოლოდ „პროჟექტორი" (ნიღაბი --bx პოზიციაზე), რომელიც მათ ანათებს.
+   სამი ფენა:
+     .s  კიდე   — აბრის 1.5px კონტური, ჩანს მხოლოდ პროჟექტორის ქვეშ; შუაში თეთრი „ცხელი" ბირთვი
+     .g  ნათება — იგივე ფერები რბილად, აბრის შიგნით ქვედა კიდესთან
+     .b  ანარეკლები — აბრის გასწვრივ ჩამწკრივებული ვიწრო/ფართო ფერადი შუქები (ბლარით),
+                      რომლებიც პროჟექტორის გავლისას რიგრიგობით ინთება
+   ერთხელ გადის (აბრის გაშლისას) და ქრება */
+@property --bx { syntax: "<percentage>"; initial-value: 8%; inherits: true; }
+.ai__beam { position: absolute; inset: 0; z-index: 1; pointer-events: none; overflow: hidden; border-radius: inherit; opacity: 0; --bx: 8%; }
+.ai.is-glowing:not([data-state="open"]) .ai__beam { animation: beam-pass var(--teaser-glow) cubic-bezier(0.3, 0.5, 0.7, 0.5) 300ms both; } /* სწრაფად შემოდის → შუაში ნელდება → ისევ ჩქარდება */
+@keyframes beam-pass {
+  0% { --bx: 4%; opacity: 0; }
+  22% { opacity: var(--beam-glow); }
+  68% { opacity: var(--beam-glow); }
+  100% { --bx: 96%; opacity: 0; }
+}
+.ai__beam i { position: absolute; inset: 0; border-radius: inherit; }
+/* ფერები (მარცხნიდან მარჯვნივ): ლურჯი → იისფერი → ვარდისფერი (ბირთვი) → ნარინჯისფერი — ფართო, ერთმანეთში გადამავალი */
+.ai__beam .s {
+  padding: 1.5px;
+  background:
+    radial-gradient(64px 24px at var(--bx) calc(100% + 2px), rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.45) 40%, transparent 78%),
+    radial-gradient(70px 30px at var(--bx) calc(100% + 2px), #e83e8c, transparent),
+    radial-gradient(76px 28px at calc(var(--bx) - 46px) 100%, #8a3ffc, transparent),
+    radial-gradient(80px 26px at calc(var(--bx) - 92px) 100%, #4589ff, transparent),
+    radial-gradient(76px 28px at calc(var(--bx) + 48px) 100%, #ff5c0a, transparent);
+  -webkit-mask: radial-gradient(150px 56px at var(--bx) 100%, #fff 0%, rgba(255, 255, 255, 0.55) 40%, transparent 100%), linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: source-in, xor;
+  mask: radial-gradient(150px 56px at var(--bx) 100%, #fff 0%, rgba(255, 255, 255, 0.55) 40%, transparent 100%), linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask-composite: intersect, exclude;
+}
+.ai__beam .g {
+  background:
+    radial-gradient(56px 18px at var(--bx) 100%, rgba(255, 255, 255, 0.55), transparent 75%),
+    radial-gradient(64px 26px at var(--bx) 100%, rgba(232, 62, 140, 0.42), transparent),
+    radial-gradient(70px 24px at calc(var(--bx) - 46px) 100%, rgba(138, 63, 252, 0.36), transparent),
+    radial-gradient(74px 22px at calc(var(--bx) - 92px) 100%, rgba(69, 137, 255, 0.34), transparent),
+    radial-gradient(70px 24px at calc(var(--bx) + 48px) 100%, rgba(255, 92, 10, 0.36), transparent);
+  -webkit-mask: radial-gradient(150px 56px at var(--bx) 100%, #fff 0%, rgba(255, 255, 255, 0.55) 40%, transparent 100%), linear-gradient(to top, #fff, transparent 28px);
+  -webkit-mask-composite: source-in;
+  mask: radial-gradient(150px 56px at var(--bx) 100%, #fff 0%, rgba(255, 255, 255, 0.55) 40%, transparent 100%), linear-gradient(to top, #fff, transparent 28px);
+  mask-composite: intersect;
+}
+/* ანარეკლები: ოთხი ფართო, ძალიან რბილი შუქი იმავე ფერებით */
+.ai__beam .b {
+  opacity: 0.4; filter: blur(9px);
+  background:
+    radial-gradient(22px 40px at 16% 100%, #4589ff, transparent 90%),
+    radial-gradient(22px 44px at 40% 100%, #8a3ffc, transparent 90%),
+    radial-gradient(22px 44px at 62% 100%, #e83e8c, transparent 90%),
+    radial-gradient(22px 40px at 86% 100%, #ff5c0a, transparent 90%);
+  -webkit-mask: radial-gradient(140px 66px at var(--bx) 100%, #fff 0%, rgba(255, 255, 255, 0.5) 35%, transparent 100%);
+  mask: radial-gradient(140px 66px at var(--bx) 100%, #fff 0%, rgba(255, 255, 255, 0.5) 35%, transparent 100%);
+}
+.ai[data-state="open"] .ai__teaser { pointer-events: none; }
+
+/* panel */
+.ai__panel {
+  position: absolute; left: 0; top: 0; width: calc(var(--app-w) - 16px); height: 100%;
+  display: flex; flex-direction: column; gap: 16px; padding: 16px; box-sizing: border-box;
+  opacity: 0; pointer-events: none; transition: opacity 120ms ease;
+}
+.ai[data-state="open"] .ai__panel { opacity: 1; pointer-events: auto; transition: none; }
+/* გაშლისას: „BOG AI" აბრის ტექსტის ადგილიდან, ჩიპები კასკადით, ველი ქვემოდან */
+.ai[data-state="open"] .ai__brand { animation: brand-in 360ms var(--ai-ease) both; animation-delay: var(--open-content-delay); }
+@keyframes brand-in { from { opacity: 0; transform: translateX(10px); filter: blur(2px); } }
+.ai[data-state="open"] .ai__bar { animation: bar-in 460ms var(--open-ease) both; animation-delay: calc(var(--open-content-delay) + 100ms); }
+@keyframes bar-in { from { opacity: 0; transform: translateY(14px) scale(0.98); } }
+.ai[data-state="open"].is-chat .ai__thread { animation: thread-in 360ms ease both; animation-delay: var(--open-content-delay); }
+@keyframes thread-in { from { opacity: 0; transform: translateY(-6px); } }
+.ai__chat { flex: 1 1 auto; min-height: 0; overflow-y: auto; overflow-anchor: none; overscroll-behavior: contain; scrollbar-width: none; margin: -4px -16px; padding: 4px 16px; }
+.ai__chat::-webkit-scrollbar { display: none; }
+.ai__inner { display: flex; flex-direction: column; gap: 24px; }
+.ai__brand { height: 24px; padding-left: 32px; font-size: 12px; line-height: 24px; font-weight: 500; transition: height 520ms cubic-bezier(0.65, 0, 0.35, 1), margin 520ms cubic-bezier(0.65, 0, 0.35, 1), opacity 200ms ease; }
+.ai.is-chat .ai__brand { height: 0; margin-bottom: -24px; opacity: 0; overflow: hidden; }
+.is-collapsing { clip-path: inset(-24px -24px 0px -24px); pointer-events: none; }
+
+/* chips (ფრომფთები) */
+.ai-prompts, .ai-next { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; }
+.ai-chip {
+  display: inline-flex; align-items: center; gap: 4px; height: 28px; padding: 4px 10px 4px 8px; box-sizing: border-box;
+  border: 0; border-radius: 132px; background: rgba(255, 255, 255, 0.6); box-shadow: var(--glass-ring);
+  font-size: var(--label-xsmall-size); line-height: 16px; font-weight: 500; color: var(--text-primary); text-align: left;
+  cursor: pointer;
+  transition: transform 160ms ease, background-color 220ms ease, color 220ms ease, box-shadow 220ms ease, opacity 220ms ease, filter 220ms ease, height 260ms var(--ai-ease), margin 260ms var(--ai-ease), padding 260ms var(--ai-ease);
+  animation: chip-in 420ms var(--ai-ease) both; animation-delay: calc(var(--i, 0) * var(--open-stagger) + var(--open-content-delay) + 60ms);
+}
+.ai-chip:active { transform: scale(0.96); background: rgba(255, 255, 255, 0.95); }
+.ai-chip img { width: 16px; height: 16px; flex: none; }
+.ai-chip--next { padding-left: 5px; }
+.ai-chip--next img { width: 20px; height: 20px; }
+@keyframes chip-in { from { opacity: 0; transform: translateY(10px) scale(0.97); filter: blur(2px); } }
+
+/* საუბარი */
+.ai__thread { display: flex; flex-direction: column; gap: 24px; }
+.ai-turn { display: flex; flex-direction: column; gap: 16px; }
+.ai-bubble {
+  align-self: flex-end; max-width: 248px; padding: 8px 12px; box-sizing: border-box;
+  background: #1b1c1d; border: 1px solid #474747; border-radius: 16px 16px 4px 16px;
+  color: var(--text-inverse-primary); font-size: 12px; line-height: 18px; font-weight: 500;
+  animation: bubble-in 380ms var(--ai-ease) both;
+}
+@keyframes bubble-in { from { opacity: 0; transform: translateY(10px) scale(0.96); transform-origin: right bottom; } }
+/* ფიქრი: orb + ლეიბლი; შემდეგ „Thought for X sec ›" ღილაკი, რომელიც ნაბიჯებს შლის */
+.ai-status {
+  display: flex; align-items: center; gap: 8px; height: 24px; margin: 0 0 -8px; padding: 0; border: 0; background: none;
+  font-size: 12px; line-height: 18px; font-weight: 500; color: var(--text-primary); text-align: left; cursor: pointer;
+  animation: chip-in 300ms ease both;
+}
+.ai-status.is-thinking { cursor: default; }
+
+/* „ცოცხალი" orb: ნელი ბრუნვა + სუნთქვა, უკან AI-ს ფერების რბილი ნათება */
+.ai-orb { position: relative; flex: none; width: 24.5px; height: 24px; }
+.ai-orb img { position: relative; z-index: 1; display: block; width: 100%; height: 100%; }
+.ai-orb__glow {
+  position: absolute; inset: -6px; border-radius: 50%; opacity: 0;
+  background: conic-gradient(from 0deg, #ff5c0a, #e83e8c, #8a3ffc, #4589ff, #ff5c0a);
+  filter: blur(7px); transition: opacity 500ms ease;
+}
+.is-thinking .ai-orb__glow { opacity: 0.45; animation: glow-spin 2.8s linear infinite, glow-pulse 1.6s ease-in-out infinite; }
+.is-thinking .ai-orb img { animation: orb-think 2.8s cubic-bezier(0.45, 0, 0.55, 1) infinite; }
+@keyframes orb-think {
+  0% { transform: rotate(0deg) scale(1); }
+  25% { transform: rotate(80deg) scale(0.9); }
+  50% { transform: rotate(180deg) scale(1.04); }
+  75% { transform: rotate(270deg) scale(0.92); }
+  100% { transform: rotate(360deg) scale(1); }
+}
+@keyframes glow-spin { to { rotate: 360deg; } }
+@keyframes glow-pulse { 50% { scale: 0.75; opacity: 0.25; } }
+
+/* ლეიბლი: „Thinking" რბილი shimmer-ით + სამი წერტილი რიგრიგობით */
+.ai-status__label { display: inline-flex; align-items: baseline; }
+.is-thinking .ai-status__text {
+  background: linear-gradient(100deg, var(--text-helper) 30%, #c9cbce 50%, var(--text-helper) 70%);
+  background-size: 250% 100%; -webkit-background-clip: text; background-clip: text; color: transparent;
+  animation: shimmer 2s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+}
+.ai-dots { display: none; gap: 2px; margin-left: 2px; }
+.is-thinking .ai-dots { display: inline-flex; }
+.ai-dots i { width: 2.5px; height: 2.5px; border-radius: 50%; background: var(--text-helper); animation: dot 1.2s ease-in-out infinite; }
+.ai-dots i:nth-child(2) { animation-delay: 0.15s; }
+.ai-dots i:nth-child(3) { animation-delay: 0.3s; }
+@keyframes dot { 0%, 60%, 100% { opacity: 0.25; transform: none; } 30% { opacity: 1; transform: translateY(-2px); } }
+@keyframes shimmer { from { background-position: 100% 0; } to { background-position: 0 0; } }
+
+.ai-status__chev {
+  width: 12px; height: 12px; margin-left: -4px; background: var(--text-helper);
+  -webkit-mask: url(../../bog-ui/icons/chevron-right.svg) center / 12px no-repeat; mask: url(../../bog-ui/icons/chevron-right.svg) center / 12px no-repeat;
+  transition: transform 260ms var(--ai-ease), opacity 300ms ease;
+}
+.ai-status.is-thinking .ai-status__chev { opacity: 0; }
+.is-steps-open .ai-status__chev { transform: rotate(90deg); }
+
+/* ნაბიჯების ჟურნალი */
+.ai-steps {
+  display: grid; grid-template-rows: 1fr; padding-left: 32px; margin-bottom: -8px;
+  font-size: 11px; line-height: 16px; font-weight: 500; color: var(--text-helper);
+  transition: grid-template-rows 420ms var(--ai-ease), opacity 300ms ease, margin 420ms var(--ai-ease);
+}
+.ai-steps > * { overflow: hidden; min-height: 0; }
+.ai-steps__log { margin: 0; padding: 2px 0 0; list-style: none; display: flex; flex-direction: column; gap: 2px; }
+.ai-steps__log li { display: flex; align-items: center; gap: 6px; animation: step-in 380ms var(--ai-ease) both; }
+@keyframes step-in { from { opacity: 0; transform: translateY(6px); filter: blur(2px); } }
+.ai-steps__mark { position: relative; flex: none; width: 8px; height: 8px; }
+/* მიმდინარე: მფეთქავი წერტილი; დასრულებული: მწვანე ✓ (წერტილიდან „გადაიქცევა") */
+.ai-steps__mark::before, .ai-steps__mark::after { content: ""; position: absolute; inset: 0; transition: opacity 240ms ease, transform 320ms var(--ai-ease); }
+.ai-steps__mark::before { margin: 2px; border-radius: 50%; background: var(--text-accent); }
+.is-active .ai-steps__mark::before { animation: step-pulse 1s ease-in-out infinite; }
+@keyframes step-pulse { 50% { transform: scale(1.6); opacity: 0.5; } }
+.ai-steps__mark::after { background: var(--text-success); -webkit-mask: url(../../bog-ui/icons/check-12.svg) center / 8px no-repeat; mask: url(../../bog-ui/icons/check-12.svg) center / 8px no-repeat; opacity: 0; transform: scale(0.4); }
+.is-done .ai-steps__mark::before { opacity: 0; transform: scale(0.2); animation: none; }
+.is-done .ai-steps__mark::after { opacity: 1; transform: none; }
+.ai-steps__text { transition: color 300ms ease; }
+.is-active .ai-steps__text { color: var(--text-secondary); }
+
+/* ფიქრის შემდეგ: ჟურნალი რბილად იკეცება; „Thought for…"-ზე დაჭერით — იშლება */
+.is-thought .ai-steps { grid-template-rows: 0fr; opacity: 0; margin-top: -8px; }
+.is-thought.is-steps-open .ai-steps { grid-template-rows: 1fr; opacity: 1; margin-top: 0; }
+.is-thought .ai-steps__log li { animation: none; }
+
+/* ნაკადის სიტყვები: ბუნდოვნიდან და ოდნავ ქვემოდან; ცვლილებები ჯერ ჩვეულებრივ ფერში ჩნდება, მერე ფერდება */
+.w { display: inline-block; animation: word-in 460ms cubic-bezier(0.2, 0.7, 0.2, 1) both; }
+@keyframes word-in { from { opacity: 0; filter: blur(5px); transform: translateY(3px); } }
+.w--up, .w--down { animation: word-in 460ms cubic-bezier(0.2, 0.7, 0.2, 1) both, tint 700ms ease both; animation-delay: 0ms, 250ms; }
+.w--up { color: var(--text-success); }
+.w--down { color: var(--text-error); }
+@keyframes tint { from { color: var(--text-primary); } }
+
+/* კურსორი: ნეიტრალური ნაცრისფერი მფეთქავი წერტილი ტექსტის ბოლოს */
+.ai-caret {
+  display: inline-block; width: 7px; height: 7px; margin-left: 4px; border-radius: 50%; vertical-align: 0;
+  background: var(--border-border-01);
+  animation: caret-pulse 1.2s ease-in-out infinite;
+  transition: opacity 260ms ease, scale 260ms ease;
+}
+.ai-caret.is-out { opacity: 0; scale: 0.3; }
+@keyframes caret-pulse { 50% { scale: 0.75; opacity: 0.5; } }
+
+/* სათაური და სიის პუნქტები */
+.ai-answer__title { animation: title-in 420ms cubic-bezier(0.2, 0.7, 0.2, 1) both; }
+@keyframes title-in { from { opacity: 0; filter: blur(4px); transform: translateY(4px); } }
+.ai-answer__list li::marker { color: var(--text-helper); }
+.ai-answer__list li { animation: li-in 300ms ease both; }
+.ai-answer__list li + li { margin-top: 4px; }
+@keyframes li-in { from { opacity: 0; } }
+.ai-stopped { margin: -8px 0 0; font-size: 11px; line-height: 16px; color: var(--text-helper); }
+
+/* მარჯვენა ღილაკი: mic → send (ნარინჯისფერი ისარი) → stop (შავი კვადრატი) */
+#aiMic { position: relative; transition: transform 140ms ease, background-color 200ms ease; }
+#aiMic img { transition: opacity 160ms ease, transform 200ms var(--ai-ease); }
+#aiMic::after {
+  content: ""; position: absolute; inset: 0; margin: auto; opacity: 0; transform: scale(0.6);
+  transition: opacity 160ms ease, transform 200ms var(--ai-ease);
+}
+#aiMic:is([data-mode="send"], [data-mode="stop"]) img { opacity: 0; transform: scale(0.6); }
+#aiMic[data-mode="send"] { background: var(--text-accent); }
+#aiMic[data-mode="send"]::after { width: 22px; height: 22px; background: url(assets/ic-send.svg) center / 22px no-repeat; opacity: 1; transform: none; }
+#aiMic[data-mode="stop"] { background: var(--text-primary); }
+#aiMic[data-mode="stop"]::after { width: 12px; height: 12px; border-radius: 3px; background: #fff; opacity: 1; transform: none; }
+
+.ai-answer { display: flex; flex-direction: column; gap: 8px; user-select: text; -webkit-user-select: text; }
+.ai-answer__title { margin: 0; font-size: 14px; line-height: 20px; font-weight: 600; letter-spacing: -0.1px; }
+.ai-answer__list { margin: 0; padding-left: 18px; font-size: 12px; line-height: 18px; font-weight: 500; }
+.ai-answer__list b { font-weight: 700; }
+.ai-next { margin-top: -4px; }
+.ai-next__label { margin: 0; font-size: 12px; line-height: 18px; font-weight: 500; color: var(--text-secondary); animation: next-label-in 420ms ease both; }
+@keyframes next-label-in { from { opacity: 0; filter: blur(3px); } }
+
+/* შემდეგი ნაბიჯები: ჩიპები მარცხნიდან კასკადად, AI აიქონი ერთხელ „ტრიალდება" */
+.ai-next .ai-chip { animation: next-in 520ms cubic-bezier(0.2, 0.8, 0.2, 1) both; animation-delay: calc(var(--next-delay) + var(--i, 0) * var(--next-stagger)); }
+@keyframes next-in { from { opacity: 0; transform: translateX(-10px) scale(0.96); filter: blur(3px); } }
+.ai-next .ai-chip img { animation: next-icon 700ms cubic-bezier(0.2, 0.8, 0.2, 1) both; animation-delay: calc(var(--next-delay) + var(--i, 0) * var(--next-stagger) + 80ms); }
+@keyframes next-icon { from { transform: rotate(-120deg) scale(0.6); opacity: 0; } }
+
+/* არჩევა (ფრომფთების სიაშიც და შემდეგ ნაბიჯებშიც) */
+.is-picking .ai-chip, .is-picking .ai-next__label { opacity: 0; transform: scale(0.96); filter: blur(3px); }
+
+/* ფრენადი ჩიპი (JS: pick → fly): ფორმას/ზომას JS ცვლის, ფერი და შიგთავსი CSS-ით გადადის */
+.ai-ghost {
+  position: absolute; z-index: 4; box-sizing: border-box; overflow: hidden; pointer-events: none;
+  border-radius: 14px; background: rgba(255, 255, 255, 0.85); box-shadow: var(--glass-ring);
+  animation: ghost-lift 160ms ease-out both;
+  transition: background-color 320ms ease 60ms, box-shadow 320ms ease 60ms;
+}
+@keyframes ghost-lift { 50% { scale: 0.95; } }
+.ai-ghost.is-flying { background: #1b1c1d; box-shadow: 0 0 0 1px #474747, 0 10px 24px rgba(0, 0, 0, 0.16); }
+.ai-ghost__chip {
+  position: absolute; left: 0; top: 0; height: 28px; display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px 4px 8px; box-sizing: border-box;
+  font-size: var(--label-xsmall-size); line-height: 16px; font-weight: 500; color: var(--text-primary); white-space: nowrap;
+  transition: opacity 200ms ease, filter 200ms ease;
+}
+.ai-ghost--next .ai-ghost__chip { padding-left: 5px; }
+.ai-ghost__chip img { width: 16px; height: 16px; }
+.ai-ghost--next .ai-ghost__chip img { width: 20px; height: 20px; }
+.ai-ghost.is-flying .ai-ghost__chip { opacity: 0; filter: blur(3px); }
+.ai-ghost__text {
+  position: absolute; left: 12px; top: 8px; white-space: normal; opacity: 0; filter: blur(3px);
+  font-size: 12px; line-height: 18px; font-weight: 500; color: var(--text-inverse-primary);
+  transition: opacity 260ms ease 240ms, filter 260ms ease 240ms;
+}
+.ai-ghost.is-flying .ai-ghost__text { opacity: 1; filter: none; }
+.ai-bubble.is-landing { opacity: 0; animation: none; }
+.is-picking .ai-chip { pointer-events: none; }
+
+/* input bar (Figma: Accessory Bar) */
+.ai__bar { flex: none; display: flex; align-items: flex-end; gap: 8px; min-height: 48px; margin: 0; }
+.ai__round {
+  flex: none; display: grid; place-items: center; width: 48px; height: 48px; padding: 0; border: 0; border-radius: 50%;
+  background: rgba(255, 255, 255, 0.6); box-shadow: var(--glass-ring); cursor: pointer; transition: transform 140ms ease;
+}
+.ai__round:active { transform: scale(0.92); }
+.ai__round img { width: 22px; height: 22px; }
+/* ველი: ფოკუსზე თეთრდება და მსუბუქი კონტური უჩნდება; ტექსტი რამდენიმე ხაზამდე იზრდება */
+.ai__field {
+  flex: 1; display: flex; align-items: center; min-width: 0; min-height: 48px; box-sizing: border-box; padding: 13px 16px;
+  border-radius: 24px; background: rgba(255, 255, 255, 0.6); box-shadow: var(--glass-ring); cursor: text;
+  transition: background-color 220ms ease, box-shadow 220ms ease;
+}
+.ai__field:focus-within { background: rgba(255, 255, 255, 0.92); box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.95), 0 3px 12px rgba(0, 0, 0, 0.06); }
+.ai__field textarea {
+  display: block; flex: 1 1 0; width: auto; min-width: 0; height: 22px; margin: 0; padding: 0; border: 0; outline: 0; background: none; resize: none;
+  font: 400 17px/22px -apple-system, "SF Pro Text", system-ui, sans-serif; color: #1a1a1a; caret-color: var(--text-accent);
+  user-select: text; -webkit-user-select: text; overflow-y: auto; scrollbar-width: none;
+}
+.ai__field textarea::-webkit-scrollbar { display: none; }
+.ai__field textarea { transition: height 180ms cubic-bezier(0.2, 0.8, 0.2, 1); }
+.ai-mirror {
+  position: fixed; left: -9999px; top: 0; height: 0; visibility: hidden; pointer-events: none; resize: none; overflow: hidden;
+  border: 0; padding: 0; font: 400 17px/22px -apple-system, "SF Pro Text", system-ui, sans-serif;
+}
+.ai__field textarea::placeholder { color: #1a1a1a; opacity: 0.9; transition: opacity 200ms ease; }
+.ai__field:focus-within textarea::placeholder { opacity: 0.35; }
+
+
+@media (prefers-reduced-motion: reduce) {
+  :root { --ai-dur: 1ms; }
+  .ai-layer *, .ai-layer *::before, .ai-layer *::after {
+    animation-duration: 1ms !important; animation-delay: 0ms !important; animation-iteration-count: 1 !important;
+    transition-duration: 1ms !important; transition-delay: 0ms !important;
+  }
+}
+
+
+/* ===== ღილაკი ↔ პანელი (clip-path morph, JS: openFromButton / closeToButton) ===== */
+.ai.no-geom, .ai.no-geom .ai__orb { transition: none !important; }
+.ai.is-revealing { box-shadow: none; }
+.ai.from-button { --open-content-delay: var(--btn-content-delay); --open-stagger: var(--btn-stagger); }
+.ai.from-button[data-state="open"] .ai__orb { animation: none; }
+/* კონტენტი ღილაკის მხრიდან (ზედა მარჯვნიდან) რბილად „ილექება" */
+.ai.from-button[data-state="open"] .ai__inner { transform-origin: 100% 0; animation: content-settle 640ms var(--btn-ease) both; animation-delay: 80ms; }
+@keyframes content-settle { from { opacity: 0; transform: scale(0.94); filter: blur(6px); } 60% { filter: none; } }
+.ai.from-button[data-state="open"] .ai__bar { animation-duration: 560ms; }
+/* დაკეცვისას: კონტენტი ჯერ ქრება, მერე ფორმა იკუმშება ღილაკში */
+.ai.is-closing-btn .ai__panel { opacity: 0; transition: opacity 180ms ease; pointer-events: none; }
+.ai.is-closing-btn .ai__inner { transform-origin: 100% 0; transform: scale(0.96); filter: blur(4px); transition: transform 260ms ease, filter 260ms ease; }
+.ai.is-closing-btn .ai__teaser { opacity: 0 !important; transition: none; }
+.ai.is-closing-btn { background: var(--glass-bg); transition: background-color 400ms ease !important; }
+
+/* send ღილაკი: გამოჩენა მსუბუქი „ამოხტომით" */
+#aiMic[data-mode="send"]::after { animation: send-pop 320ms cubic-bezier(0.3, 1.4, 0.5, 1) both; }
+@keyframes send-pop { from { transform: scale(0.4) rotate(-45deg); opacity: 0; } }
+
+/* ჩიპების ფილტრი აკრეფისას */
+.ai-chip mark { background: none; color: inherit; font-weight: 700; }
+/* აკრეფისას ჩიპები ადგილზე რჩება (პანელი არ პატარავდება): დამთხვეული მუქდება, დანარჩენები ღიავდება, მაგრამ დაჭერადი რჩება */
+.ai-chip.is-filtered { opacity: 0.38; }
+
+/* ველიდან აფრენილი ტექსტი */
+.ai-ghost--field { background: transparent; box-shadow: none; animation: none; }
+.ai-ghost--field .ai-ghost__chip { padding: 0; height: auto; white-space: normal; align-items: flex-start; }
+.ai-ghost__field { font: 400 17px/22px -apple-system, "SF Pro Text", system-ui, sans-serif; color: #1a1a1a; white-space: pre-wrap; }
+
+.safe-probe { position: fixed; left: 0; bottom: 0; width: 0; height: env(safe-area-inset-bottom); pointer-events: none; visibility: hidden; }
+
+/* ===== Siri-ს პატერნები ===== */
+/* კიდეების რბილი გაქრობა: ზემოთ/ქვემოთ დამალული კონტენტი გამჭვირვალედ „იკარგება" */
+.ai__chat { --fade-top: 0px; --fade-bottom: 0px; -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 var(--fade-top), #000 calc(100% - var(--fade-bottom)), transparent 100%); mask-image: linear-gradient(to bottom, transparent 0, #000 var(--fade-top), #000 calc(100% - var(--fade-bottom)), transparent 100%); transition: --fade-top 240ms ease, --fade-bottom 240ms ease; }
+@property --fade-top { syntax: "<length>"; initial-value: 0px; inherits: false; }
+@property --fade-bottom { syntax: "<length>"; initial-value: 0px; inherits: false; }
+/* ზედა გაქრობა გამორთულია: თავში მიმაგრებულ კითხვის bubble-ს გრადიენტად აქრობდა */
+.ai__chat.has-below { --fade-bottom: 24px; }
+
+/* 👍 / 👎 */
+.ai-feedback { display: flex; gap: 4px; margin: 2px 0 0 -6px; animation: fb-in 420ms ease both; animation-delay: 120ms; }
+@keyframes fb-in { from { opacity: 0; transform: translateY(4px); } }
+.ai-fb {
+  display: grid; place-items: center; width: 28px; height: 28px; padding: 0; border: 0; border-radius: 50%;
+  background: none; color: var(--text-helper); cursor: pointer; transition: background-color 160ms ease, color 160ms ease, transform 160ms ease;
+}
+.ai-fb:active { transform: scale(0.88); background: var(--layer-alpha-01); }
+.ai-fb--down svg { transform: scaleY(-1); }
+.ai-fb.is-on { color: var(--text-primary); }
+.ai-fb.is-on svg { fill: currentColor; animation: fb-pop 380ms cubic-bezier(0.3, 1.6, 0.5, 1) both; }
+@keyframes fb-pop { from { scale: 0.6; } }
+
+/* ===== დახვეწა ===== */
+/* შეჩერებული ფიქრი: ბოლო ნაბიჯი ნაცრისფერი წერტილით რჩება (✓-ის გარეშე) */
+.is-stopped .ai-steps__mark::before { background: var(--text-disabled); animation: none; }
+
+/* პანელი დახურულია, პასუხი კი იწერება: orb „ფიქრობს"; დასრულებისას — წერტილი */
+.ai.is-busy:not([data-state="open"]) .ai__orb { animation: orb-think 2.8s cubic-bezier(0.45, 0, 0.55, 1) infinite; }
+.ai.has-unread:not([data-state="open"])::after {
+  content: ""; position: absolute; z-index: 4; top: 5px; right: 5px; width: 8px; height: 8px; border-radius: 50%;
+  background: var(--text-accent); box-shadow: 0 0 0 2px #fff; animation: fb-pop 380ms cubic-bezier(0.3, 1.6, 0.5, 1) both;
+}
+
+/* მიკროფონი: „უსმენს" */
+.ai-listen { display: none; flex: none; align-items: center; gap: 3px; height: 22px; margin-left: 8px; }
+.is-listening .ai-listen { display: flex; }
+.ai-listen i { width: 3px; height: 6px; border-radius: 2px; background: var(--text-accent); animation: listen-bar 0.9s ease-in-out infinite; }
+.ai-listen i:nth-child(2) { animation-delay: 0.15s; }
+.ai-listen i:nth-child(3) { animation-delay: 0.3s; }
+.ai-listen i:nth-child(4) { animation-delay: 0.45s; }
+@keyframes listen-bar { 50% { height: 18px; } }
+#aiMic[data-mode="listen"] { background: rgba(255, 92, 10, 0.14); animation: listen-ring 1.4s ease-out infinite; }
+@keyframes listen-ring { from { box-shadow: var(--glass-ring), 0 0 0 0 rgba(255, 92, 10, 0.35); } to { box-shadow: var(--glass-ring), 0 0 0 10px rgba(255, 92, 10, 0); } }
+
+/* „+" მენიუ */
+.ai__bar .ai__round img { transition: transform 260ms var(--ai-ease), opacity 160ms ease; }
+.ai.is-menu .ai__bar .ai__round:first-child img { transform: rotate(45deg); }
+.ai-menu {
+  position: absolute; left: 16px; right: 16px; bottom: 76px; z-index: 5; display: flex; gap: 8px;
+  opacity: 0; transform: translateY(8px) scale(0.96); transform-origin: 24px 100%; pointer-events: none;
+  transition: opacity 180ms ease, transform 260ms var(--ai-ease);
+}
+.ai.is-menu .ai-menu { opacity: 1; transform: none; pointer-events: auto; }
+.ai-menu button {
+  display: inline-flex; align-items: center; gap: 6px; height: 36px; padding: 0 12px 0 10px; border: 0; border-radius: 18px;
+  background: rgba(255, 255, 255, 0.96); box-shadow: var(--glass-ring), 0 6px 18px rgba(0, 0, 0, 0.08);
+  font: 500 12px/18px var(--font-family-bog); color: var(--text-primary); cursor: pointer; transition: transform 140ms ease;
+}
+.ai-menu button:active { transform: scale(0.95); }
+/* მენიუს გახსნისას ჩატი ოდნავ ქრება, რომ ვარიანტები მკაფიოდ ჩანდეს */
+.ai__chat { transition: opacity 200ms ease, --fade-bottom 240ms ease; }
+.ai.is-menu .ai__chat { opacity: 0.3; }
+
+/* ===== პასუხის ბარათები ===== */
+.ai-card {
+  display: flex; align-items: center; gap: 12px; padding: 12px; border-radius: 16px;
+  background: rgba(255, 255, 255, 0.72); box-shadow: var(--glass-ring);
+  animation: card-in 520ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+@keyframes card-in { from { opacity: 0; transform: translateY(8px) scale(0.97); filter: blur(4px); } }
+.ai-card--movers, .ai-card--portfolio { flex-direction: column; align-items: stretch; gap: 8px; }
+.ai-card__main { display: flex; flex: 1 1 auto; flex-direction: column; min-width: 0; }
+.ai-card__title { font-size: 12px; line-height: 16px; font-weight: 600; color: var(--text-primary); }
+.ai-card__title i { font-style: normal; font-weight: 500; color: var(--text-helper); }
+.ai-card__value { margin-top: 2px; font-size: 20px; line-height: 28px; font-weight: 600; letter-spacing: -0.2px; }
+.ai-card__spark { flex: none; width: 124px; height: 52px; }
+.ai-card__spark { animation: spark-draw 900ms cubic-bezier(0.4, 0, 0.2, 1) 200ms both; }
+.ai-card__spark .bog-sparkline__line { stroke-width: 2; }
+@keyframes spark-draw { from { clip-path: inset(-8px 100% -8px 0); } to { clip-path: inset(-8px -8px -8px 0); } }
+.ai-card__rows { display: flex; flex-direction: column; }
+.ai-card__row { display: flex; align-items: baseline; gap: 6px; padding: 6px 0; font-size: 12px; line-height: 18px; animation: fb-in 400ms ease both; }
+.ai-card__row + .ai-card__row { border-top: 1px solid var(--border-alpha-01); }
+.ai-card__row:nth-child(2) { animation-delay: 80ms; }
+.ai-card__row:nth-child(3) { animation-delay: 160ms; }
+.ai-card__sym { font-weight: 600; }
+.ai-card__sub { flex: 1 1 auto; min-width: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; color: var(--text-helper); font-weight: 500; }
+
+/* ===== მოქმედებები ===== */
+.ai-actions { margin-top: 4px; }
+.ai-actions__row { display: flex; flex-wrap: wrap; gap: 8px; animation: fb-in 420ms ease both; }
+.ai-actions__row[hidden] { display: none; }
+.ai-confirm {
+  display: flex; flex-direction: column; gap: 10px; padding: 12px; border-radius: 16px;
+  background: rgba(255, 255, 255, 0.72); box-shadow: var(--glass-ring);
+  animation: card-in 380ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+.ai-confirm__text { display: flex; flex-direction: column; font-size: 12px; line-height: 18px; }
+.ai-confirm__text b { font-weight: 600; }
+.ai-confirm__text span { color: var(--text-helper); font-weight: 500; }
+.ai-confirm__btns { display: flex; justify-content: flex-end; gap: 8px; }
+.ai-done { display: flex; align-items: center; gap: 6px; font-size: 12px; line-height: 18px; font-weight: 600; color: var(--text-success); animation: card-in 420ms cubic-bezier(0.2, 0.8, 0.2, 1) both; }
+.ai-done + .ai-actions__row:not([hidden]), .ai-actions__row:not([hidden]) + .ai-done { margin-top: 8px; }
+
+/* ===== გვერდის მონიშვნა (Show on page): ზუსტად ის ეფექტი, რაც თავიდან აბრას ჰქონდა —
+   AI-ს ფერების გრადიენტი კიდეს შემოუვლის და ელემენტის ქვეშ რბილი იისფერ-ნარინჯისფერი ნათება ინთება და ქრება ===== */
+@property --glow-angle { syntax: "<angle>"; initial-value: 0deg; inherits: false; }
+.ai-spot { position: relative; border-radius: 14px; animation: spot-halo var(--spot-dur) ease-out both; }
+@keyframes spot-halo {
+  0%, 100% { box-shadow: 0 6px 24px rgba(138, 63, 252, 0), 0 2px 10px rgba(255, 92, 10, 0); }
+  40% { box-shadow: 0 6px 24px rgba(138, 63, 252, 0.22), 0 2px 10px rgba(255, 92, 10, 0.16); }
+}
+.ai-spot__ring {
+  position: absolute; inset: 0; z-index: 1; pointer-events: none; border-radius: inherit; padding: 1.5px;
+  background: conic-gradient(from var(--glow-angle), transparent 0deg, #ff5c0a 60deg, #e83e8c 120deg, #8a3ffc 180deg, #4589ff 240deg, transparent 300deg);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor; mask-composite: exclude;
+  animation: spot-sweep var(--spot-dur) linear both;
+}
+@keyframes spot-sweep {
+  0% { opacity: 0; --glow-angle: 0deg; }
+  15% { opacity: 1; }
+  75% { opacity: 1; }
+  100% { opacity: 0; --glow-angle: 540deg; }
+}
+
+/* ===== ჟესტით დახურვა ===== */
+.ai__grab { position: absolute; left: 0; right: 0; bottom: 0; z-index: 3; height: 18px; display: none; cursor: grab; touch-action: none; }
+.ai[data-state="open"] .ai__grab { display: block; }
+.ai__grab::after { content: ""; position: absolute; left: 50%; bottom: 5px; width: 36px; height: 4px; margin-left: -18px; border-radius: 2px; background: rgba(27, 28, 29, 0.16); transition: background-color 160ms ease, width 200ms var(--ai-ease), margin 200ms var(--ai-ease); }
+.ai.is-dragging .ai__grab::after { background: rgba(27, 28, 29, 0.32); width: 44px; margin-left: -22px; }
+.ai__bar { touch-action: none; }
+.ai__bar textarea { touch-action: auto; }
+.ai__chat.no-scroll { touch-action: none; }
+.ai.is-dragging { cursor: grabbing; }
+.ai.is-dragging .ai__panel { opacity: calc(1 - var(--drag, 0) * 1.1); }
+.ai-layer:has(.ai.is-dragging) .ai-backdrop { opacity: calc(1 - var(--drag, 0)); transition: none; }
+
+/* ===== აბრა საუბრის დროს ===== */
+.ai__convo { position: absolute; left: 44px; right: 16px; top: 6px; display: none; flex-direction: column; text-align: left; opacity: 0; transition: opacity 160ms ease; }
+.ai.is-chat .ai__convo { display: flex; }
+.ai.is-chat[data-state="teaser"] .ai__convo { opacity: 1; transition: opacity 260ms ease 220ms; }
+.ai.is-chat .ai__teaser-text { display: none; }
+.ai__convo small { font-size: 10px; line-height: 14px; font-weight: 500; color: var(--text-helper); }
+.ai__convo b { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; font-size: 12px; line-height: 18px; font-weight: 500; color: var(--text-primary); }
+.ai__convo-busy { display: none; }
+.ai.is-busy .ai__convo-idle { display: none; }
+.ai.is-busy .ai__convo-busy {
+  display: inline; background: linear-gradient(100deg, var(--text-helper) 30%, #c9cbce 50%, var(--text-helper) 70%);
+  background-size: 250% 100%; -webkit-background-clip: text; background-clip: text; color: transparent;
+  animation: shimmer 2s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+}
+/* ლოგო ფასის ბარათზე */
+.ai-card > .bog-media-circle { flex: none; align-self: flex-start; }
+
+/* ===== კონტექსტური შესვლა ===== */
+.screen { -webkit-touch-callout: none; }
+.screen__body .bog-list-item, .chart, .price { transition: transform 260ms cubic-bezier(0.2, 0.8, 0.2, 1); }
+.ctx-pressing { transform: scale(0.965); }
+
+/* მენიუ */
+.ctx-back { position: absolute; inset: 0; pointer-events: none; background: rgba(17, 17, 17, 0.06); opacity: 0; transition: opacity 200ms ease; }
+.ai-layer.has-pop .ctx-back { pointer-events: auto; opacity: 1; }
+.ctx-pop {
+  position: absolute; left: 16px; z-index: 30; display: flex; flex-direction: column; min-width: 232px; max-width: calc(100% - 32px); padding: 6px; box-sizing: border-box;
+  border-radius: 20px; background: rgba(250, 250, 252, 0.84); backdrop-filter: blur(30px) saturate(190%); -webkit-backdrop-filter: blur(30px) saturate(190%);
+  box-shadow: var(--panel-shadow);
+  opacity: 0; transform: scale(0.88); pointer-events: none; transition: opacity 160ms ease, transform 160ms ease;
+}
+.ai-layer.has-pop .ctx-pop { opacity: 1; transform: none; pointer-events: auto; transition: opacity 200ms ease, transform 380ms cubic-bezier(0.3, 1.3, 0.5, 1); }
+.ctx-pop button { border: 0; background: none; text-align: left; color: var(--text-primary); cursor: pointer; border-radius: 14px; transition: background-color 140ms ease; }
+.ctx-pop button:active { background: var(--layer-alpha-02); }
+.ctx-pop__head { display: flex; align-items: center; gap: 8px; padding: 9px 10px; font: 600 13px/18px var(--font-family-bog); }
+.ctx-pop__head img { width: 22px; height: 22px; }
+.ctx-pop__q { position: relative; padding: 10px 10px 10px 40px; font: 500 12px/18px var(--font-family-bog); }
+.ctx-pop__q::before { content: ""; position: absolute; left: 10px; right: 10px; top: 0; height: 1px; background: var(--border-alpha-01); }
+.ctx-pop__q::after { content: ""; position: absolute; left: 13px; top: 11px; width: 16px; height: 16px; background: url(assets/ic-ai-outline.svg) center / 16px no-repeat; opacity: 0.8; }
+
+/* კონტექსტის ჩიპი ველში */
+.ai__field { flex-wrap: wrap; }
+.ai-ctx { flex: 0 0 calc(100% + 6px); display: flex; margin: -3px 0 8px -6px; animation: card-in 380ms cubic-bezier(0.2, 0.8, 0.2, 1) both; }
+.ai-ctx__chip { display: inline-flex; align-items: center; gap: 6px; max-width: 100%; height: 28px; padding: 0 4px 0 5px; border-radius: 14px; background: rgba(108, 112, 117, 0.1); font: 500 12px/18px var(--font-family-bog); color: var(--text-primary); }
+.ai-ctx__chip img { flex: none; width: 18px; height: 18px; border-radius: 50%; object-fit: cover; }
+.ai-ctx__chip b { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; font-weight: 600; }
+.ai-ctx__chip button { flex: none; width: 20px; height: 20px; padding: 0; border: 0; border-radius: 50%; background: rgba(108, 112, 117, 0.16) url(../../bog-ui/icons/close-12.svg) center / 10px no-repeat; cursor: pointer; }
+
+/* კონტექსტის ტეგი კითხვის bubble-ში */
+.ai-bubble__ctx { display: block; width: fit-content; max-width: 100%; margin-bottom: 4px; padding: 0 8px; border-radius: 9px; background: rgba(255, 255, 255, 0.16); font-size: 10px; line-height: 18px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+
+/* სექციაზე მორგებული ფრომფთი აბრაზე — ოდნავ მუქი ტექსტი, რომ ჩვეულებრივი როტაციისგან გამოირჩეოდეს */
+.ai.is-suggest .ai__teaser-text { color: var(--text-secondary); }
+
+.ai__field textarea { min-width: 50%; } /* ჩიპის გვერდით არ ჩაიკუმშოს */
+
+/* ===== სრული ეკრანი ===== */
+.ai[data-state="open"].is-full { left: 0; top: 0; width: 100%; border-radius: 0; background: rgba(248, 248, 250, 0.96); box-shadow: none; }
+/* პანელის შიგთავსი იმავე სიგანეზე რჩება (8px კიდეებიდან), რომ გაშლისას ტექსტი არ გადაეწყოს */
+.ai__panel { transition: opacity 120ms ease, left var(--open-dur) var(--open-ease), padding var(--open-dur) var(--open-ease); }
+.ai.is-full .ai__panel { left: 8px; padding-top: calc(var(--status-h) + 4px); padding-bottom: max(16px, env(safe-area-inset-bottom)); }
+.ai[data-state="open"] .ai__panel { transition: left var(--open-dur) var(--open-ease), padding var(--open-dur) var(--open-ease); }
+
+.ai__head { display: none; flex: none; grid-template-columns: 36px 36px 1fr 36px 36px; align-items: center; gap: 6px; height: 44px; margin: 0 -4px; }
+.ai.is-full .ai__head { display: grid; animation: fb-in 420ms ease 120ms both; }
+.ai__head-title { display: inline-flex; align-items: center; gap: 6px; font-size: 14px; line-height: 20px; font-weight: 600; }
+.ai__head-title img { width: 22px; height: 22px; }
+.ai__head-btn, .ai__expand {
+  display: grid; place-items: center; padding: 0; border: 0; border-radius: 50%; color: var(--text-primary); cursor: pointer;
+  background: rgba(255, 255, 255, 0.7); box-shadow: var(--glass-ring); transition: transform 140ms ease;
+}
+.ai__head-btn:active, .ai__expand:active { transform: scale(0.9); }
+.ai__head-btn { width: 36px; height: 36px; }
+.ai__expand { position: absolute; z-index: 3; top: 12px; left: 12px; width: 30px; height: 30px; display: none; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
+.ai__expand svg { width: 15px; height: 15px; }
+.ai.is-chat[data-state="open"]:not(.is-full) .ai__expand { display: grid; animation: fb-in 420ms ease 300ms both; }
+.ai.is-full .ai__grab { display: none; }
+
+/* ===== ხმის რეჟიმი ===== */
+.ai-voice { --lvl: 0; display: none; flex: none; flex-direction: column; gap: 10px; }
+.ai.is-voice .ai-voice { display: flex; animation: bar-in 420ms var(--open-ease) both; }
+.ai.is-voice .ai__bar { display: none; }
+.ai-voice__text { display: flex; align-items: flex-end; justify-content: center; min-height: 44px; margin: 0; padding: 0 8px; text-align: center; font: 400 17px/22px -apple-system, "SF Pro Text", system-ui, sans-serif; color: #1a1a1a; }
+.ai-voice__hint {
+  background: linear-gradient(100deg, var(--text-helper) 30%, #c9cbce 50%, var(--text-helper) 70%); background-size: 250% 100%;
+  -webkit-background-clip: text; background-clip: text; color: transparent; animation: shimmer 2s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+}
+.ai-voice.has-words .ai-voice__hint { display: none; }
+.ai-voice__row { display: flex; align-items: center; gap: 8px; height: 56px; }
+.ai-voice__row .ai__round { color: var(--text-primary); }
+.ai-voice__send { background: var(--text-accent); transition: opacity 200ms ease, transform 140ms ease; }
+.ai-voice__send:disabled { opacity: 0.35; }
+.ai-voice__wave { flex: 1 1 auto; display: flex; align-items: center; justify-content: center; gap: 12px; min-width: 0; }
+.ai-voice__bars { display: flex; align-items: center; gap: 3px; height: 36px; }
+.ai-voice__bars i { width: 3px; height: calc(4px + var(--h, 0) * 44px); max-height: 36px; border-radius: 2px; background: var(--text-secondary); opacity: calc(0.35 + var(--lvl) * 0.65); }
+/* orb: ხმის დონეზე იზრდება; უკან AI-ს ფერების ნათება ძლიერდება და ფართოვდება */
+.ai-voice__orb { position: relative; flex: none; width: 48px; height: 48px; }
+.ai-voice__orb img { position: relative; display: block; width: 100%; height: 100%; transform: scale(calc(1 + var(--lvl) * 0.2)); }
+.ai-voice__orb i {
+  position: absolute; inset: -8px; border-radius: 50%; filter: blur(10px);
+  background: conic-gradient(from 0deg, #ff5c0a, #e83e8c, #8a3ffc, #4589ff, #ff5c0a);
+  opacity: calc(0.18 + var(--lvl) * 0.6); transform: scale(calc(0.8 + var(--lvl) * 0.55)); animation: glow-spin 4s linear infinite;
+}
+
+/* ===== პასუხის მოქმედებები ===== */
+.ai-feedback { align-items: center; gap: 2px; }
+.ai-fb__sep { width: 1px; height: 14px; margin: 0 5px; background: var(--border-alpha-01); }
+.ai-fb.is-done { color: var(--text-success); }
+.ai-fb.is-done svg { animation: fb-pop 380ms cubic-bezier(0.3, 1.6, 0.5, 1) both; }
+.ai-turn:not(:last-child) .ai-fb:is([data-act="regen"], [data-act="edit"]) { display: none; }
+.ai-turn > .ai-feedback { margin-top: -8px; }
+/* რედაქტირება */
+.ai-turn.is-editing .ai-bubble { box-shadow: 0 0 0 2px rgba(255, 92, 10, 0.55); transition: box-shadow 200ms ease; }
+.ai-turn.is-editing > :not(.ai-bubble) { opacity: 0.45; transition: opacity 200ms ease; }
+.ai-edit .ai-ctx__chip svg { flex: none; width: 14px; height: 14px; margin-left: 3px; color: var(--text-accent); }
+
+/* ===== წყაროები ===== */
+.ai-cite {
+  display: inline-grid; place-items: center; min-width: 15px; height: 15px; margin-left: 4px; padding: 0 4px; box-sizing: border-box; border: 0; border-radius: 8px;
+  background: rgba(108, 112, 117, 0.14); color: var(--text-helper); font: 600 9px/15px var(--font-family-bog); vertical-align: 1px; cursor: pointer;
+  animation: fb-in 300ms ease both; transition: background-color 160ms ease, color 160ms ease;
+}
+.ai-cite:active { background: rgba(108, 112, 117, 0.3); color: var(--text-primary); }
+.ai-sources { display: flex; flex-direction: column; animation: fb-in 420ms ease both; }
+.ai-sources__toggle {
+  align-self: flex-start; display: inline-flex; align-items: center; gap: 6px; height: 28px; padding: 0 8px 0 5px; border: 0; border-radius: 14px;
+  background: rgba(108, 112, 117, 0.08); color: var(--text-secondary); font: 500 11px/16px var(--font-family-bog); cursor: pointer; transition: background-color 160ms ease;
+}
+.ai-sources__toggle:active { background: rgba(108, 112, 117, 0.16); }
+.ai-sources__toggle i { width: 12px; height: 12px; background: currentColor; -webkit-mask: url(../../bog-ui/icons/chevron-right.svg) center / 12px no-repeat; mask: url(../../bog-ui/icons/chevron-right.svg) center / 12px no-repeat; transition: transform 260ms var(--ai-ease); }
+.ai-sources.is-open .ai-sources__toggle i { transform: rotate(90deg); }
+.ai-sources__stack { display: inline-flex; }
+.ai-sources__stack .ai-src-ico + .ai-src-ico { margin-left: -6px; }
+.ai-src-ico { flex: none; display: grid; place-items: center; width: 20px; height: 20px; border-radius: 50%; box-shadow: 0 0 0 1.500px #f8f8fa; background: #e9eefb; color: #4589ff; }
+.ai-src-ico[data-kind="news"] { background: #efe7fd; color: #8a3ffc; }
+.ai-src-ico[data-kind="account"] { background: #ffece2; color: #ff5c0a; }
+.ai-src-ico[data-kind="help"] { background: #e1f3e6; color: #198038; }
+.ai-sources__list { display: grid; grid-template-rows: 0fr; opacity: 0; transition: grid-template-rows 360ms var(--ai-ease), opacity 240ms ease; }
+.ai-sources__list > div { overflow: hidden; min-height: 0; }
+.ai-sources.is-open .ai-sources__list { grid-template-rows: 1fr; opacity: 1; }
+.ai-source { display: flex; align-items: center; gap: 8px; margin-top: 6px; padding: 6px 8px; border-radius: 12px; }
+.ai-source:first-child { margin-top: 8px; }
+.ai-source__n { flex: none; width: 12px; font: 600 10px/16px var(--font-family-bog); color: var(--text-helper); text-align: center; }
+.ai-source__text { display: flex; flex-direction: column; min-width: 0; font-size: 12px; line-height: 16px; }
+.ai-source__text b { font-weight: 600; }
+.ai-source__text span { color: var(--text-helper); font-size: 11px; font-weight: 500; }
+.ai-source.is-hit { animation: source-hit 1400ms ease both; }
+@keyframes source-hit { 0%, 100% { background-color: transparent; } 25%, 60% { background-color: rgba(108, 112, 117, 0.12); } }
+
+/* ===== ახალი საუბარი და ისტორია ===== */
+.ai__head-title { justify-self: center; }
+.no-anim, .no-anim * { animation: none !important; }
+/* ისტორიის ღილაკი: ფრომფთების ხედში — ზედა მარჯვნივ; საუბრისას — გაშლის ღილაკის გვერდით */
+.ai__hist {
+  position: absolute; z-index: 3; top: 12px; right: 12px; width: 30px; height: 30px; display: none; place-items: center; padding: 0; border: 0; border-radius: 50%;
+  color: var(--text-primary); background: rgba(255, 255, 255, 0.7); box-shadow: var(--glass-ring); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+  cursor: pointer; transition: transform 140ms ease;
+}
+.ai__hist svg { width: 16px; height: 16px; }
+.ai__hist:active { transform: scale(0.9); }
+.ai[data-state="open"]:not(.is-full) .ai__hist { display: grid; animation: fb-in 420ms ease 300ms both; }
+.ai.is-chat .ai__hist { right: auto; left: 48px; }
+
+.ai-history {
+  position: absolute; inset: 0; z-index: 6; display: flex; flex-direction: column; gap: 12px; padding: 12px 16px 16px; box-sizing: border-box; border-radius: inherit;
+  background: #f8f8fa; opacity: 0; transform: translateY(8px); pointer-events: none; transition: opacity 180ms ease, transform 180ms ease;
+}
+.ai.is-history .ai-history { opacity: 1; transform: none; pointer-events: auto; transition: opacity 220ms ease, transform 320ms var(--ai-ease); }
+.ai.is-full .ai-history { padding-top: calc(var(--status-h) + 8px); }
+.ai-history__head { flex: none; display: flex; align-items: center; gap: 8px; height: 36px; }
+.ai-history__head b { flex: 1 1 auto; font-size: 16px; line-height: 20px; font-weight: 600; }
+.ai-history__list { flex: 1 1 auto; min-height: 0; overflow-y: auto; scrollbar-width: none; display: flex; flex-direction: column; gap: 4px; margin: 0 -8px; }
+.ai-history__list::-webkit-scrollbar { display: none; }
+.ai-history__row {
+  flex: none; display: flex; flex-direction: column; gap: 1px; padding: 9px 12px; border: 0; border-radius: 14px; background: none; text-align: left; cursor: pointer;
+  font-family: var(--font-family-bog); color: var(--text-primary); transition: background-color 140ms ease;
+}
+.ai.is-history .ai-history__row { animation: fb-in 360ms ease both; animation-delay: calc(var(--i) * 40ms + 60ms); }
+.ai-history__row:active { background: var(--layer-alpha-02); }
+.ai-history__row.is-current { background: rgba(108, 112, 117, 0.08); }
+.ai-history__row b { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; font-size: 13px; line-height: 18px; font-weight: 600; }
+.ai-history__row span { font-size: 11px; line-height: 16px; font-weight: 500; color: var(--text-helper); }
+.ai-history__row.is-current span { color: var(--text-accent); }
+.ai-history__empty { margin: 24px 0; text-align: center; font-size: 12px; color: var(--text-helper); }
+
+/* ===== შეცდომები ===== */
+.ai-error { animation: card-in 420ms cubic-bezier(0.2, 0.8, 0.2, 1) both; border-radius: 16px; }
+.ai-notice { margin-bottom: 2px; }
+.ai-status.is-error .ai-orb img { filter: grayscale(1) opacity(0.55); transition: filter 400ms ease; }
+.ai-status.is-error .ai-status__text { color: var(--text-error); }
+.ai-status.is-error .ai-status__chev { opacity: 0; }
+.ai-offline {
+  display: none; align-items: center; gap: 6px; margin: -6px 0 -6px 4px; font-size: 11px; line-height: 16px; font-weight: 500; color: var(--text-helper);
+}
+.ai-offline span { width: 6px; height: 6px; border-radius: 50%; background: var(--text-error); }
+.ai.is-offline .ai-offline { display: flex; animation: fb-in 300ms ease both; }
+
+/* ===== ქერექთერი (open-bot-avatar, avatar.js): თავისი მოძრაობა აქვს, ამიტომ ძველი „სუნთქვა"/ბრუნვა აღარ სჭირდება ===== */
+span.ai__orb { display: block; }
+.ai[data-state="idle"] span.ai__orb { animation: none; }
+.ai-orb .ai-av { position: relative; z-index: 1; display: block; width: 100%; height: 100%; }
+.ai-status.is-error .ai-orb .ai-av { filter: grayscale(1) opacity(0.55); transition: filter 400ms ease; }
+/* ფიქრისას ქერექთერი ტრიალებს (ჩატის სტატუსში; დახურულ ღილაკზე — უკვე .is-busy-ით) */
+.is-thinking .ai-orb .ai-av { animation: orb-think 2.8s cubic-bezier(0.45, 0, 0.55, 1) infinite; }
+/* ქერექთერი: ბრუნვა ახლა 3D-ში (avatar.js spin), ამიტომ CSS ბრუნვა აღარ სჭირდება */
+.is-thinking .ai-orb .ai-av, .ai.is-busy:not([data-state="open"]) span.ai__orb { animation: none; }
+/* idle: მსუბუქი ლევიტაცია (translate — transform-ს არ ეჯახება, რომელსაც გაშლის ანიმაციები იყენებს) */
+span.ai__orb > div { animation: av-float 3.4s ease-in-out infinite; }
+@keyframes av-float { 0%, 100% { translate: 0 0.6px; } 50% { translate: 0 -2.2px; } }
+@media (prefers-reduced-motion: reduce) { span.ai__orb > div { animation: none; } }
+/* ფიქრისას ქერექთერის უკან ნათება აღარ ჩანს */
+.is-thinking .ai-orb__glow { opacity: 0; animation: none; }
+
+/* ===== საუბრის აბრა: შეკეცვა და ჩამოწევა ===== */
+.ai__collapse {
+  position: absolute; z-index: 3; right: 6px; top: 8px; width: 28px; height: 28px; padding: 0; border: 0; border-radius: 50%;
+  background: rgba(108, 112, 117, 0.1) url(../../bog-ui/icons/close-12.svg) center / 10px no-repeat; cursor: pointer;
+  opacity: 0; pointer-events: none; transform: scale(0.6); transition: opacity 200ms ease, transform 260ms var(--ai-ease);
+}
+.ai.is-chat[data-state="teaser"]:not(.is-proactive) .ai__collapse { opacity: 1; pointer-events: auto; transform: none; transition-delay: 300ms; }
+.ai__collapse:active { background-color: rgba(108, 112, 117, 0.22); }
+.ai.is-chat .ai__convo { right: 40px; }
+/* ჩამოწევისას: ტრანზიციები გამორთულია (თითს მიჰყვება), ქვემოთ ჩნდება სახელური-მინიშნება */
+.ai.is-pulling { transition: none !important; }
+.ai[data-state="teaser"]::before {
+  content: ""; position: absolute; left: 50%; bottom: 5px; width: 32px; height: 4px; margin-left: -16px; border-radius: 2px;
+  background: rgba(27, 28, 29, 0.18); opacity: calc(var(--pull, 0) * 1.2); transform: scaleX(calc(0.6 + var(--pull, 0) * 0.4)); pointer-events: none;
+}
+.ai__teaser { touch-action: none; }

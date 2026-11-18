@@ -1,0 +1,57 @@
+/* ==========================================================================
+   BOG UI — Shared primitives used by several components
+   ========================================================================== */
+
+/* Status / notification dot — Figma "Notification Badge" (Type=Dot, Status=Negative).
+   Position is set by the component that contains it. */
+.bog-badge-dot {
+  position: absolute;
+  z-index: 1;
+  width: 8px;
+  height: 8px;
+  box-sizing: border-box;
+  border-radius: var(--radius-full);
+  background: var(--status-error-02);
+  box-shadow: 0 0 0 var(--border-width-default) var(--border-border-03);
+  pointer-events: none;
+}
+
+/* Figma "Skeleton Default": skeleton fill + a 64px light wave sweeping across */
+.bog-skeleton-wave {
+  position: relative;
+  overflow: hidden;
+  background: var(--support-skeleton);
+}
+.bog-skeleton-wave::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: -64px;
+  width: 64px;
+  background: linear-gradient(90deg, transparent 0%, var(--layer-alpha-02) 48.4%, transparent 100%);
+  animation: bog-shimmer 1.4s ease-in-out infinite;
+}
+
+@keyframes bog-spin { to { transform: rotate(360deg); } }
+@keyframes bog-shimmer {
+  from { left: -64px; }
+  to   { left: 100%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .bog-skeleton-wave::after { animation: none; }
+}
+
+/* Text for screen readers only — on screen it takes no space (e.g. "Amount hidden") */
+.bog-visually-hidden {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}

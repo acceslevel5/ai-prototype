@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Accordion — BOG UI</title>
+<link rel="stylesheet" href="../bog-ui.css">
+<link rel="stylesheet" href="docs.css">
+<script src="theme.js"></script>
+<script src="../bog-ui.js" defer></script>
+<script src="components.js" defer></script>
+<style>.dx small{display:block;margin:0 0 8px;color:var(--docs-muted);font-size:11px}.dx{display:grid;gap:24px}.dx-panel{font-family:var(--font-family-bog);font-size:14px;line-height:20px;color:var(--text-primary);padding:16px 4px}</style>
+</head>
+<body>
+<div class="docs">
+  <aside class="docs-nav">
+    <a class="docs-nav__brand" href="../index.html">BOG UI</a>
+    <nav id="bog-nav" data-current="accordion"></nav>
+  </aside>
+  <main class="docs-main">
+    <header><h1>Accordion</h1><a class="figma" id="figma-link" href="#" target="_blank" rel="noopener">Open in Figma ↗</a></header>
+    <p class="lead">Groups of detail that users open when they need them — fees, terms, the parts of a statement. Each header is a row with a title (one to three lines), an optional icon on the left and a value on the right; the chevron turns and the content opens under it, pushing the rest down. Single mode keeps one open at a time. In progress in Figma.</p>
+    <h2>Usage</h2>
+    <pre><code>&lt;div class="bog-accordion"&gt;                          &lt;!-- data-single: one open at a time --&gt;
+  &lt;details class="bog-accordion__item"&gt;
+    &lt;summary class="bog-accordion__header"&gt;
+      &lt;span class="bog-accordion__titles"&gt;&lt;span class="bog-accordion__title"&gt;Fees and limits&lt;/span&gt;&lt;/span&gt;
+      &lt;span class="bog-accordion__value"&gt;12.00 ₾&lt;/span&gt;   &lt;!-- optional --&gt;
+    &lt;/summary&gt;
+    &lt;div class="bog-accordion__content"&gt;&lt;p&gt;…&lt;/p&gt;&lt;/div&gt;
+  &lt;/details&gt;
+&lt;/div&gt;</code></pre>
+    <h2>Try it</h2>
+    <div class="panel"><div class="bog-accordion" data-single style="width:343px">
+      <details class="bog-accordion__item" open><summary class="bog-accordion__header"><span class="bog-accordion__titles"><span class="bog-accordion__title">Fees and limits</span></span></summary><div class="bog-accordion__content"><p>The monthly fee is charged on the 1st. Cash withdrawals at Bank of Georgia ATMs are free.</p></div></details>
+      <details class="bog-accordion__item"><summary class="bog-accordion__header"><span class="bog-accordion__titles"><span class="bog-accordion__title">Interest</span></span></summary><div class="bog-accordion__content"><p>The monthly fee is charged on the 1st. Cash withdrawals at Bank of Georgia ATMs are free.</p></div></details>
+      <details class="bog-accordion__item"><summary class="bog-accordion__header"><span class="bog-accordion__titles"><span class="bog-accordion__title">Cashback</span></span></summary><div class="bog-accordion__content"><p>The monthly fee is charged on the 1st. Cash withdrawals at Bank of Georgia ATMs are free.</p></div></details>
+      <details class="bog-accordion__item"><summary class="bog-accordion__header"><span class="bog-accordion__titles"><span class="bog-accordion__title">Closing the account</span></span></summary><div class="bog-accordion__content"><p>The monthly fee is charged on the 1st. Cash withdrawals at Bank of Georgia ATMs are free.</p></div></details>
+    </div></div>
+    <h2>Header layouts</h2>
+    <div class="panel"><div class="bog-accordion" style="width:343px">
+      <details class="bog-accordion__item"><summary class="bog-accordion__header"><span class="bog-accordion__titles"><span class="bog-accordion__title">1 Line</span></span></summary><div class="bog-accordion__content"><p>The monthly fee is charged on the 1st. Cash withdrawals at Bank of Georgia ATMs are free.</p></div></details>
+      <details class="bog-accordion__item"><summary class="bog-accordion__header"><span class="bog-accordion__titles"><span class="bog-accordion__title">2 Line</span><span class="bog-accordion__secondary">Secondary text</span></span></summary><div class="bog-accordion__content"><p>The monthly fee is charged on the 1st. Cash withdrawals at Bank of Georgia ATMs are free.</p></div></details>
+      <details class="bog-accordion__item"><summary class="bog-accordion__header"><span class="bog-accordion__titles"><span class="bog-accordion__subtitle">Subtitle</span><span class="bog-accordion__title">2 Line - Reverse</span></span></summary><div class="bog-accordion__content"><p>The monthly fee is charged on the 1st. Cash withdrawals at Bank of Georgia ATMs are free.</p></div></details>
+      <details class="bog-accordion__item"><summary class="bog-accordion__header"><span class="bog-accordion__titles"><span class="bog-accordion__subtitle">Subtitle</span><span class="bog-accordion__title">3 Line</span><span class="bog-accordion__secondary">Secondary text</span></span></summary><div class="bog-accordion__content"><p>The monthly fee is charged on the 1st. Cash withdrawals at Bank of Georgia ATMs are free.</p></div></details>
+      <details class="bog-accordion__item"><summary class="bog-accordion__header"><span class="bog-accordion__lead"><span class="bog-icon-holder" style="width:32px;height:32px"></span></span><span class="bog-accordion__titles"><span class="bog-accordion__title">Left slot</span><span class="bog-accordion__secondary">Icon, avatar or checkbox</span></span></summary><div class="bog-accordion__content"><p>The monthly fee is charged on the 1st. Cash withdrawals at Bank of Georgia ATMs are free.</p></div></details>
+      <details class="bog-accordion__item"><summary class="bog-accordion__header"><span class="bog-accordion__titles"><span class="bog-accordion__title">Right slot</span></span><span class="bog-accordion__value">12.00 ₾</span></summary><div class="bog-accordion__content"><p>The monthly fee is charged on the 1st. Cash withdrawals at Bank of Georgia ATMs are free.</p></div></details>
+      <details class="bog-accordion__item" aria-disabled="true"><summary class="bog-accordion__header"><span class="bog-accordion__titles"><span class="bog-accordion__title">Disabled</span></span><span class="bog-accordion__value">12.00 ₾</span></summary><div class="bog-accordion__content"><p>The monthly fee is charged on the 1st. Cash withdrawals at Bank of Georgia ATMs are free.</p></div></details>
+    </div></div>
+    <h2>Skeleton</h2>
+    <div class="panel"><div class="bog-accordion" data-state="skeleton" style="width:343px">
+      <details class="bog-accordion__item"><summary class="bog-accordion__header"><span class="bog-accordion__titles"><span class="bog-accordion__title">Title</span></span></summary><div class="bog-accordion__content"><p>The monthly fee is charged on the 1st. Cash withdrawals at Bank of Georgia ATMs are free.</p></div></details><details class="bog-accordion__item"><summary class="bog-accordion__header"><span class="bog-accordion__titles"><span class="bog-accordion__title">Title</span></span></summary><div class="bog-accordion__content"><p>The monthly fee is charged on the 1st. Cash withdrawals at Bank of Georgia ATMs are free.</p></div></details><details class="bog-accordion__item"><summary class="bog-accordion__header"><span class="bog-accordion__titles"><span class="bog-accordion__title">Title</span></span></summary><div class="bog-accordion__content"><p>The monthly fee is charged on the 1st. Cash withdrawals at Bank of Georgia ATMs are free.</p></div></details>
+    </div></div>
+  </main>
+</div>
+</body>
+</html>

@@ -1,0 +1,318 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BOG UI — Mobile components</title>
+<link rel="stylesheet" href="bog-ui.css">
+<link rel="stylesheet" href="docs/docs.css">
+<script src="docs/theme.js"></script>
+<script src="docs/components.js"></script>
+<script src="bog-ui.js" defer></script>   <!-- the library's motion, for the hover demos on motion tiles -->
+</head>
+<body>
+  <header class="docs-top" id="bog-top" data-current="components"></header>
+  <div class="home">
+    <h1>Mobile components</h1>
+    <p class="lead">HTML/CSS components coded from the Figma file <em>Mobile Components – SwiftUI – Compose</em>. Pick a component to see every variant and the markup to copy into a prototype. Components marked with <span class="docs-m" style="display:inline-flex;margin:0 2px;vertical-align:-3px" role="img" aria-label="the motion mark"><svg class="docs-motion-icon" viewBox="0 0 22 11" aria-hidden="true" focusable="false"><circle cx="5.5" cy="5.5" r="4.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-opacity="0.3"/><circle cx="11" cy="5.5" r="4.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-opacity="0.6"/><circle cx="16.5" cy="5.5" r="4.5" fill="currentColor" stroke="currentColor" stroke-width="1.6"/></svg></span> also carry their motion guidelines.</p>
+
+    <section class="news" aria-labelledby="news-title">
+      <div class="news__head">
+        <h2 id="news-title">What's new</h2>
+        <div class="news__nav" id="news-nav">
+          <button type="button" class="news__arrow" data-dir="-1" aria-label="Previous updates" disabled><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M10 3 5 8l5 5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+          <button type="button" class="news__arrow" data-dir="1" aria-label="Next updates"><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m6 3 5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+        </div>
+      </div>
+      <div class="news__grid" id="news"></div>
+    </section>
+
+    <div class="home__bar">
+      <h2 class="home__section">All components</h2>
+      <div class="home__tools">
+        <input type="search" class="docs-search" id="search" placeholder="Search components" aria-label="Search components" autocomplete="off">
+        <div class="docs-sort" data-sort-switch id="sort"></div>
+      </div>
+    </div>
+    <div class="bog-chip-group home__cats" id="cats" role="group" aria-label="Categories" data-wrap></div>
+    <div class="cards" id="cards"></div>
+
+    <section class="setup">
+      <h2>Use in a prototype</h2>
+      <pre><code>&lt;link rel="stylesheet" href="bog-ui/bog-ui.css"&gt;
+&lt;script src="bog-ui/bog-ui.js" defer&gt;&lt;/script&gt;</code></pre>
+    </section>
+  </div>
+<script>
+  // All components, sorted by name or by last update (shared with the sidebar), filtered by the search
+  // and by the category chips.
+  const search = document.getElementById("search"), catsEl = document.getElementById("cats");
+  const CAT_KEY = "bog-ui-category";
+  let cat = (function () { try { return sessionStorage.getItem(CAT_KEY) || "all"; } catch (e) { return "all"; } })();
+  if (cat !== "all" && !BOG_CATEGORIES.some(function (k) { return k.id === cat; })) cat = "all";
+  const card = function (c) {
+    return '<a class="card" href="docs/' + c.page + '" data-id="' + c.id + '">' +
+      '<div class="card__preview" aria-hidden="true">' + c.preview.replace(/ASSETS\//g, "assets/") + (c.isNew ? window.BOG_NEW_BADGE : "") + (c.motion ? window.BOG_MOTION_BADGE : "") + '</div>' +
+      '<div class="card__body"><h2>' + c.name + '</h2><p>' + c.desc + '</p>' +
+      '<time class="card__date" datetime="' + c.updated + '">Updated ' + BOG_DATE(c.updated) + '</time></div></a>';
+  };
+  function renderChips(matching) {
+    const count = function (id) { return matching.filter(function (c) { return id === "all" || c.category === id; }).length; };
+    const chip = function (id, name) {
+      const n = count(id);
+      return '<button type="button" class="bog-chip" data-type="filter" data-cat="' + id + '" aria-pressed="' + (cat === id) + '"' + (n || id === "all" || cat === id ? "" : " disabled") + '>' + name + '<span class="home__cat-count">' + n + '</span></button>';
+    };
+    catsEl.innerHTML = chip("all", "All") + BOG_CATEGORIES.filter(function (k) { return k.items.length || count(k.id); }).map(function (k) { return chip(k.id, k.name); }).join("");
+  }
+  function renderCards() {
+    document.getElementById("sort").innerHTML = BOG_SORT.html();
+    const matching = BOG_SORT.list(BOG_SORT.get()).filter(function (c) { return BOG_MATCH(c, search.value); });
+    renderChips(matching);
+    const list = matching.filter(function (c) { return cat === "all" || c.category === cat; });
+    if (!list.length) {
+      const k = BOG_CATEGORIES.find(function (x) { return x.id === cat; });
+      document.getElementById("cards").innerHTML = '<p class="cards__empty">No components match “' + search.value.replace(/[&<>"]/g, "") + '”' + (k ? " in " + k.name : "") + '</p>';
+      return;
+    }
+    document.getElementById("cards").innerHTML = list.map(card).join("");
+    sizeCards();
+  }
+  // Masonry: each tile is as tall as its component — content height plus even padding,
+  // in 4px grid rows (the 12px gap is the tile's bottom margin).
+  const ROW = 4, GAP = 12, PAD = 44, MIN = 168;
+  function sizeCards() {
+    document.querySelectorAll("#cards .card").forEach(function (c) {
+      const p = c.querySelector(".card__preview");
+      let top = Infinity, bottom = -Infinity;
+      [].forEach.call(p.children, function (k) {
+        if (k.matches(".docs-new-badge, .docs-motion-badge")) return;
+        const r = k.getBoundingClientRect();
+        if (!r.height) return;
+        top = Math.min(top, r.top); bottom = Math.max(bottom, r.bottom);
+      });
+      const h = Math.max(MIN, (bottom > top ? bottom - top : 0) + 2 * PAD);
+      c.style.setProperty("--rows", Math.ceil((h + GAP) / ROW));
+    });
+  }
+  let sizeTimer = 0;
+  window.addEventListener("resize", function () { clearTimeout(sizeTimer); sizeTimer = setTimeout(sizeCards, 120); });
+  document.getElementById("cards").addEventListener("load", sizeCards, true);   // images inside previews
+  if (document.fonts) document.fonts.ready.then(sizeCards);
+  catsEl.addEventListener("click", function (e) {
+    const b = e.target.closest("[data-cat]");
+    if (!b || b.disabled) return;
+    cat = b.getAttribute("data-cat");
+    try { sessionStorage.setItem(CAT_KEY, cat); } catch (err) {}
+    renderCards();
+  });
+  renderCards();
+  BOG_SORT.onChange(renderCards);
+  search.addEventListener("input", renderCards);
+  search.addEventListener("keydown", function (e) {
+    if (e.key === "Escape") { search.value = ""; renderCards(); }
+    if (e.key === "Enter") { const first = document.querySelector("#cards .card"); if (first) location.href = first.getAttribute("href"); }
+  });
+
+  // What's new: the latest 6 updates
+  const KIND = { motion: ["beta", "Motion"], design: ["new", "Design"], component: ["availability", "Component"] };
+  const day = BOG_DATE;
+  document.getElementById("news").innerHTML = window.BOG_UPDATES.slice(0, 12).map(function (u) {
+    const k = KIND[u.kind] || KIND.component;
+    return '<a class="news__item" href="' + u.page + '">' +
+      '<span class="news__meta"><span class="bog-feature-badge" data-type="' + k[0] + '">' + k[1] + '</span><time datetime="' + u.date + '">' + day(u.date) + '</time></span>' +
+      '<strong class="news__title">' + u.title + '</strong><span class="news__text">' + u.text + '</span></a>';
+  }).join("");
+
+  // What's new slider: arrows page by the visible width, edges fade while there is more to scroll
+  const newsRow = document.getElementById("news"), newsNav = document.getElementById("news-nav");
+  function newsState() {
+    const max = newsRow.scrollWidth - newsRow.clientWidth - 2, x = newsRow.scrollLeft;
+    const s = x > 2, e = x < max;
+    newsRow.setAttribute("data-over", s && e ? "both" : s ? "start" : e ? "end" : "none");
+    newsNav.querySelector('[data-dir="-1"]').disabled = !s;
+    newsNav.querySelector('[data-dir="1"]').disabled = !e;
+    newsNav.style.visibility = max > 0 ? "" : "hidden";
+  }
+  newsNav.addEventListener("click", function (e) {
+    const b = e.target.closest(".news__arrow");
+    if (!b || b.disabled) return;
+    const item = newsRow.querySelector(".news__item"), step = item ? item.getBoundingClientRect().width + (parseFloat(getComputedStyle(newsRow).columnGap) || 0) : 340;
+    newsRow.scrollBy({ left: +b.getAttribute("data-dir") * Math.max(step, Math.floor(newsRow.clientWidth / step) * step) });
+  });
+  newsRow.addEventListener("scroll", newsState, { passive: true });
+  window.addEventListener("resize", newsState);
+  newsState();
+</script>
+<script>
+  /* Hover demos: while the pointer is over a motion tile, its preview plays the component's own
+     motion from bog-ui.js, on a loop. Leaving the tile stops it and puts the preview back exactly as
+     it was. Tiles that only show a mock-up (Bottom Sheet, Action Item, Feature Notes) replay the
+     motion guide's timings on the mock. Reduce Motion: no demos. */
+  (function () {
+    const cardsEl = document.getElementById("cards");
+    const reduce = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)");
+    const B = () => window.BOG || {};
+    const all = (p, s) => [].slice.call(p.querySelectorAll(s));
+
+    // Text-field family: focus ⇄ blur plays Input motion "Default ⇄ Active"
+    // (a tile that pins data-state="filled" would skip the motion, so the demo lets it go — the tile
+    // is put back as it was afterwards)
+    const focusLoop = (p, d) => {
+      all(p, ".bog-field[data-state]").forEach((f) => f.removeAttribute("data-state"));
+      d.loop(1300, (n) => { const i = p.querySelector("input"); if (!i) return; n % 2 ? i.blur() : i.focus({ preventScroll: true }); });
+    };
+    // Bottom Sheet open (bottom-sheet.css): 20 px past its spot in 300 ms, back in 250 ms
+    const sheetUp = (el) => el.animate([
+      { transform: "translateY(100%)", easing: "cubic-bezier(0.33, 0, 0.25, 1)" },
+      { transform: "translateY(-20px)", offset: 300 / 550, easing: "cubic-bezier(0.17, 0, 0.25, 1)" },
+      { transform: "translateY(0)" }
+    ], { duration: 550 });
+
+    // Bottom Sheet close (bog-ui.js): drops its own height + 24 px in 250 ms, cubic-bezier(0.75, 0, 0.67, 1)
+    const sheetDown = (el) => el.animate({ transform: ["translateY(0)", "translateY(calc(100% + 24px))"] },
+      { duration: 250, easing: "cubic-bezier(0.75, 0, 0.67, 1)", fill: "forwards" });
+    function selectDemo(p, d) {
+      const s = p.querySelector(".bog-select");
+      const scrim = document.createElement("div"), sheet = document.createElement("div");
+      scrim.style.cssText = "position:absolute;inset:0;background:#0f0f10ad;opacity:0;pointer-events:none";
+      sheet.style.cssText = "position:absolute;left:12px;right:12px;bottom:0;padding:12px 14px 14px;border-radius:14px 14px 0 0;background:#fff;transform:translateY(110%);pointer-events:none;font:600 12px/16px var(--font-family-bog);color:#1b1c1d";
+      sheet.innerHTML = '<div style="width:24px;height:3px;margin:-6px auto 8px;border-radius:9px;background:#d7d9db"></div>' +
+        ["Georgia", "Germany", "Greece"].map((t, i) => `<div style="display:flex;align-items:center;justify-content:space-between;padding:5px 0;${i ? "border-top:1px solid #ecedee" : ""}">${t}${i ? "" : '<span style="width:10px;height:10px;border-radius:50%;background:#ff5c0a"></span>'}</div>`).join("");
+      p.append(scrim, sheet);
+      d.loop(1800, () => {
+        [sheet, scrim].forEach((el) => el.getAnimations().forEach((a) => a.cancel()));   // last cycle's held ends
+        sheet.style.transform = "translateY(110%)";
+        s.setAttribute("data-open", "");
+        scrim.animate({ opacity: [0, 1] }, { duration: 300, easing: "linear", fill: "forwards" });
+        sheetUp(sheet).onfinish = () => { sheet.style.transform = "translateY(0)"; };
+        d.later(1100, () => {
+          s.removeAttribute("data-open");
+          scrim.animate({ opacity: [1, 0] }, { duration: 250, easing: "linear", fill: "forwards" });
+          sheetDown(sheet);
+        });
+      });
+    }
+
+    const DEMOS = {
+      "text-input": focusLoop, "password-input": focusLoop, "phone-input": focusLoop,
+      "number-input": focusLoop, "currency-input": focusLoop,
+      checkbox: (p, d) => d.loop(900, () => { const i = p.querySelector("input"); i.checked = !i.checked; }),
+      toggle: (p, d) => d.loop(900, () => { const i = p.querySelector("input"); i.checked = !i.checked; }),
+      radio: (p, d) => d.loop(900, () => {
+        const r = all(p, "input[type=radio]"), k = r.findIndex((x) => x.checked);
+        r[(k + 1) % r.length].checked = true;
+      }),
+      // Real presses: the button dips and the digits roll (+ three times, then − three times)
+      stepper: (p, d) => {
+        const b = all(p, ".bog-stepper > .bog-icon-btn");
+        if (b.length < 2) return;
+        b[0].dataset.step = "-1"; b[1].dataset.step = "1";
+        d.loop(650, (n) => d.click(b[n % 6 < 3 ? 1 : 0]));
+      },
+      // Currency switch with the odometer roll and the symbol glide
+      amount: (p, d) => {
+        const a = p.querySelector(".bog-amount");
+        a.setAttribute("data-currencies", "₾ $ € £");
+        a.setAttribute("data-rates", '{"₾":1,"$":0.37,"€":0.32,"£":0.28}');
+        const list = ["$", "€", "£", "₾"];
+        d.loop(1100, (n) => B().amountCurrency && B().amountCurrency(a, list[n % 4]));
+      },
+      "asset-card": (p, d) => d.loop(1500, () => B().assetIn && B().assetIn(p, { from: "left" })),
+      result: (p, d) => d.loop(3400, () => B().resultIn && B().resultIn(p)),
+      hero: (p, d) => d.loop(2600, () => B().heroIn && B().heroIn(p.querySelector(".bog-hero"))),
+      // Toast In (feedback.css keyframes): drops in from above, 20 px past, settles
+      feedback: (p, d) => d.loop(1600, () => {
+        const t = p.querySelector(".bog-feedback");
+        t.style.animation = "none"; t.offsetWidth; t.style.animation = "bog-toast-in 500ms both";
+      }),
+      // Modal open: the dialog's scale / fade transitions (modal.css)
+      modal: (p, d) => d.loop(1500, (n) => {
+        const m = p.querySelector(".bog-modal");
+        if (n % 2) { m.setAttribute("data-open", ""); return; }
+        m.removeAttribute("data-open"); m.offsetWidth;
+        d.later(60, () => m.setAttribute("data-open", ""));
+      }),
+      // Selects open the Bottom Sheet: the chevron turns (Select) and a small sheet rises over the
+      // tile with the Bottom Sheet's open timing, then drops away
+      select: (p, d) => selectDemo(p, d),
+      "account-select": (p, d) => selectDemo(p, d),
+      // Account Picker "Select": the selected border draws in (200 ms, 0.33, 0, 0.67, 1)
+      picker: (p, d) => d.loop(1000, (n) => {
+        const pk = p.querySelector(".bog-picker"), box = pk.querySelector(".bog-picker__box");
+        const off = getComputedStyle((pk.removeAttribute("data-selected"), box)).boxShadow;
+        pk.setAttribute("data-selected", "");
+        const on = getComputedStyle(box).boxShadow;
+        if (n % 2) { pk.removeAttribute("data-selected"); box.animate({ boxShadow: [on, off] }, { duration: 200, easing: "cubic-bezier(0.33, 0, 0.67, 1)" }); }
+        else box.animate({ boxShadow: [off, on] }, { duration: 200, easing: "cubic-bezier(0.33, 0, 0.67, 1)" });
+      }),
+      "bottom-sheet": (p, d) => d.loop(1500, () => {
+        const scrim = p.firstElementChild, sheet = scrim && scrim.firstElementChild;
+        if (!sheet) return;
+        scrim.animate({ backgroundColor: ["#0f0f1000", getComputedStyle(scrim).backgroundColor] }, { duration: 300, easing: "linear" });
+        sheetUp(sheet);
+      }),
+      // Selection strip "Avatars": each circle pops in to 102% and settles, one after another
+      "action-item": (p, d) => d.loop(1500, () => all(p, ".bog-action-item__circle").forEach((c, i) => c.animate([
+        { scale: 0, offset: 0 }, { scale: 0, offset: 17 / 253 }, { scale: 1.02, offset: 153 / 253 }, { scale: 1 }
+      ], { duration: 253, delay: i * 90, easing: "cubic-bezier(0.33, 0, 0.2, 1)", fill: "backwards" }))),
+      // Feature Note "Slide": the next picture sweeps in over the old one, which leaves 50 ms behind
+      "feature-notes": (p, d) => {
+        const COLORS = ["#e8f5ec", "#fdeee3", "#e6eefc"];
+        const mock = p.firstElementChild, media = mock && mock.firstElementChild, dots = mock && all(mock, ".bog-dots i");
+        if (!media) return;
+        mock.style.position = "relative";
+        d.loop(1400, (n) => {
+          const next = COLORS[(n + 1) % 3], layer = media.cloneNode(false);
+          layer.style.cssText += ";position:absolute;inset:0 0 auto 0;height:" + media.offsetHeight + "px;background:" + next;
+          mock.appendChild(layer);
+          layer.animate({ transform: ["translateX(100%)", "translateX(0)"] }, { duration: 400, easing: "cubic-bezier(0.33, 0, 0.2, 1)" });
+          media.animate({ transform: ["translateX(0)", "translateX(-100%)"] }, { duration: 400, delay: 50, easing: "cubic-bezier(0.33, 0, 0.06, 1)" })
+            .onfinish = () => { media.style.background = next; layer.remove(); };
+          dots.forEach((dot, i) => dot.toggleAttribute("aria-current", i === (n + 1) % dots.length));
+        });
+      }
+    };
+
+    // Clicks the demos send are synthetic: keep them from following the tile's link
+    cardsEl.addEventListener("click", (e) => { if (!e.isTrusted) e.preventDefault(); }, true);
+
+    let live = null;
+    function start(card) {
+      const demo = DEMOS[card.getAttribute("data-id")];
+      if (!demo || (reduce && reduce.matches) || !window.BOG) return;
+      const p = card.querySelector(".card__preview");
+      const timers = [];
+      const d = {
+        loop(ms, fn) { let n = 0; fn(n++); timers.push(setInterval(() => fn(n++), ms)); },
+        later(ms, fn) { timers.push(setTimeout(fn, ms)); },
+        click(el) { el.dispatchEvent(new MouseEvent("click", { bubbles: true, cancelable: true })); }
+      };
+      live = { card, p, timers, html: p.innerHTML, style: p.getAttribute("style") };
+      try { demo(p, d); } catch (err) { console.warn("Hover demo", card.getAttribute("data-id"), err); }
+    }
+    function stop() {
+      if (!live) return;
+      const { p, timers, html, style } = live;
+      live = null;
+      timers.forEach((t) => { clearInterval(t); clearTimeout(t); });
+      if (p.contains(document.activeElement)) document.activeElement.blur();
+      p.getAnimations({ subtree: true }).forEach((a) => a.cancel());
+      p.innerHTML = html;
+      if (style == null) p.removeAttribute("style"); else p.setAttribute("style", style);
+      p.removeAttribute("data-animated");
+    }
+    cardsEl.addEventListener("pointerover", (e) => {
+      const c = e.target.closest && e.target.closest(".card");
+      if (!c || (live && live.card === c)) return;
+      stop(); start(c);
+    });
+    cardsEl.addEventListener("pointerout", (e) => {
+      const c = live && live.card;
+      if (c && !c.contains(e.relatedTarget)) stop();
+    });
+    // The list re-renders on search / sort / chips: drop a demo whose tile is gone
+    new MutationObserver(() => { if (live && !live.card.isConnected) live = null; }).observe(cardsEl, { childList: true });
+  })();
+</script>
+</body>
+</html>

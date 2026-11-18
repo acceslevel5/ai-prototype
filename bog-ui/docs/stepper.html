@@ -1,0 +1,245 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Numeric Stepper — BOG UI</title>
+<link rel="stylesheet" href="../bog-ui.css">
+<link rel="stylesheet" href="docs.css">
+<script src="theme.js"></script>
+<script src="../bog-ui.js" defer></script>
+<script src="components.js" defer></script>
+<style>.dx small{display:block;margin:0 0 8px;color:var(--docs-muted);font-size:11px}.dx{display:grid;gap:24px}.dx-panel{font-family:var(--font-family-bog);font-size:14px;line-height:20px;color:var(--text-primary);padding:16px 4px}</style>
+</head>
+<body>
+<div class="docs">
+  <aside class="docs-nav">
+    <a class="docs-nav__brand" href="../index.html">BOG UI</a>
+    <nav id="bog-nav" data-current="stepper"></nav>
+  </aside>
+  <main class="docs-main">
+    <header><h1>Numeric Stepper</h1><a class="figma" id="figma-link" href="#" target="_blank" rel="noopener">Open in Figma ↗</a></header>
+    <p class="lead">Adjusts a small number within limits — passengers, cards, months — with − and + buttons. At the minimum − is disabled, at the maximum +. Loading shows a spinner in place of the value while it's saved. An optional helper sits right-aligned underneath.</p>
+    <h2>Usage</h2>
+    <pre><code>&lt;div class="bog-stepper" data-min="1" data-max="5"&gt;          &lt;!-- data-state="loading | skeleton" · data-disabled --&gt;
+  &lt;button class="bog-icon-btn" data-type="neutral" data-size="small" aria-label="Decrease" data-step="-1"&gt;&lt;span class="bog-icon" data-icon="minus"&gt;&lt;/span&gt;&lt;/button&gt;
+  &lt;output class="bog-stepper__value"&gt;1&lt;/output&gt;
+  &lt;button class="bog-icon-btn" data-type="neutral" data-size="small" aria-label="Increase" data-step="1"&gt;&lt;span class="bog-icon" data-icon="plus"&gt;&lt;/span&gt;&lt;/button&gt;
+&lt;/div&gt;</code></pre>
+    <h2>Try it</h2>
+    <p class="lead">Press − and + — the button dips and springs back, and the digits that change roll (+ down, − up). Go past 9 to see only the changing digit move; at 0 or 20, press the greyed-out button to see the number shake.</p>
+    <div class="docs-preview__controls" style="margin:0 0 12px"><span>Number roll</span><div class="docs-sort" id="st-roll" role="group" aria-label="Number roll"><button type="button" data-roll="guide" aria-pressed="true">Guide</button><button type="button" data-roll="odometer" aria-pressed="false">Odometer (try)</button></div><label><input type="checkbox" id="st-slow"> Slow motion (×10)</label></div>
+    <div class="panel"><div style="display:flex;align-items:center;justify-content:space-between;width:343px;font-family:var(--font-family-bog);font-size:14px">Additional cards <span id="st-try"></span></div></div>
+
+    <h2 id="motion">Motion</h2>
+    <p class="lead">A press dips the button to 90% and springs it back with a small overshoot (333 ms). The old number slips 3.75 px and fades out fast; the new one follows 33 ms later from the other side. + moves the digits down, − moves them up.
+      Source: <a href="https://www.figma.com/design/LCAlFnhOdhc9q4LDoajuhw/Component-Motion-Guidelines?node-id=354-8040" target="_blank" rel="noopener">Numeric Stepper ↗</a></p>
+    <div class="panel">
+      <div class="motion-tabs" role="tablist">
+        <button role="tab" data-tab="design" aria-selected="true">Designers</button>
+        <button role="tab" data-tab="ios">iOS · SwiftUI</button>
+        <button role="tab" data-tab="android">Android · Compose</button>
+        <button role="tab" data-tab="web">Web</button>
+      </div>
+      <section class="motion-pane" data-pane="design" id="motion-design"></section>
+      <section class="motion-pane" data-pane="ios" hidden>
+        <p>A stepper view: the button press is a two-step scale; the number uses a numeric content transition with the guide's curve (iOS rolls only the digits that change).</p>
+        <pre><code data-snippet="ios"></code></pre>
+        <div class="motion-actions"><button class="bog-btn" data-type="secondary" data-size="small" data-copy-link="ios">Copy link</button><button class="bog-btn" data-type="neutral" data-size="small" data-copy="ios">Copy code</button></div>
+      </section>
+      <section class="motion-pane" data-pane="android" hidden>
+        <p>A composable with an <code>Animatable</code> for the press and <code>AnimatedContent</code> for the number.</p>
+        <pre><code data-snippet="android"></code></pre>
+        <div class="motion-actions"><button class="bog-btn" data-type="secondary" data-size="small" data-copy-link="android">Copy link</button><button class="bog-btn" data-type="neutral" data-size="small" data-copy="android">Copy code</button></div>
+      </section>
+      <section class="motion-pane" data-pane="web" hidden>
+        <p>Built into <code>bog-ui.js</code> (Web Animations API). Nothing to call — every <code>.bog-stepper</code> gets it.</p>
+        <pre><code data-snippet="web"></code></pre>
+        <div class="motion-actions"><button class="bog-btn" data-type="secondary" data-size="small" data-copy-link="web">Copy link</button><button class="bog-btn" data-type="neutral" data-size="small" data-copy="web">Copy code</button></div>
+      </section>
+    </div>
+
+    <h2>States</h2>
+    <div class="panel"><div style="display:grid;grid-template-columns:200px auto;gap:16px 24px;align-items:center;font-size:12px;color:var(--docs-muted)" id="st-grid"></div></div>
+<script>
+  const st = (v, o = {}) => `<div class="bog-stepper"${o.min != null ? ` data-min="${o.min}"` : ""}${o.max != null ? ` data-max="${o.max}"` : ""}${o.state ? ` data-state="${o.state}"` : ""}${o.dis ? " data-disabled" : ""}>` +
+    '<button class="bog-icon-btn" data-type="neutral" data-size="small" aria-label="Decrease" data-step="-1"><span class="bog-icon" data-icon="minus"></span></button>' +
+    `<output class="bog-stepper__value">${v}</output>` +
+    '<button class="bog-icon-btn" data-type="neutral" data-size="small" aria-label="Increase" data-step="1"><span class="bog-icon" data-icon="plus"></span></button></div>';
+  document.getElementById("st-try").innerHTML = st(8, { min: 0, max: 20 });
+  document.getElementById("st-grid").innerHTML = [["Default", st(0)], ["At the maximum", st(5, { max: 5 })], ["At the minimum", st(0, { min: 0 })], ["Loading", st(0, { min: 0, state: "loading" })], ["Disabled", st(0, { min: 0, dis: 1 })], ["Skeleton", st(0, { state: "skeleton" })], ["With helper", `<div style="display:inline-flex;flex-direction:column;align-items:flex-end">${st(2, { min: 0, max: 4 })}<p class="bog-stepper__helper">Up to 4</p></div>`]].map(([n, h]) => `<span>${n}</span><div>${h}</div>`).join("");
+  document.getElementById("st-roll").addEventListener("click", (e) => {
+    const b = e.target.closest("[data-roll]"); if (!b) return;
+    const s = document.getElementById("st-try").firstElementChild;
+    if (b.dataset.roll === "odometer") s.setAttribute("data-roll", "odometer"); else s.removeAttribute("data-roll");
+    document.querySelectorAll("#st-roll [data-roll]").forEach((x) => x.setAttribute("aria-pressed", String(x === b)));
+  });
+  document.getElementById("st-slow").addEventListener("change", (e) => { document.getElementById("st-try").firstElementChild.style.setProperty("--bog-stepper-slow", e.target.checked ? "10" : "1"); });
+
+  // ---- Motion handoff ----
+  const FIG = "https://www.figma.com/design/LCAlFnhOdhc9q4LDoajuhw/Component-Motion-Guidelines?node-id=";
+  const timeline = (rows, max) => {
+    const pct = (ms) => (ms / max * 100).toFixed(2) + "%";
+    return `<div class="motion-tl">${rows.map(([n, bars]) => `<span>${n}</span><div class="motion-tl__track">${bars.map(([s, l, kind]) =>
+      `<span class="motion-tl__bar"${kind ? ` data-kind="${kind}"` : ""} style="left:${pct(s)};width:${pct(l)}">${l}</span>`).join("")}</div>`).join("")}` +
+      `<span></span><div class="motion-tl__axis">${Array.from({ length: 11 }, (_, i) => `<span>${i * max / 10}</span>`).join("")}</div></div>`;
+  };
+  const spec = (rows) => `<table class="motion-spec"><thead><tr><th>Layer</th><th>Property</th><th>Keyframes</th><th>Timing</th><th>Easing (cubic-bezier)</th></tr></thead><tbody>${rows.map((r) =>
+    `<tr>${r.map((c, i) => `<td>${i === 4 ? `<code>${c}</code>` : c}</td>`).join("")}</tr>`).join("")}</tbody></table>`;
+  const SPEC = [
+    ["Pressed button", "Scale", "100% → 90%", "0–167 ms", "0.33, 0, 0.25, 1"],
+    ["Pressed button", "Scale", "90% → 100%", "167–333 ms", "0.44, 0, 0.30, 2.08"],
+    ["Old number", "Position Y", "0 → +3.75 px (+) · −3.75 px (−)", "0–167 ms", "0.33, 0, 0.25, 1"],
+    ["Old number", "Opacity", "100% → 0", "0–83 ms", "0.33, 0, 0.25, 1"],
+    ["New number", "Position Y", "−3.75 px (+) · +3.75 px (−) → 0", "33–200 ms", "0.33, 0, 0.25, 1"],
+    ["New number", "Opacity", "0 → 100%", "33–116 ms", "0.33, 0, 0.25, 1"]
+  ];
+  const SPEC_LIMIT = [
+    ["Number", "Position X", "0 → +3.33 px", "0–150 ms", "0.33, 0, 0.27, 1"],
+    ["Number", "Position X", "+3.33 → −3.33 px", "150–300 ms", "0.33, 0, 0.27, 1"],
+    ["Number", "Position X", "−3.33 px → 0", "300–450 ms", "0.33, 0, 0.27, 1"]
+  ];
+  document.getElementById("motion-design").innerHTML =
+    "<p>The guide shows + (0 → 1). − plays the same motion mirrored: the digits move up instead of down. Number Input uses exactly the same motion.</p>" +
+    `<h3>Press + / −<a href="${FIG}362-9475" target="_blank" rel="noopener">Figma ↗</a></h3>` +
+    timeline([["Button · Scale", [[0, 167], [167, 167]]], ["Old number · Y", [[0, 167]]], ["Old number · Opacity", [[0, 83, "fade"]]],
+      ["New number · Y", [[33, 167]]], ["New number · Opacity", [[33, 83, "fade"]]]], 400) + spec(SPEC) +
+    "<h3>Limit (not in the guide)</h3>" +
+    "<p>At the minimum (often 0) − is disabled; at the maximum + is. Pressing the disabled button shakes the number to say \"no further\". It reuses the text field's error shake from the motion guide. Suggested; check it with design.</p>" +
+    timeline([["Number · X", [[0, 150], [150, 150], [300, 150]]]], 500) + spec(SPEC_LIMIT) +
+    "<h3>Rules</h3><ul>" +
+      "<li>The release curve's last value (2.08) overshoots: the button grows a little past 100% before it settles. Don't clamp it.</li>" +
+      "<li>Only the digits that change roll: 12 → 13 moves just the 3; 9 → 10 moves the whole number.</li>" +
+      "<li>The page has a second version, \"made with easing\": it animates the button from 100% to 100% with broken curve values (an export artefact), so it shows nothing. This page uses the \"made with Scale\" version.</li>" +
+      "<li>A tap while a roll is running replaces it: the newest number always wins.</li>" +
+      "<li>A disabled button (at the minimum or maximum) doesn't dip; the number shakes instead and the value stays. A disabled stepper (or loading) doesn't shake.</li>" +
+      "<li>Reduce Motion / Remove animations on: the number just changes.</li>" +
+    "</ul>" +
+    '<div class="motion-actions"><button class="bog-btn" data-type="secondary" data-size="small" data-copy-link="design">Copy link</button><button class="bog-btn" data-type="neutral" data-size="small" data-copy="spec">Copy spec as text</button></div>';
+  const SPEC_TEXT = ["Numeric Stepper motion", "Guide: " + FIG + "354-8040 (\"made with Scale\", 362-9475)",
+    ...SPEC.map((r) => "  " + r.join("  ·  ")),
+    "LIMIT (not in the guide): pressing the disabled − at the minimum or + at the maximum", ...SPEC_LIMIT.map((r) => "  " + r.join("  ·  ")),
+    "+ moves the digits down, − up. Only changing digits roll. Reduce Motion: instant."].join("\n");
+
+  const CODE = {
+    web: `<!-- Built in: bog-ui.js animates every .bog-stepper. What it runs: -->
+const ease = "cubic-bezier(0.33, 0, 0.25, 1)";
+button.animate([
+  { transform: "scale(1)",   easing: ease },
+  { transform: "scale(0.9)", easing: "cubic-bezier(0.44, 0, 0.30, 2.08)" },
+  { transform: "scale(1)" }
+], { duration: 333 });
+
+const d = plus ? 3.75 : -3.75;   // + down, − up
+oldDigits.animate({ transform: ["translateY(0)", \`translateY(\${d}px)\`] }, { duration: 167, easing: ease, fill: "forwards" });
+oldDigits.animate({ opacity: [1, 0] },                                 { duration: 83,  easing: ease, fill: "forwards" });
+newDigits.animate({ transform: [\`translateY(\${-d}px)\`, "translateY(0)"] }, { duration: 167, delay: 33, easing: ease, fill: "backwards" });
+newDigits.animate({ opacity: [0, 1] },                                 { duration: 83,  delay: 33, easing: ease, fill: "backwards" });
+
+// Limit: the disabled − / + lets the press through (stepper.css); the stepper shakes the number
+const shake = "cubic-bezier(0.33, 0, 0.27, 1)";
+number.animate([
+  { transform: "translateX(0)",       easing: shake },
+  { transform: "translateX(3.33px)",  easing: shake },
+  { transform: "translateX(-3.33px)", easing: shake },
+  { transform: "translateX(0)" }
+], { duration: 450 });
+stepper.addEventListener("steplimit", (e) => { /* e.detail.limit: "min" | "max" */ });
+// prefers-reduced-motion: reduce → no animation`,
+    ios: `import SwiftUI
+
+struct BOGStepper: View {
+    @Binding var value: Int
+    var range: ClosedRange<Int>
+    @Environment(\\.accessibilityReduceMotion) private var reduceMotion
+
+    var body: some View {
+        HStack(spacing: 0) {
+            StepButton(icon: "minus", disabled: value <= range.lowerBound) { value -= 1 }
+            Text("\\(value)")
+                .font(.body).monospacedDigit()
+                .frame(minWidth: 32)
+                .contentTransition(reduceMotion ? .identity : .numericText(countsDown: false))
+                .animation(.timingCurve(0.33, 0, 0.25, 1, duration: 0.167), value: value)
+            StepButton(icon: "plus", disabled: value >= range.upperBound) { value += 1 }
+        }
+    }
+}
+
+struct StepButton: View {
+    let icon: String, disabled: Bool, action: () -> Void
+    @State private var scale: CGFloat = 1
+    @Environment(\\.accessibilityReduceMotion) private var reduceMotion
+
+    var body: some View {
+        Button {
+            action()
+            guard !reduceMotion else { return }
+            withAnimation(.timingCurve(0.33, 0, 0.25, 1, duration: 0.167)) { scale = 0.9 }
+            withAnimation(.timingCurve(0.44, 0, 0.30, 2.08, duration: 0.167).delay(0.167)) { scale = 1 }
+        } label: { Image(icon) }
+        .scaleEffect(scale)
+        .disabled(disabled)
+    }
+}`,
+    android: `import androidx.compose.animation.*
+import androidx.compose.animation.core.*
+
+private val Ease = CubicBezierEasing(0.33f, 0f, 0.25f, 1f)
+private val Release = CubicBezierEasing(0.44f, 0f, 0.30f, 2.08f)
+
+@Composable
+fun BOGStepper(value: Int, range: IntRange, onChange: (Int) -> Unit) {
+    Row(verticalAlignment = Alignment.CenterVertically) {
+        StepButton(BOG.icons.minus, enabled = value > range.first) { onChange(value - 1) }
+        AnimatedContent(
+            targetState = value,
+            transitionSpec = {
+                val d = if (targetState > initialState) 1 else -1          // + down, − up
+                (slideInVertically(tween(167, delayMillis = 33, easing = Ease)) { -d * 4 } +   // ≈ 3.75 dp
+                    fadeIn(tween(83, delayMillis = 33, easing = Ease))) togetherWith
+                (slideOutVertically(tween(167, easing = Ease)) { d * 4 } + fadeOut(tween(83, easing = Ease)))
+            }, label = "value"
+        ) { Text("$it", style = BOG.type.bodyLarge, modifier = Modifier.widthIn(min = 32.dp), textAlign = TextAlign.Center) }
+        StepButton(BOG.icons.plus, enabled = value < range.last) { onChange(value + 1) }
+    }
+}
+
+@Composable
+private fun StepButton(icon: Painter, enabled: Boolean, onClick: () -> Unit) {
+    val scale = remember { Animatable(1f) }
+    val scope = rememberCoroutineScope()
+    IconButton(enabled = enabled, onClick = {
+        onClick()
+        scope.launch {
+            scale.animateTo(0.9f, tween(167, easing = Ease))
+            scale.animateTo(1f, tween(167, easing = Release))
+        }
+    }, modifier = Modifier.graphicsLayer { scaleX = scale.value; scaleY = scale.value }) { Icon(icon, null) }
+}
+// Compose follows the system "Remove animations" setting automatically.`
+  };
+  document.querySelectorAll("[data-snippet]").forEach((c) => { c.textContent = CODE[c.dataset.snippet]; });
+
+  // Tabs (shareable via #motion-ios etc.) + copy buttons
+  const tabs = document.querySelectorAll(".motion-tabs [data-tab]");
+  function openTab(name) {
+    tabs.forEach((t) => t.setAttribute("aria-selected", String(t.dataset.tab === name)));
+    document.querySelectorAll(".motion-pane").forEach((p) => { p.hidden = p.dataset.pane !== name; });
+  }
+  tabs.forEach((t) => t.addEventListener("click", () => { openTab(t.dataset.tab); history.replaceState(null, "", "#motion-" + t.dataset.tab); }));
+  const fromHash = location.hash.match(/^#motion-(design|ios|android|web)$/);
+  if (fromHash) { openTab(fromHash[1]); document.getElementById("motion").scrollIntoView(); }
+  function copy(btn, text) {
+    navigator.clipboard.writeText(text).then(() => { const was = btn.textContent; btn.textContent = "Copied"; setTimeout(() => { btn.textContent = was; }, 1200); });
+  }
+  document.addEventListener("click", (e) => {
+    const link = e.target.closest("[data-copy-link]"), code = e.target.closest("[data-copy]");
+    if (link) copy(link, location.href.split("#")[0] + "#motion-" + link.dataset.copyLink);
+    if (code) copy(code, code.dataset.copy === "spec" ? SPEC_TEXT : CODE[code.dataset.copy]);
+  });
+</script>
+  </main>
+</div>
+</body>
+</html>

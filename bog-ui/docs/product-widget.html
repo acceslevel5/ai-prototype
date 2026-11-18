@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Product Widget — BOG UI</title>
+<link rel="stylesheet" href="../bog-ui.css">
+<link rel="stylesheet" href="docs.css">
+<script src="theme.js"></script>
+<script src="../bog-ui.js" defer></script>
+<script src="components.js" defer></script>
+<style>.dx small{display:block;margin:0 0 8px;color:var(--docs-muted);font-size:11px}.dx{display:grid;gap:24px}.dx-panel{font-family:var(--font-family-bog);font-size:14px;line-height:20px;color:var(--text-primary);padding:16px 4px}</style>
+</head>
+<body>
+<div class="docs">
+  <aside class="docs-nav">
+    <a class="docs-nav__brand" href="../index.html">BOG UI</a>
+    <nav id="bog-nav" data-current="product-widget"></nav>
+  </aside>
+  <main class="docs-main">
+    <header><h1>Product Widget</h1><a class="figma" id="figma-link" href="#" target="_blank" rel="noopener">Open in Figma ↗</a></header>
+    <p class="lead">The home screen's product tiles — accounts and cards, deposits, loans — two to a row. Each shows the product's picture, its name and the balance; an expired product shows a red badge instead. With an odd number of tiles the last one spans the row with the picture on the right. In progress in Figma.</p>
+    <h2>Usage</h2>
+    <pre><code>&lt;div class="bog-products"&gt;
+  &lt;a class="bog-product" href="…"&gt;                         &lt;!-- data-layout="row" · data-state="skeleton" --&gt;
+    &lt;span class="bog-product__media"&gt;&lt;span class="bog-card-art" data-size="56"&gt;&lt;/span&gt;&lt;/span&gt;
+    &lt;span class="bog-product__title"&gt;Accounts and Cards&lt;/span&gt;
+    &lt;span class="bog-product__amount"&gt;1,000.00 ₾&lt;/span&gt;
+  &lt;/a&gt;
+&lt;/div&gt;</code></pre>
+    <h2>Grids</h2>
+    <div class="panel" style="display:flex;gap:32px;flex-wrap:wrap;align-items:flex-start">
+      <div><small style="display:block;margin:0 0 8px;color:var(--docs-muted);font-size:11px">2 tiles</small><div class="bog-products" style="width:343px"><a class="bog-product" href="#" onclick="return false"><span class="bog-product__media"><span class="bog-card-art" data-size="56"></span></span><span class="bog-product__title">Accounts and Cards</span><span class="bog-product__amount">1,000.00 ₾</span></a><a class="bog-product" href="#" onclick="return false"><span class="bog-product__media"><span class="bog-card-art" data-size="56"></span></span><span class="bog-product__title">Deposits</span><span class="bog-product__amount">5,200.00 ₾</span></a></div></div>
+      <div><small style="display:block;margin:0 0 8px;color:var(--docs-muted);font-size:11px">3 tiles</small><div class="bog-products" style="width:343px"><a class="bog-product" href="#" onclick="return false"><span class="bog-product__media"><span class="bog-card-art" data-size="56"></span></span><span class="bog-product__title">Accounts and Cards</span><span class="bog-product__amount">1,000.00 ₾</span></a><a class="bog-product" href="#" onclick="return false"><span class="bog-product__media"><span class="bog-card-art" data-size="56"></span></span><span class="bog-product__title">Deposits</span><span class="bog-product__amount">5,200.00 ₾</span></a><a class="bog-product" href="#" onclick="return false"><span class="bog-product__media"><span class="bog-card-art" data-size="56"></span></span><span class="bog-product__title">Loans</span><span class="bog-product__amount">12,400.00 ₾</span></a></div></div>
+      <div><small style="display:block;margin:0 0 8px;color:var(--docs-muted);font-size:11px">5 tiles</small><div class="bog-products" style="width:343px"><a class="bog-product" href="#" onclick="return false"><span class="bog-product__media"><span class="bog-card-art" data-size="56"></span></span><span class="bog-product__title">Accounts and Cards</span><span class="bog-product__amount">1,000.00 ₾</span></a><a class="bog-product" href="#" onclick="return false"><span class="bog-product__media"><span class="bog-card-art" data-size="56"></span></span><span class="bog-product__title">Deposits</span><span class="bog-product__amount">5,200.00 ₾</span></a><a class="bog-product" href="#" onclick="return false"><span class="bog-product__media"><span class="bog-card-art" data-size="56"></span></span><span class="bog-product__title">Loans</span><span class="bog-product__amount">12,400.00 ₾</span></a><a class="bog-product" href="#" onclick="return false"><span class="bog-product__media"><span class="bog-card-art" data-size="56"></span></span><span class="bog-product__title">Investments</span><span class="bog-product__amount">830.00 $</span></a><a class="bog-product" href="#" onclick="return false"><span class="bog-product__media"><span class="bog-card-art" data-size="56"></span></span><span class="bog-product__title">Insurance</span><span class="bog-status-badge" data-size="small" data-contrast="high" data-status="negative">Expired</span></a></div></div>
+    </div>
+    <h2>Tile states</h2>
+    <div class="panel" style="display:flex;gap:16px;flex-wrap:wrap;align-items:flex-start">
+      <div style="width:168px"><small style="display:block;margin:0 0 8px;color:var(--docs-muted);font-size:11px">Active</small><a class="bog-product" href="#" onclick="return false"><span class="bog-product__media"><span class="bog-card-art" data-size="56"></span></span><span class="bog-product__title">Accounts and Cards</span><span class="bog-product__amount">1,000.00 ₾</span></a></div>
+      <div style="width:168px"><small style="display:block;margin:0 0 8px;color:var(--docs-muted);font-size:11px">Pressed</small><a class="bog-product" href="#" onclick="return false" data-pressed><span class="bog-product__media"><span class="bog-card-art" data-size="56"></span></span><span class="bog-product__title">Accounts and Cards</span><span class="bog-product__amount">1,000.00 ₾</span></a></div>
+      <div style="width:168px"><small style="display:block;margin:0 0 8px;color:var(--docs-muted);font-size:11px">Expired</small><a class="bog-product" href="#" onclick="return false"><span class="bog-product__media"><span class="bog-card-art" data-size="56"></span></span><span class="bog-product__title">Accounts and Cards</span><span class="bog-status-badge" data-size="small" data-contrast="high" data-status="negative">Expired</span></a></div>
+      <div style="width:168px"><small style="display:block;margin:0 0 8px;color:var(--docs-muted);font-size:11px">Notification + helper</small><a class="bog-product" href="#" onclick="return false"><span class="bog-product__media"><span class="bog-card-art" data-size="56"></span></span><span class="bog-product__title">Accounts and Cards</span><span class="bog-product__amount">1,000.00 ₾</span><span class="bog-product__helper">Card expires in May</span><span class="bog-status-icon" data-size="x-small" data-status="negative" role="img" aria-label="Needs attention"></span></a></div>
+      <div style="width:168px"><small style="display:block;margin:0 0 8px;color:var(--docs-muted);font-size:11px">Skeleton</small><a class="bog-product" href="#" onclick="return false" data-state="skeleton"><span class="bog-product__media"><span class="bog-card-art" data-size="56"></span></span><span class="bog-product__title">Accounts and Cards</span><span class="bog-product__amount">1,000.00 ₾</span></a></div>
+      <div style="width:343px"><small style="display:block;margin:0 0 8px;color:var(--docs-muted);font-size:11px">Row</small><a class="bog-product" href="#" onclick="return false" data-layout="row"><span class="bog-product__media"><span class="bog-card-art" data-size="56"></span></span><span class="bog-product__title">Accounts and Cards</span><span class="bog-product__amount">1,000.00 ₾</span></a></div>
+      <div style="width:343px"><small style="display:block;margin:0 0 8px;color:var(--docs-muted);font-size:11px">Row, expired</small><a class="bog-product" href="#" onclick="return false" data-layout="row"><span class="bog-product__media"><span class="bog-card-art" data-size="56"></span></span><span class="bog-product__title">Accounts and Cards</span><span class="bog-status-badge" data-size="small" data-contrast="high" data-status="negative">Expired</span></a></div>
+    </div>
+  </main>
+</div>
+</body>
+</html>

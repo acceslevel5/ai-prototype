@@ -1,0 +1,98 @@
+/* ==========================================================================
+   BOG UI — Payment Method
+   Figma: Payment Method page — Apple Pay Button (35176:2329) · Google Pay Button (35176:2095)
+          · Payment Method Icons (116:696)
+
+   Wallet buttons — follow Apple's and Google's brand rules; don't restyle them.
+     <button class="bog-applepay" data-style="black" data-kind="pay">    white | outline | black · plain | pay | buy · data-shape="pill"
+       <span class="bog-applepay__text">Pay with</span><span class="bog-applepay__mark"> Pay</span>
+     </button>
+     <button class="bog-gpay" data-style="dark">                       light | dark · data-shape="pill"
+       <span class="bog-gpay__text">Pay with</span><span class="bog-gpay__mark"></span>
+       <span class="bog-gpay__card"><span class="bog-pay-icon" data-brand="visa"></span>•••• 7348</span>   With Card
+     </button>
+
+   Card brand icon (Card Badge):
+     <span class="bog-pay-icon" data-brand="visa" data-background></span>
+     data-brand digital | visa | visa-white | mastercard | amex · data-background — the white 32×20 tile
+   ========================================================================== */
+
+/* ---- Apple Pay -------------------------------------------------------- */
+.bog-applepay {
+  --_bg: #000;
+  --_fg: #fff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 343px;
+  height: 50px;
+  padding: 8px 16px;
+  border: 0;
+  border-radius: 8px;
+  background: var(--_bg);
+  color: var(--_fg);
+  font-family: var(--font-family-bog);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.bog-applepay[data-style="white"] { --_bg: #fff; --_fg: #000; }
+.bog-applepay[data-style="outline"] { --_bg: #fff; --_fg: #000; box-shadow: inset 0 0 0 1px #000; }
+.bog-applepay[data-shape="pill"] { border-radius: var(--radius-full); }
+.bog-applepay:active { opacity: 0.8; }
+.bog-applepay__text { font-size: 20px; line-height: 28px; font-weight: 500; letter-spacing: 0.05px; }
+.bog-applepay__mark { font-family: -apple-system, "SF Pro Display", system-ui, sans-serif; font-size: 23px; font-weight: 600; letter-spacing: -1.2px; }
+
+/* ---- Google Pay ------------------------------------------------------- */
+.bog-gpay {
+  --_bg: #000;
+  --_fg: #fff;
+  --_pay: url("../assets/pay/gpay-pay-white.svg");
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 343px;
+  height: 50px;
+  padding: 8px 16px;
+  border: 0;
+  border-radius: 4px;
+  background: var(--_bg);
+  color: var(--_fg);
+  font-family: var(--font-family-bog);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.bog-gpay[data-style="light"] { --_bg: #fff; --_fg: #3c4043; --_pay: url("../assets/pay/gpay-pay-grey.svg"); box-shadow: inset 0 0 0 1px #3c4043; }
+.bog-gpay[data-shape="pill"] { border-radius: var(--radius-full); }
+.bog-gpay:active { opacity: 0.85; }
+.bog-gpay__text { font-size: 20px; line-height: normal; font-weight: 400; letter-spacing: 0.5px; }
+.bog-gpay__mark { width: 62px; height: 24px; background: url("../assets/pay/gpay-g.svg") 0 0 / 19.75px 20px no-repeat, var(--_pay) 26.5px 1.3px / 35.1px 22.7px no-repeat; }
+.bog-gpay__card { display: inline-flex; align-items: center; gap: 8px; padding-left: 10px; border-left: 1.5px solid currentColor; font-size: 14px; letter-spacing: 1px; }
+.bog-gpay[data-style="dark"] .bog-gpay__card .bog-pay-icon { filter: invert(1) grayscale(1) brightness(1.4); }
+
+/* ---- Card brand icon -------------------------------------------------- */
+.bog-pay-icon {
+  --_img: none;
+  --_size: contain;
+  display: inline-block;
+  flex: none;
+  box-sizing: border-box;
+  width: 32px;
+  height: 20px;
+  background: var(--_img) center / var(--_size) no-repeat;
+  vertical-align: middle;
+}
+.bog-pay-icon[data-brand="visa"]       { --_img: url("../assets/pay/visa.svg"); }
+.bog-pay-icon[data-brand="visa-white"] { --_img: url("../assets/pay/visa-white.svg"); }
+.bog-pay-icon[data-brand="mastercard"] { --_img: url("../assets/pay/mastercard.svg"); --_size: 26px 16px; }
+.bog-pay-icon[data-brand="amex"]       { --_img: url("../assets/pay/amex.svg"); --_size: 16px; }
+.bog-pay-icon[data-brand="digital"]    { --_img: url("../assets/pay/digital-card.svg"); --_size: 16px; }
+.bog-pay-icon[data-background] { border: 1px solid var(--border-alpha-02, rgba(108, 112, 117, 0.22)); border-radius: 4px; background-color: var(--layer-white); }
+.bog-pay-icon[data-background][data-brand="visa"]       { --_img: url("../assets/pay/visa-badge.svg"); --_size: 25px 8px; }
+.bog-pay-icon[data-background][data-brand="mastercard"] { --_img: url("../assets/pay/mastercard-badge.svg"); --_size: 17px 10px; }
+.bog-pay-icon[data-background][data-brand="amex"]       { background: url("../assets/pay/amex-badge.svg") right 1px center / 18px no-repeat, #006fac; box-shadow: inset 0 0 0 1px var(--layer-white); }

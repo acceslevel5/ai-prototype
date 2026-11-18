@@ -1,0 +1,143 @@
+/* ==========================================================================
+   BOG UI — Progress Tracker (vertical)
+   Figma: Progress Tracker - Vertical (64891:20193) · step item (64741:3544) · last item (64891:19910)
+
+     <ol class="bog-tracker">
+       <li class="bog-tracker__step" data-state="completed">
+         <span class="bog-tracker__indicator"></span>
+         <div class="bog-tracker__content">
+           <p class="bog-tracker__title">Application sent</p>
+           <p class="bog-tracker__helper">3 Nov, 10:42</p>                      optional
+           <p class="bog-tracker__desc">We received your documents</p>          optional
+           <p class="bog-tracker__message">Message text</p>                     warning / error steps
+         </div>
+       </li>
+       …
+     </ol>
+
+   data-state  completed | current | warning | error | pending (default)
+   data-number="2" on a pending step's indicator shows the number instead of the empty circle.
+   The connector under a completed step is green; the last step has none.
+   data-state="skeleton" on .bog-tracker shows placeholders.
+   ========================================================================== */
+
+.bog-tracker {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-family: var(--font-family-bog);
+}
+.bog-tracker__step {
+  --_line: var(--border-border-03);
+  position: relative;
+  display: flex;
+  gap: var(--spacing-gap-default);
+}
+/* Track: 24px indicator, then the connector line to the next step */
+.bog-tracker__step::after {
+  content: "";
+  position: absolute;
+  top: 26px;
+  bottom: 2px;
+  left: 11px;
+  width: 2px;
+  background: var(--_line);
+}
+.bog-tracker__step:last-child::after { display: none; }
+.bog-tracker__step[data-state="completed"] { --_line: var(--border-success); }
+
+.bog-tracker__indicator {
+  --_bg: transparent;
+  --_fg: var(--icon-secondary);
+  --_glyph: none;
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  width: 24px;
+  height: 24px;
+  border-radius: var(--radius-full);
+  background: var(--_bg);
+  box-shadow: inset 0 0 0 2px var(--border-border-03);      /* pending: empty circle */
+  color: var(--_fg);
+  font-size: var(--label-small-size);
+  line-height: 1;
+  font-weight: var(--label-small-weight);
+}
+/* Glyph: only for steps that have one (pending stays an empty circle) */
+.bog-tracker__indicator::before { display: none; }
+.bog-tracker__step:is([data-state="current"], [data-state="completed"], [data-state="warning"], [data-state="error"]) .bog-tracker__indicator::before,
+.bog-tracker__indicator[data-number]::before {
+  display: block;
+  content: "";
+  width: var(--_s, 16px);
+  height: var(--_s, 16px);
+  background-color: currentColor;
+  -webkit-mask: var(--_glyph) center / contain no-repeat;
+          mask: var(--_glyph) center / contain no-repeat;
+}
+.bog-tracker__step[data-state="current"] .bog-tracker__indicator   { --_bg: var(--border-border-03); --_glyph: url("../icons/clock-16.svg"); box-shadow: none; }
+.bog-tracker__step[data-state="completed"] .bog-tracker__indicator { --_bg: var(--status-success-02); --_fg: var(--text-inverse-primary); --_glyph: url("../icons/check-16.svg"); box-shadow: none; }
+.bog-tracker__step[data-state="warning"] .bog-tracker__indicator   { --_bg: var(--status-warning-02); --_fg: var(--icon-black); --_glyph: url("../icons/glyph-alert-48.svg"); --_s: 18px; box-shadow: none; }
+.bog-tracker__step[data-state="error"] .bog-tracker__indicator     { --_bg: var(--status-error-02); --_fg: var(--text-inverse-primary); --_glyph: url("../icons/glyph-alert-48.svg"); --_s: 18px; box-shadow: none; }
+/* Pending with a number */
+.bog-tracker__indicator[data-number] { --_bg: var(--border-border-03); box-shadow: none; }
+.bog-tracker__indicator[data-number]::before { content: attr(data-number); width: auto; height: auto; background: none; -webkit-mask: none; mask: none; }
+
+.bog-tracker__content {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: var(--spacing-gap-x-small);
+  min-width: 0;
+  min-height: 48px;
+  padding-bottom: var(--spacing-padding-default);
+}
+.bog-tracker__step:last-child .bog-tracker__content { min-height: 0; padding-bottom: 0; }
+.bog-tracker__content > p { margin: 0; }
+.bog-tracker__title {
+  padding: var(--spacing-padding-2x-small) 0;
+  color: var(--text-primary);
+  font-size: var(--body-medium-size);
+  line-height: var(--body-medium-line-height);
+  font-weight: var(--body-medium-weight);
+}
+.bog-tracker__step[data-state="current"] .bog-tracker__title { font-weight: 700; }
+.bog-tracker__step:not([data-state]) .bog-tracker__title,
+.bog-tracker__step[data-state="pending"] .bog-tracker__title { color: var(--text-secondary); }
+.bog-tracker__helper {
+  color: var(--text-helper);
+  font-size: var(--label-xsmall-size);
+  line-height: var(--label-xsmall-line-height);
+  font-weight: var(--label-xsmall-weight);
+}
+.bog-tracker__desc {
+  color: var(--text-primary);
+  font-size: var(--body-small-size);
+  line-height: var(--body-small-line-height);
+  font-weight: var(--body-small-weight);
+}
+.bog-tracker__message {
+  font-size: var(--label-small-size);
+  line-height: var(--label-small-line-height);
+  font-weight: var(--label-small-weight);
+}
+.bog-tracker__step[data-state="warning"] .bog-tracker__message { color: var(--text-warning); }
+.bog-tracker__step[data-state="error"] .bog-tracker__message   { color: var(--text-error); }
+
+/* Skeleton: grey circles and a 104×8 bar per step */
+.bog-tracker[data-state="skeleton"] .bog-tracker__indicator { --_bg: var(--support-skeleton); box-shadow: none; }
+.bog-tracker[data-state="skeleton"] .bog-tracker__indicator::before { display: none; }
+.bog-tracker[data-state="skeleton"] .bog-tracker__step { --_line: var(--border-border-03); }
+.bog-tracker[data-state="skeleton"] .bog-tracker__content > * { display: none; }
+.bog-tracker[data-state="skeleton"] .bog-tracker__content::before {
+  content: "";
+  width: 104px;
+  height: 8px;
+  margin-top: 8px;
+  border-radius: var(--radius-2x-small);
+  background: var(--support-skeleton);
+}

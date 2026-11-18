@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Text area — BOG UI</title>
+<link rel="stylesheet" href="../bog-ui.css">
+<link rel="stylesheet" href="docs.css">
+<script src="theme.js"></script>
+<script src="../bog-ui.js" defer></script>
+<script src="components.js" defer></script>
+<style>
+  .ta-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(343px, 1fr)); gap: 32px; align-items: start; }
+  .ta-grid small { display: block; margin-bottom: 8px; color: var(--docs-muted); font-size: 11px; }
+</style>
+</head>
+<body>
+<div class="docs">
+  <aside class="docs-nav">
+    <a class="docs-nav__brand" href="../index.html">BOG UI</a>
+    <nav id="bog-nav" data-current="textarea"></nav>
+  </aside>
+  <main class="docs-main">
+    <header><h1>Text area</h1><a class="figma" id="figma-link" href="#" target="_blank" rel="noopener">Open in Figma ↗</a></header>
+    <p class="lead">For input longer than a few words that can span several lines — a comment, a description, a reason. Same states and validation as Text Input, plus a character counter. The box starts at 96 px and grows with the text up to <code>data-rows</code> lines, then scrolls.</p>
+
+    <h2>Usage</h2>
+    <pre><code>&lt;div class="bog-field" data-type="textarea"&gt;          &lt;!-- data-validation · data-rows="3–8" (default 5) --&gt;
+  &lt;label class="bog-field__box"&gt;
+    &lt;span class="bog-field__text"&gt;
+      &lt;span class="bog-field__label"&gt;Payment purpose&lt;/span&gt;
+      &lt;textarea class="bog-field__input" placeholder="What is this payment for?" maxlength="140"&gt;&lt;/textarea&gt;
+    &lt;/span&gt;
+    &lt;span class="bog-field__counter"&gt;0/140&lt;/span&gt;
+  &lt;/label&gt;
+  &lt;p class="bog-field__message"&gt;Message text&lt;/p&gt;
+&lt;/div&gt;</code></pre>
+
+    <h2>Try it</h2>
+    <div class="panel"><div style="width:343px" id="ta-try"></div></div>
+
+    <h2>States</h2>
+    <div class="panel"><div class="ta-grid" id="ta-states"></div></div>
+    <div class="panel dark" style="margin-top:16px"><div class="ta-grid" id="ta-inverse"></div></div>
+  </main>
+</div>
+<script>
+  const ta = (o = {}) => `<div class="bog-field" data-type="textarea"${o.v ? ` data-validation="${o.v}"` : ""}${o.state ? ` data-state="${o.state}"` : ""}${o.inv ? ' data-appearance="inverse"' : ""}>` +
+    `<label class="bog-field__box"><span class="bog-field__text"><span class="bog-field__label">${o.label || "Input text"}</span>` +
+    `<textarea class="bog-field__input" placeholder="${o.ph || "Placeholder"}" maxlength="140"${o.ro ? " readonly" : ""}${o.dis ? " disabled" : ""}>${o.value || ""}</textarea></span>` +
+    `<span class="bog-field__counter">0/140</span></label>${o.msg ? `<p class="bog-field__message">${o.msg}</p>` : ""}</div>`;
+  const STATES = [
+    ["Default", {}], ["Active", { state: "active" }], ["Typing", { state: "typing", value: "Value" }], ["Filled", { value: "Value" }],
+    ["Typing · Success", { state: "typing", v: "success", value: "Value", msg: "Message text" }], ["Filled · Success", { v: "success", value: "Value", msg: "Message text" }],
+    ["Default · Error", { v: "error", msg: "Message text" }], ["Typing · Error", { state: "typing", v: "error", value: "Value", msg: "Message text" }],
+    ["Filled · Error", { v: "error", value: "Value", msg: "Message text" }], ["Typing · Warning", { state: "typing", v: "warning", value: "Value", msg: "Message text" }],
+    ["Filled · Warning", { v: "warning", value: "Value", msg: "Message text" }], ["Read-only", { ro: 1, value: "Value" }],
+    ["Disabled · Filled", { dis: 1, value: "Value" }], ["Disabled", { dis: 1 }], ["Skeleton", { state: "skeleton" }]
+  ];
+  const grid = (inv) => STATES.map(([n, o]) => `<div><small style="${inv ? "color:#9a9ea3" : ""}">${n}</small>${ta({ ...o, inv })}</div>`).join("");
+  document.getElementById("ta-states").innerHTML = grid(false);
+  document.getElementById("ta-inverse").innerHTML = grid(true);
+  document.getElementById("ta-try").innerHTML = ta({ label: "Payment purpose", ph: "What is this payment for?" }).replace('<p class="bog-field__message">', "");
+</script>
+</body>
+</html>

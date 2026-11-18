@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>File Attachment — BOG UI</title>
+<link rel="stylesheet" href="../bog-ui.css">
+<link rel="stylesheet" href="docs.css">
+<script src="theme.js"></script>
+<script src="../bog-ui.js" defer></script>
+<script src="components.js" defer></script>
+<style>.dx small{display:block;margin:0 0 8px;color:var(--docs-muted);font-size:11px}.dx{display:grid;gap:24px}.dx-panel{font-family:var(--font-family-bog);font-size:14px;line-height:20px;color:var(--text-primary);padding:16px 4px}</style>
+</head>
+<body>
+<div class="docs">
+  <aside class="docs-nav">
+    <a class="docs-nav__brand" href="../index.html">BOG UI</a>
+    <nav id="bog-nav" data-current="file-attachment"></nav>
+  </aside>
+  <main class="docs-main">
+    <header><h1>File Attachment</h1><a class="figma" id="figma-link" href="#" target="_blank" rel="noopener">Open in Figma ↗</a></header>
+    <p class="lead">One row per named document — proof of income, a passport photo. Tap the row to choose a file or take a photo; it shows progress, then a preview with Delete and Replace. Errors stay in the row and say what to fix. Read-only for submitted files. Several files of one kind → File uploader.</p>
+    <h2>Usage</h2>
+    <pre><code>&lt;div class="bog-attach" data-state="uploaded"&gt;                &lt;!-- default | loading | uploaded | error | readonly | skeleton · data-disabled --&gt;
+  &lt;span class="bog-attach__media"&gt;&lt;img src="preview.jpg" alt=""&gt;&lt;/span&gt;
+  &lt;span class="bog-attach__info"&gt;
+    &lt;span class="bog-attach__label"&gt;Proof of income&lt;/span&gt;
+    &lt;span class="bog-attach__hint"&gt;PNG or JPG, max 10 MB&lt;/span&gt;
+  &lt;/span&gt;
+  &lt;span class="bog-attach__actions"&gt;
+    &lt;button class="bog-attach__action" data-action="delete" aria-label="Delete"&gt;&lt;/button&gt;
+    &lt;button class="bog-attach__action" data-action="upload" aria-label="Replace"&gt;&lt;/button&gt;
+  &lt;/span&gt;
+&lt;/div&gt;</code></pre>
+    <h2>Try it</h2>
+    <div class="panel"><div class="bog-attach-list" style="width:379px" id="fa-try"></div></div>
+    <h2>States</h2>
+    <div class="panel"><div style="display:grid;grid-template-columns:repeat(auto-fill,379px);gap:24px" id="fa-grid"></div></div>
+<script>
+  const IMG = '<img src="../assets/media/placeholder.png" alt="">';
+  const att = (st, o = {}) => {
+    const media = ["uploaded", "error", "readonly"].includes(st) ? IMG : "";
+    const hint = st === "loading" ? "Uploading..." : st === "error" ? "Message text" : st === "readonly" ? "Description text" : "PNG or JPG, Max 10 MB";
+    const act = st === "loading" ? '<button class="bog-attach__action" data-action="cancel" aria-label="Cancel"></button>'
+      : st === "uploaded" ? '<button class="bog-attach__action" data-action="delete" aria-label="Delete"></button><button class="bog-attach__action" data-action="upload" aria-label="Replace"></button>'
+      : st === "error" ? '<button class="bog-attach__action" data-action="delete" aria-label="Delete"></button><button class="bog-attach__action" data-action="retry" aria-label="Retry"></button>' : "";
+    return `<div class="bog-attach" data-state="${st}"${o.dis ? " data-disabled" : ""}${o.pressed ? " data-pressed" : ""}><span class="bog-attach__media">${media}</span><span class="bog-attach__info"><span class="bog-attach__label">${o.label || "Primary label"}</span><span class="bog-attach__hint">${o.hint || hint}</span></span><span class="bog-attach__actions">${act}</span></div>`;
+  };
+  const lab = (t, h) => `<div><small style="display:block;margin-bottom:8px;color:var(--docs-muted);font-size:11px">${t}</small>${h}</div>`;
+  document.getElementById("fa-grid").innerHTML = [["Default", "default"], ["Pressed", "default", { pressed: 1 }], ["Loading", "loading"], ["Uploaded", "uploaded"], ["Error", "error"], ["Read-only", "readonly"], ["Disabled", "default", { dis: 1 }], ["Skeleton", "skeleton"]].map(([t, s, o]) => lab(t, att(s, o))).join("");
+  const tryEl = document.getElementById("fa-try");
+  tryEl.innerHTML = att("default", { label: "Proof of income", hint: "PDF, PNG or JPG, max 10 MB" }) + att("default", { label: "Passport photo", hint: "PNG or JPG, max 10 MB" });
+  tryEl.addEventListener("click", (e) => {
+    const row = e.target.closest(".bog-attach"); if (!row) return;
+    const label = row.querySelector(".bog-attach__label").textContent, a = e.target.closest("[data-action]")?.dataset.action;
+    const set = (st, hint) => { row.outerHTML = att(st, { label, hint }); };
+    if (a === "delete" || a === "cancel") return set("default", "PNG or JPG, max 10 MB");
+    if (row.dataset.state === "default" || a === "upload" || a === "retry") {
+      set("loading"); setTimeout(() => { const r = [...tryEl.children].find((x) => x.querySelector(".bog-attach__label").textContent === label);
+        r.outerHTML = att(label === "Passport photo" && a !== "retry" ? "error" : "uploaded", { label, hint: label === "Passport photo" && a !== "retry" ? "The photo is blurry. Take it again in good light" : "income_2026.pdf · 1.2 MB" }); }, 1500);
+    }
+  });
+</script>
+  </main>
+</div>
+</body>
+</html>

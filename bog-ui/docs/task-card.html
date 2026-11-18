@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Task Card — BOG UI</title>
+<link rel="stylesheet" href="../bog-ui.css">
+<link rel="stylesheet" href="docs.css">
+<script src="theme.js"></script>
+<script src="../bog-ui.js" defer></script>
+<script src="components.js" defer></script>
+<style>.dx small{display:block;margin:0 0 8px;color:var(--docs-muted);font-size:11px}.dx{display:grid;gap:24px}.dx-panel{font-family:var(--font-family-bog);font-size:14px;line-height:20px;color:var(--text-primary);padding:16px 4px}</style>
+</head>
+<body>
+<div class="docs">
+  <aside class="docs-nav">
+    <a class="docs-nav__brand" href="../index.html">BOG UI</a>
+    <nav id="bog-nav" data-current="task-card"></nav>
+  </aside>
+  <main class="docs-main">
+    <header><h1>Task Card</h1><a class="figma" id="figma-link" href="#" target="_blank" rel="noopener">Open in Figma ↗</a></header>
+    <p class="lead">The tasks of a challenge or a loyalty programme, side by side in a row that scrolls. Each has a picture and a two-line description; done ones get a green check, and a locked one stays grey until it's unlocked.</p>
+    <h2>Usage</h2>
+    <pre><code>&lt;div class="bog-tasks"&gt;                                      &lt;!-- data-state="skeleton" --&gt;
+  &lt;a class="bog-task" href="…" data-status="incomplete"&gt;     &lt;!-- incomplete | completed | unlockable --&gt;
+    &lt;span class="bog-task__media"&gt;&lt;img src="…" alt=""&gt;&lt;/span&gt;
+    &lt;span class="bog-task__text"&gt;Pay 5 times with your card&lt;/span&gt;
+  &lt;/a&gt;
+&lt;/div&gt;</code></pre>
+    <h2>Group</h2>
+    <div class="panel"><div class="bog-tasks" style="width:375px;padding:0 16px;box-sizing:border-box"><a class="bog-task" href="#" onclick="return false" data-status="completed"><span class="bog-task__media"></span><span class="bog-task__text">Open a savings goal</span></a><a class="bog-task" href="#" onclick="return false" data-status="completed"><span class="bog-task__media"></span><span class="bog-task__text">Pay 5 times with your card</span></a><a class="bog-task" href="#" onclick="return false" data-status="incomplete"><span class="bog-task__media"></span><span class="bog-task__text">Invite a friend to the app</span></a><a class="bog-task" href="#" onclick="return false" data-status="unlockable"><span class="bog-task__media"></span><span class="bog-task__text">New badge unlocked — view details</span></a></div></div>
+    <h2>Statuses and states</h2>
+    <div class="panel" style="display:flex;gap:16px;flex-wrap:wrap;align-items:flex-start">
+      <div><small style="display:block;margin:0 0 8px;color:var(--docs-muted);font-size:11px">Incomplete</small><a class="bog-task" href="#" onclick="return false" data-status="incomplete"><span class="bog-task__media"></span><span class="bog-task__text">Card Description. Fit in Two Lines Please</span></a></div>
+      <div><small style="display:block;margin:0 0 8px;color:var(--docs-muted);font-size:11px">Completed</small><a class="bog-task" href="#" onclick="return false" data-status="completed"><span class="bog-task__media"></span><span class="bog-task__text">Card Description. Fit in Two Lines Please</span></a></div>
+      <div><small style="display:block;margin:0 0 8px;color:var(--docs-muted);font-size:11px">Unlockable</small><a class="bog-task" href="#" onclick="return false" data-status="unlockable"><span class="bog-task__media"></span><span class="bog-task__text">New Badge Unlocked view details …</span></a></div>
+      <div><small style="display:block;margin:0 0 8px;color:var(--docs-muted);font-size:11px">Pressed</small><a class="bog-task" href="#" onclick="return false" data-status="incomplete" data-pressed><span class="bog-task__media"></span><span class="bog-task__text">Card Description. Fit in Two Lines Please</span></a></div>
+      <div><small style="display:block;margin:0 0 8px;color:var(--docs-muted);font-size:11px">Skeleton</small><a class="bog-task" href="#" onclick="return false" data-status="incomplete" data-state="skeleton"><span class="bog-task__media"></span><span class="bog-task__text">Card Description</span></a></div>
+    </div>
+  </main>
+</div>
+</body>
+</html>

@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Payment Method — BOG UI</title>
+<link rel="stylesheet" href="../bog-ui.css">
+<link rel="stylesheet" href="docs.css">
+<script src="theme.js"></script>
+<script src="../bog-ui.js" defer></script>
+<script src="components.js" defer></script>
+<style>.dx small{display:block;margin:0 0 8px;color:var(--docs-muted);font-size:11px}.dx{display:grid;gap:24px}.dx-panel{font-family:var(--font-family-bog);font-size:14px;line-height:20px;color:var(--text-primary);padding:16px 4px}</style>
+</head>
+<body>
+<div class="docs">
+  <aside class="docs-nav">
+    <a class="docs-nav__brand" href="../index.html">BOG UI</a>
+    <nav id="bog-nav" data-current="payment-method"></nav>
+  </aside>
+  <main class="docs-main">
+    <header><h1>Payment Method</h1><a class="figma" id="figma-link" href="#" target="_blank" rel="noopener">Open in Figma ↗</a></header>
+    <p class="lead">Apple Pay and Google Pay buttons, plus the card brand icons used next to a card number. The wallet buttons follow Apple's and Google's brand guidelines — use them as they are, don't recolour or reword them. Apple Pay shows only on Apple devices.</p>
+    <h2>Usage</h2>
+    <pre><code>&lt;button class="bog-applepay" data-style="black"&gt;      &lt;!-- white | outline | black · data-shape="pill" --&gt;
+  &lt;span class="bog-applepay__text"&gt;Pay with&lt;/span&gt;&lt;span class="bog-applepay__mark"&gt;&amp;#xF8FF;Pay&lt;/span&gt;
+&lt;/button&gt;
+&lt;button class="bog-gpay" data-style="dark" aria-label="Pay with Google Pay"&gt;             &lt;!-- light | dark · data-shape="pill" --&gt;
+  &lt;span class="bog-gpay__text"&gt;Pay with&lt;/span&gt;&lt;span class="bog-gpay__mark" aria-hidden="true"&gt;&lt;/span&gt;
+&lt;/button&gt;
+&lt;span class="bog-pay-icon" data-brand="visa" data-background&gt;&lt;/span&gt;   &lt;!-- digital | visa | visa-white | mastercard | amex --&gt;</code></pre>
+    <h2>Apple Pay Button</h2>
+    <div class="panel" style="display:flex;gap:12px;flex-wrap:wrap">
+      <div style="display:grid;gap:12px;width:343px"><button class="bog-applepay" data-style="white" data-kind="plain"><span class="bog-applepay__mark">&#xF8FF;Pay</span></button><button class="bog-applepay" data-style="outline" data-kind="plain"><span class="bog-applepay__mark">&#xF8FF;Pay</span></button><button class="bog-applepay" data-style="black" data-kind="plain"><span class="bog-applepay__mark">&#xF8FF;Pay</span></button><button class="bog-applepay" data-style="black" data-kind="pay"><span class="bog-applepay__text">Pay with</span><span class="bog-applepay__mark">&#xF8FF;Pay</span></button><button class="bog-applepay" data-style="black" data-kind="buy"><span class="bog-applepay__text">Buy with</span><span class="bog-applepay__mark">&#xF8FF;Pay</span></button></div>
+      <div style="display:grid;gap:12px;width:343px"><button class="bog-applepay" data-style="white" data-kind="pay" data-shape="pill"><span class="bog-applepay__text">Pay with</span><span class="bog-applepay__mark">&#xF8FF;Pay</span></button><button class="bog-applepay" data-style="outline" data-kind="pay" data-shape="pill"><span class="bog-applepay__text">Pay with</span><span class="bog-applepay__mark">&#xF8FF;Pay</span></button><button class="bog-applepay" data-style="black" data-kind="pay" data-shape="pill"><span class="bog-applepay__text">Pay with</span><span class="bog-applepay__mark">&#xF8FF;Pay</span></button><button class="bog-applepay" data-style="outline" data-kind="buy" data-shape="pill"><span class="bog-applepay__text">Buy with</span><span class="bog-applepay__mark">&#xF8FF;Pay</span></button><button class="bog-applepay" data-style="black" data-kind="buy" data-shape="pill"><span class="bog-applepay__text">Buy with</span><span class="bog-applepay__mark">&#xF8FF;Pay</span></button></div>
+    </div>
+    <h2>Google Pay Button</h2>
+    <div class="panel" style="display:flex;gap:12px;flex-wrap:wrap">
+      <div style="display:grid;gap:12px;width:343px"><button class="bog-gpay" data-style="light" aria-label="Google Pay"><span class="bog-gpay__mark" aria-hidden="true"></span></button><button class="bog-gpay" data-style="dark" aria-label="Google Pay"><span class="bog-gpay__mark" aria-hidden="true"></span></button><button class="bog-gpay" data-style="light" aria-label="Pay with Google Pay"><span class="bog-gpay__text">Pay with</span><span class="bog-gpay__mark" aria-hidden="true"></span></button><button class="bog-gpay" data-style="dark" aria-label="Pay with Google Pay"><span class="bog-gpay__text">Pay with</span><span class="bog-gpay__mark" aria-hidden="true"></span></button><button class="bog-gpay" data-style="light" aria-label="Buy with Google Pay"><span class="bog-gpay__text">Buy with</span><span class="bog-gpay__mark" aria-hidden="true"></span></button><button class="bog-gpay" data-style="dark" aria-label="Buy with Google Pay"><span class="bog-gpay__text">Buy with</span><span class="bog-gpay__mark" aria-hidden="true"></span></button><button class="bog-gpay" data-style="light" aria-label="Google Pay, Visa ending 7348"><span class="bog-gpay__mark" aria-hidden="true"></span><span class="bog-gpay__card"><span class="bog-pay-icon" data-brand="visa" data-background></span>•••• 7348</span></button><button class="bog-gpay" data-style="dark" aria-label="Google Pay, Visa ending 7348"><span class="bog-gpay__mark" aria-hidden="true"></span><span class="bog-gpay__card"><span class="bog-pay-icon" data-brand="visa" data-background></span>•••• 7348</span></button></div>
+      <div style="display:grid;gap:12px;width:343px"><button class="bog-gpay" data-style="light" data-shape="pill" aria-label="Google Pay"><span class="bog-gpay__mark" aria-hidden="true"></span></button><button class="bog-gpay" data-style="dark" data-shape="pill" aria-label="Google Pay"><span class="bog-gpay__mark" aria-hidden="true"></span></button><button class="bog-gpay" data-style="light" data-shape="pill" aria-label="Pay with Google Pay"><span class="bog-gpay__text">Pay with</span><span class="bog-gpay__mark" aria-hidden="true"></span></button><button class="bog-gpay" data-style="dark" data-shape="pill" aria-label="Pay with Google Pay"><span class="bog-gpay__text">Pay with</span><span class="bog-gpay__mark" aria-hidden="true"></span></button><button class="bog-gpay" data-style="light" data-shape="pill" aria-label="Google Pay, Visa ending 7348"><span class="bog-gpay__mark" aria-hidden="true"></span><span class="bog-gpay__card"><span class="bog-pay-icon" data-brand="visa" data-background></span>•••• 7348</span></button><button class="bog-gpay" data-style="dark" data-shape="pill" aria-label="Google Pay, Visa ending 7348"><span class="bog-gpay__mark" aria-hidden="true"></span><span class="bog-gpay__card"><span class="bog-pay-icon" data-brand="visa" data-background></span>•••• 7348</span></button></div>
+    </div>
+    <h2>Payment Method Icons</h2>
+    <div class="panel" style="display:flex;gap:8px;flex-wrap:wrap">
+      <div style="display:flex;flex-direction:column;align-items:center;gap:8px;width:88px"><span class="bog-pay-icon" data-brand="digital" data-background></span><small style="color:var(--docs-muted);font-size:11px">Digital card</small></div><div style="display:flex;flex-direction:column;align-items:center;gap:8px;width:88px"><span class="bog-pay-icon" data-brand="visa" data-background></span><small style="color:var(--docs-muted);font-size:11px">Visa</small></div><div style="display:flex;flex-direction:column;align-items:center;gap:8px;width:88px"><span class="bog-pay-icon" data-brand="mastercard" data-background></span><small style="color:var(--docs-muted);font-size:11px">Mastercard</small></div><div style="display:flex;flex-direction:column;align-items:center;gap:8px;width:88px"><span class="bog-pay-icon" data-brand="amex" data-background></span><small style="color:var(--docs-muted);font-size:11px">Amex</small></div><div style="display:flex;flex-direction:column;align-items:center;gap:8px;width:88px"><span class="bog-pay-icon" data-brand="visa"></span><small style="color:var(--docs-muted);font-size:11px">Visa, no tile</small></div><div style="display:flex;flex-direction:column;align-items:center;gap:8px;width:88px"><span class="bog-pay-icon" data-brand="mastercard"></span><small style="color:var(--docs-muted);font-size:11px">Mastercard, no tile</small></div><div style="display:flex;flex-direction:column;align-items:center;gap:8px;width:88px"><span class="bog-pay-icon" data-brand="amex"></span><small style="color:var(--docs-muted);font-size:11px">Amex, no tile</small></div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:8px;width:88px;padding:8px 0;border-radius:8px;background:#1b1c1d"><span class="bog-pay-icon" data-brand="visa-white"></span><small style="color:#fff;font-size:11px">Visa White</small></div>
+    </div>
+  </main>
+</div>
+</body>
+</html>

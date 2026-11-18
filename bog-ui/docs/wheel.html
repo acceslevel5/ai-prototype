@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Wheel Picker — BOG UI</title>
+<link rel="stylesheet" href="../bog-ui.css">
+<link rel="stylesheet" href="docs.css">
+<script src="theme.js"></script>
+<script src="../bog-ui.js" defer></script>
+<script src="components.js" defer></script>
+<style>.dx small{display:block;margin:0 0 8px;color:var(--docs-muted);font-size:11px}.dx{display:grid;gap:24px}.dx-panel{font-family:var(--font-family-bog);font-size:14px;line-height:20px;color:var(--text-primary);padding:16px 4px}</style>
+</head>
+<body>
+<div class="docs">
+  <aside class="docs-nav">
+    <a class="docs-nav__brand" href="../index.html">BOG UI</a>
+    <nav id="bog-nav" data-current="wheel"></nav>
+  </aside>
+  <main class="docs-main">
+    <header><h1>Wheel Picker</h1><a class="figma" id="figma-link" href="#" target="_blank" rel="noopener">Open in Figma ↗</a></header>
+    <p class="lead">Picks one value from an ordered list by scrolling — a loan term, a day, an hour. The option in the middle is selected, large and dark; the ones around it get smaller and fainter. Multi puts several wheels side by side, like day · month · year.</p>
+    <h2>Usage</h2>
+    <pre><code>&lt;div class="bog-wheel" role="listbox" aria-label="Term" tabindex="0"&gt;
+  &lt;div class="bog-wheel__option" role="option"&gt;3 month&lt;/div&gt;
+  &lt;div class="bog-wheel__option" role="option" aria-selected="true"&gt;5 month&lt;/div&gt;
+  …
+&lt;/div&gt;
+&lt;!-- Multi: &lt;div class="bog-wheel-group"&gt; two or three .bog-wheel &lt;/div&gt; --&gt;</code></pre>
+    <h2>Try it</h2>
+    <div class="panel"><div style="display:flex;gap:64px;align-items:center">
+      <div class="bog-wheel" role="listbox" aria-label="Term" tabindex="0" id="wh-single" style="width:140px"></div>
+      <div class="bog-wheel-group" id="wh-multi"></div>
+      <p style="font-family:var(--font-family-bog);font-size:14px" id="wh-out"></p>
+    </div></div>
+<script>
+  const opts = (list, sel) => list.map((t) => `<div class="bog-wheel__option" role="option"${t === sel ? ' aria-selected="true"' : ""}>${t}</div>`).join("");
+  document.getElementById("wh-single").innerHTML = opts(Array.from({ length: 24 }, (_, i) => `${i + 1} month`), "5 month");
+  const MON = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  document.getElementById("wh-multi").innerHTML =
+    `<div class="bog-wheel" role="listbox" aria-label="Day" tabindex="0" style="width:64px">${opts(Array.from({ length: 31 }, (_, i) => String(i + 1)), "4")}</div>` +
+    `<div class="bog-wheel" role="listbox" aria-label="Month" tabindex="0" style="width:80px">${opts(MON, "Nov")}</div>` +
+    `<div class="bog-wheel" role="listbox" aria-label="Year" tabindex="0" style="width:96px">${opts(Array.from({ length: 11 }, (_, i) => String(2020 + i)), "2026")}</div>`;
+  const out = () => { const v = (id) => document.querySelector(`${id} [aria-selected="true"]`)?.textContent; document.getElementById("wh-out").textContent = `Term: ${v("#wh-single")} · Date: ${[...document.querySelectorAll("#wh-multi .bog-wheel")].map((w) => w.querySelector('[aria-selected="true"]')?.textContent).join(" ")}`; };
+  document.addEventListener("change", (e) => { if (e.target.closest && e.target.closest(".bog-wheel")) out(); });
+  out();
+</script>
+  </main>
+</div>
+</body>
+</html>

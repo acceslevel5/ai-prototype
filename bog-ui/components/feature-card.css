@@ -1,0 +1,118 @@
+/* ==========================================================================
+   BOG UI — Feature Card
+   Figma: Feature Card (63398:3448) · _Offer (63398:3432) · _Bottom Badge (63398:3560)
+
+   A partner offer: a picture with an offer badge, the brand and its category.
+     <a class="bog-feature" href="#" data-size="small">                mini | small (default) | large · data-state="skeleton"
+       <span class="bog-feature__media">
+         <img src="…" alt="">
+         <span class="bog-feature__tags">                                optional, top left
+           <span class="bog-feature__tag">Max. 500 ₾</span>             Cap
+           <span class="bog-feature__tag" data-type="timer">2 Days</span>   Timer
+         </span>
+         <span class="bog-feature__offer" data-brand>                    bottom right (Small) / top left (Large)
+           <span class="bog-feature__offer-label" data-status="sale">25% Discount</span>   mr | plus | cashback | sale | other
+         </span>
+       </span>
+       <span class="bog-feature__info">
+         <span class="bog-media-circle" data-size="32"><img src="logo.png" alt=""></span>      not on Mini
+         <span class="bog-feature__text"><span class="bog-feature__title">Brand Title</span><span class="bog-feature__desc">Category</span></span>
+       </span>
+     </a>
+   data-brand on the offer adds the dark SOLO tab in front of it.
+   ========================================================================== */
+
+.bog-feature {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-gap-small);
+  box-sizing: border-box;
+  width: 164px;
+  color: inherit;
+  font-family: var(--font-family-bog);
+  text-decoration: none;
+  -webkit-tap-highlight-color: transparent;
+}
+.bog-feature__media {
+  position: relative;
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  border-radius: var(--radius-default);
+  background: var(--support-skeleton-background) url("../assets/media/placeholder.png") center / 56px no-repeat;
+}
+.bog-feature__media > img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.bog-feature__media::after { content: ""; position: absolute; inset: 0; pointer-events: none; transition: background-color 120ms ease; }
+.bog-feature:is(:active, [data-pressed]):not([data-state="skeleton"]) .bog-feature__media::after { background: rgba(0, 0, 0, 0.06); }
+
+/* Status tags: top left */
+.bog-feature__tags { position: absolute; top: 0; left: 0; right: 0; z-index: 1; display: flex; flex-wrap: wrap; gap: var(--spacing-gap-x-small); padding: 6px; }
+.bog-feature__tag { display: inline-flex; align-items: center; min-height: 20px; padding: 0 var(--spacing-padding-small); border-radius: var(--radius-full); background: var(--status-neutral-01); color: var(--text-black); font-size: var(--label-small-size); line-height: var(--label-small-line-height); font-weight: var(--label-small-weight); white-space: nowrap; }
+.bog-feature__tag[data-type="timer"] { background: var(--status-error-02); color: var(--text-inverse-primary); }
+
+/* Offer (Loyalty Badge): a tab in the bottom-right corner */
+.bog-feature__offer { position: absolute; right: 0; bottom: 0; z-index: 1; display: flex; align-items: center; max-width: calc(100% - 16px); }
+.bog-feature__offer[data-brand]::before {
+  content: "";
+  flex: none;
+  width: 38px;
+  height: 24px;
+  margin-right: -16px;
+  border-top-left-radius: var(--radius-medium);
+  background: url("../icons/solo-16.svg") 4px center / 16px no-repeat, var(--badge-segment-regal-blue-layer-02);
+}
+.bog-feature__offer-label {
+  --_bg: var(--badge-loyalty-ice-blue-layer-02);
+  --_fg: var(--badge-loyalty-ice-blue-layer-01);
+  position: relative;
+  min-width: 0;
+  box-sizing: border-box;
+  height: 24px;
+  padding: 4px var(--spacing-padding-small);
+  overflow: hidden;
+  border-top-left-radius: var(--radius-medium);
+  background: var(--_bg);
+  color: var(--_fg);
+  font-size: var(--label-small-size);
+  line-height: var(--label-small-line-height);
+  font-weight: var(--label-small-weight);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.bog-feature__offer-label[data-status="plus"]     { --_bg: var(--badge-loyalty-vivid-orange-layer-02); --_fg: var(--badge-loyalty-vivid-orange-layer-01); }
+.bog-feature__offer-label[data-status="cashback"] { --_bg: var(--badge-loyalty-royal-purple-layer-02); --_fg: var(--badge-loyalty-royal-purple-layer-01); }
+.bog-feature__offer-label[data-status="sale"]     { --_bg: var(--badge-loyalty-vivid-magenta-layer-02); --_fg: var(--badge-loyalty-vivid-magenta-layer-01); }
+.bog-feature__offer-label[data-status="other"]    { --_bg: var(--decorative-coolgray-layer-02); --_fg: var(--text-inverse-primary); }
+
+.bog-feature__info { display: flex; align-items: center; gap: var(--spacing-gap-small); min-width: 0; }
+.bog-feature__text { display: flex; flex: 1 1 auto; flex-direction: column; min-width: 0; }
+.bog-feature__title,
+.bog-feature__desc { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.bog-feature__title { color: var(--text-primary); font-size: 14px; line-height: 20px; font-weight: 600; letter-spacing: -0.1px; }
+.bog-feature__desc { color: var(--text-secondary); font-size: 11px; line-height: 16px; font-weight: 500; }
+
+/* Large: full-width card, offer pill at the top left, info on a light strip */
+.bog-feature[data-size="large"] { width: 340px; gap: 0; overflow: hidden; border-radius: var(--radius-default); background: var(--layer-layer-02); }
+.bog-feature[data-size="large"] .bog-feature__media { aspect-ratio: auto; height: 190px; border-radius: 0; }
+.bog-feature[data-size="large"] .bog-feature__offer { top: 12px; left: 12px; right: auto; bottom: auto; gap: 4px; }
+.bog-feature[data-size="large"] .bog-feature__offer[data-brand]::before { width: 24px; margin: 0; border-radius: var(--radius-full); background: url("../icons/solo-16.svg") center / 16px no-repeat, var(--badge-segment-regal-blue-layer-02); }
+.bog-feature[data-size="large"] .bog-feature__offer-label { border-radius: var(--radius-full); }
+.bog-feature[data-size="large"] .bog-feature__tags { top: auto; bottom: 0; }
+.bog-feature[data-size="large"] .bog-feature__info { gap: var(--spacing-gap-medium); padding: 12px; }
+.bog-feature[data-size="large"] .bog-media-circle { --s: 40px; }
+.bog-feature[data-size="large"]:is(:active, [data-pressed]):not([data-state="skeleton"]) { background: var(--layer-layer-03, #eeeff0); }
+
+/* Mini: a 105px square and one line of title */
+.bog-feature[data-size="mini"] { width: 105px; gap: var(--spacing-gap-small); }
+.bog-feature[data-size="mini"] .bog-feature__media { aspect-ratio: 1; border-radius: var(--radius-medium); }
+.bog-feature[data-size="mini"] .bog-feature__title { padding-left: 4px; font-size: var(--label-small-size); line-height: var(--label-small-line-height); font-weight: 500; letter-spacing: 0; }
+
+/* Skeleton */
+.bog-feature[data-state="skeleton"] { pointer-events: none; }
+.bog-feature[data-state="skeleton"] .bog-feature__media { background: var(--support-skeleton-background); }
+.bog-feature[data-state="skeleton"] .bog-feature__media > * { visibility: hidden; }
+.bog-feature[data-state="skeleton"] .bog-media-circle { background: var(--support-skeleton); }
+.bog-feature[data-state="skeleton"] .bog-media-circle > * { visibility: hidden; }
+.bog-feature[data-state="skeleton"] :is(.bog-feature__title, .bog-feature__desc) { width: fit-content; min-width: 60%; color: transparent; padding: 4px 0; background: var(--support-skeleton); background-clip: content-box; border-radius: var(--radius-2x-small); }
+.bog-feature[data-state="skeleton"] .bog-feature__desc { min-width: 100%; padding: 4px 0; line-height: 0; height: 8px; box-sizing: content-box; }

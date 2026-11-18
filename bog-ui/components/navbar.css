@@ -1,0 +1,122 @@
+/* ==========================================================================
+   BOG UI — Navigation Bar
+   Figma: Navigation Bar (53831:5293 Navigation bar · 53829:492 _Navigation header)
+
+     <header class="bog-navbar">                      data-appearance="white | black" (static, over imagery)
+       <div class="bog-statusbar"></div>              optional — iOS status bar for mockups (44px)
+       <div class="bog-navbar__header">
+         <button class="bog-icon-btn" data-type="neutral" data-size="small" aria-label="Back"><span class="bog-icon" data-icon="chevron-left"></span></button>
+         <div class="bog-navbar__titles">
+           <span class="bog-navbar__caption">Caption text</span>          optional (above the title)
+           <h1 class="bog-navbar__title">Title</h1>
+           <span class="bog-navbar__secondary">Secondary text</span>      optional (below the title)
+         </div>
+         <div class="bog-navbar__actions">
+           <button class="bog-icon-btn" data-type="neutral" data-size="small" aria-label="Chat"><span class="bog-icon" data-icon="chat"></span></button>
+         </div>
+       </div>
+     </header>
+
+   Right slot items: icon buttons (up to 2), a small neutral button, a timer (.bog-navbar__timer)
+   or a media circle (.bog-avatar). data-divider adds the 1px line, data-background the white fill.
+   Themed (default) follows the theme; White / Black Static keep fixed colours over images.
+   ========================================================================== */
+
+.bog-navbar {
+  --_fg: var(--text-primary);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  min-width: 320px;
+  color: var(--_fg);
+  font-family: var(--font-family-bog);
+}
+.bog-navbar[data-background] { background: var(--layer-layer-01); }
+.bog-navbar[data-divider] { box-shadow: inset 0 calc(-1 * var(--border-width-default)) 0 var(--border-alpha-01); }
+.bog-navbar[data-appearance="white"] { --_fg: var(--text-white-primary); }
+.bog-navbar[data-appearance="black"] { --_fg: var(--text-black); }
+
+/* iOS status bar (mockups): time on the left, signal / Wi-Fi / battery on the right */
+.bog-statusbar {
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: space-between;
+  box-sizing: border-box;
+  height: 44px;
+  padding: 1px 19px 0;
+}
+.bog-statusbar::before,
+.bog-statusbar::after {
+  content: "";
+  height: 13px;
+  background-color: currentColor;
+  -webkit-mask: var(--_m) center / contain no-repeat;
+          mask: var(--_m) center / contain no-repeat;
+}
+.bog-statusbar::before { --_m: url("../assets/status-time.svg"); width: 32.12px; height: 12.58px; }
+.bog-statusbar::after  { --_m: url("../assets/status-icons.svg"); width: 77.4px; }
+
+.bog-navbar__header {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-gap-medium);
+  box-sizing: border-box;
+  height: 44px;
+  padding: 0 var(--spacing-padding-medium);
+}
+/* Icon buttons sit in a 40×44 touch target */
+.bog-navbar__header .bog-icon-btn { margin: 0 var(--spacing-padding-x-small); flex: none; }
+.bog-navbar__header > .bog-icon-btn:first-child { margin-left: var(--spacing-padding-x-small); }
+
+.bog-navbar__titles {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  justify-content: center;
+  min-width: 0;
+  padding: var(--spacing-padding-x-small) 0;
+}
+.bog-navbar :is(.bog-navbar__title, .bog-navbar__secondary, .bog-navbar__caption) {
+  margin: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.bog-navbar .bog-navbar__title {
+  font-family: inherit;
+  color: inherit;
+  font-size: var(--subtitle-large-size);
+  line-height: var(--subtitle-large-line-height);
+  font-weight: var(--subtitle-large-weight);
+  letter-spacing: var(--subtitle-large-letter-spacing);
+}
+.bog-navbar__secondary {
+  font-size: var(--label-small-size);
+  line-height: var(--label-small-line-height);
+  font-weight: var(--label-small-weight);
+}
+.bog-navbar__caption {
+  font-size: var(--label-xsmall-size);
+  line-height: var(--label-xsmall-line-height);
+  font-weight: var(--label-xsmall-weight);
+}
+
+.bog-navbar__actions {
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--spacing-gap-small);
+}
+.bog-navbar__actions .bog-icon-btn { margin: 0 var(--spacing-padding-x-small); }
+.bog-navbar__actions .bog-btn { margin: 0 var(--spacing-padding-x-small); }
+.bog-navbar__timer {
+  padding: 0 var(--spacing-padding-x-small);
+  font-size: var(--label-medium-size);
+  line-height: var(--label-medium-line-height);
+  font-weight: var(--label-medium-weight);
+  font-variant-numeric: tabular-nums;
+  white-space: pre;
+}

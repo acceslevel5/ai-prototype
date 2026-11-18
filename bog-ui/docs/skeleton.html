@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Skeleton — BOG UI</title>
+<link rel="stylesheet" href="../bog-ui.css">
+<link rel="stylesheet" href="docs.css">
+<script src="theme.js"></script>
+<script src="../bog-ui.js" defer></script>
+<script src="components.js" defer></script>
+<style>.dx small{display:block;margin:0 0 8px;color:var(--docs-muted);font-size:11px}.dx{display:grid;gap:24px}.dx-panel{font-family:var(--font-family-bog);font-size:14px;line-height:20px;color:var(--text-primary);padding:16px 4px}</style>
+</head>
+<body>
+<div class="docs">
+  <aside class="docs-nav">
+    <a class="docs-nav__brand" href="../index.html">BOG UI</a>
+    <nav id="bog-nav" data-current="skeleton"></nav>
+  </aside>
+  <main class="docs-main">
+    <header><h1>Skeleton</h1><a class="figma" id="figma-link" href="#" target="_blank" rel="noopener">Open in Figma ↗</a></header>
+    <p class="lead">Grey placeholders that hold the layout while content loads, so the screen doesn't jump when it arrives. Every component has its own skeleton state (<code>data-state="skeleton"</code>); use these pieces for custom layouts. The bar heights stand in for the text styles they replace.</p>
+    <h2>Usage</h2>
+    <pre><code>&lt;span class="bog-skeleton"&gt;&lt;/span&gt;                              &lt;!-- 48×48 block; data-shape="circle" --&gt;
+&lt;span class="bog-skeleton-text" data-style="heading"&gt;&lt;/span&gt;
+&lt;div class="bog-skeleton-paragraph"&gt;&lt;/div&gt;                     &lt;!-- data-size="small" --&gt;</code></pre>
+    <h2>Text elements</h2>
+    <div class="panel"><div style="display:grid;grid-template-columns:120px 96px 1fr;gap:20px 24px;align-items:center;font-size:12px;color:var(--docs-muted)" id="sk-text"></div></div>
+    <h2>Skeleton Text</h2>
+    <div class="panel"><div class="dx" style="width:281px"><div><small>Paragraph Size = Default</small><div class="bog-skeleton-paragraph"></div></div><div><small>Paragraph Size = Small</small><div class="bog-skeleton-paragraph" data-size="small"></div></div></div></div>
+    <h2>Skeleton Default</h2>
+    <div class="panel"><div style="display:flex;gap:24px;align-items:center"><span class="bog-skeleton"></span><span class="bog-skeleton" data-shape="circle"></span><span class="bog-skeleton" style="width:160px;height:96px;border-radius:12px"></span></div></div>
+    <h2>Example: a list loading</h2>
+    <div class="panel"><div style="width:343px;display:flex;flex-direction:column;gap:20px" id="sk-list"></div></div>
+<script>
+  const ST = [["display", "Display", "48"], ["heading", "Heading", "24"], ["title", "Title", "12"], ["subtitle", "Subtitle", "12"], ["body", "Body", "8"], ["list-body", "List Body", "8"], ["label", "Label", "8"], ["label-xsmall", "Label xSmall", "4"]];
+  document.getElementById("sk-text").innerHTML = ST.map(([s, n, h]) => `<span>${n} · ${h}px</span><span class="bog-skeleton-text" data-style="${s}"></span><span></span>`).join("");
+  document.getElementById("sk-list").innerHTML = Array.from({ length: 4 }, () => '<div style="display:flex;gap:12px;align-items:center"><span class="bog-skeleton" data-shape="circle" style="width:40px;height:40px"></span><div style="display:flex;flex-direction:column;gap:8px;flex:1"><span class="bog-skeleton-text" data-style="title" style="width:60%"></span><span class="bog-skeleton-text" data-style="label" style="width:35%"></span></div><span class="bog-skeleton-text" data-style="title" style="width:56px"></span></div>').join("");
+</script>
+  </main>
+</div>
+</body>
+</html>

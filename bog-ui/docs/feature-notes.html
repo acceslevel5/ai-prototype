@@ -1,0 +1,252 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Feature Notes Page — BOG UI</title>
+<link rel="stylesheet" href="../bog-ui.css">
+<link rel="stylesheet" href="docs.css">
+<script src="theme.js"></script>
+<script src="../bog-ui.js" defer></script>
+<script src="components.js" defer></script>
+<style>.dx small{display:block;margin:0 0 8px;color:var(--docs-muted);font-size:11px}.dx{display:grid;gap:24px}.dx-panel{font-family:var(--font-family-bog);font-size:14px;line-height:20px;color:var(--text-primary);padding:16px 4px}</style>
+</head>
+<body>
+<div class="docs">
+  <aside class="docs-nav">
+    <a class="docs-nav__brand" href="../index.html">BOG UI</a>
+    <nav id="bog-nav" data-current="feature-notes"></nav>
+  </aside>
+  <main class="docs-main docs-split"><div>
+    <header><h1>Feature Notes Page</h1><a class="figma" id="figma-link" href="#" target="_blank" rel="noopener">Open in Figma ↗</a></header>
+    <p class="lead">What's new after an update: a large picture, slider dots, a title, a short description and one button, on a full screen users close with ×. Several notes swipe sideways; the button goes to the next one with the Slide motion (the new picture sweeps over the old one while the text drifts across) and, on the last, finishes.</p>
+    <h2>Usage</h2>
+    <pre><code>&lt;div class="bog-notes"&gt;
+  &lt;button class="bog-icon-btn bog-notes__close" data-type="neutral" data-size="small" aria-label="Close"&gt;&lt;span class="bog-icon" data-icon="close"&gt;&lt;/span&gt;&lt;/button&gt;
+  &lt;div class="bog-notes__track"&gt;
+    &lt;div class="bog-notes__slide"&gt;
+      &lt;div class="bog-notes__media"&gt;&lt;img src="…" alt=""&gt;&lt;/div&gt;
+      &lt;div class="bog-notes__text"&gt;&lt;h2 class="bog-notes__title"&gt;Release Title&lt;/h2&gt;&lt;p class="bog-notes__desc"&gt;…&lt;/p&gt;&lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+  &lt;footer class="bog-notes__footer"&gt;
+    &lt;div class="bog-dots" data-count="3" data-current="1"&gt;&lt;/div&gt;
+    &lt;button class="bog-btn bog-notes__next" data-type="primary" data-width="fill"&gt;Next&lt;/button&gt;
+    &lt;span class="bog-notes__home"&gt;&lt;/span&gt;
+  &lt;/footer&gt;
+&lt;/div&gt;
+&lt;!-- Next plays the Slide motion. "noteschange" fires as it starts (detail.index),
+     "notesdone" when the button is pressed on the last note. BOG.notesGo(root, 2) jumps by code. --&gt;</code></pre>
+    <h2 id="motion">Motion</h2>
+    <p class="lead">Next slides to the following note in about half a second — try it in the phone on the right. The new picture sweeps in from the right edge and covers the old one, which leaves to the left 50 ms behind it. The old text drifts 50 px left as it fades; the new text arrives from 50 px to the right and fades in a little later.
+      Source: <a href="https://www.figma.com/design/LCAlFnhOdhc9q4LDoajuhw/Component-Motion-Guidelines?node-id=2657-20030" target="_blank" rel="noopener">Feature Note – Slide ↗</a></p>
+    <div class="panel">
+      <div class="motion-tabs" role="tablist">
+        <button role="tab" data-tab="design" aria-selected="true">Designers</button>
+        <button role="tab" data-tab="ios">iOS · SwiftUI</button>
+        <button role="tab" data-tab="android">Android · Compose</button>
+        <button role="tab" data-tab="web">Web</button>
+      </div>
+      <section class="motion-pane" data-pane="design" id="motion-design"></section>
+      <section class="motion-pane" data-pane="ios" hidden>
+        <p>Keep the current and next index in state; draw both notes in a ZStack (next on top) and drive each layer with its own timing curve. When the longest one ends, drop the old note.</p>
+        <pre><code data-snippet="ios"></code></pre>
+        <div class="motion-actions"><button class="bog-btn" data-type="secondary" data-size="small" data-copy-link="ios">Copy link</button><button class="bog-btn" data-type="neutral" data-size="small" data-copy="ios">Copy code</button></div>
+      </section>
+      <section class="motion-pane" data-pane="android" hidden>
+        <p>One <code>Animatable</code> per layer, launched together with their own delays; the pager jumps to the next page when they finish.</p>
+        <pre><code data-snippet="android"></code></pre>
+        <div class="motion-actions"><button class="bog-btn" data-type="secondary" data-size="small" data-copy-link="android">Copy link</button><button class="bog-btn" data-type="neutral" data-size="small" data-copy="android">Copy code</button></div>
+      </section>
+      <section class="motion-pane" data-pane="web" hidden>
+        <p>Built into <code>bog-ui.js</code>: the Next button plays it (Web Animations API). Nothing to call; <code>BOG.notesGo(root, index)</code> plays it from code.</p>
+        <pre><code data-snippet="web"></code></pre>
+        <div class="motion-actions"><button class="bog-btn" data-type="secondary" data-size="small" data-copy-link="web">Copy link</button><button class="bog-btn" data-type="neutral" data-size="small" data-copy="web">Copy code</button></div>
+      </section>
+    </div>
+  </div>
+
+  <aside class="docs-preview" aria-label="Mobile preview">
+    <div class="docs-preview__controls"><span>Pages</span><div class="docs-sort" id="notes-count" role="group" aria-label="Number of pages"></div></div>
+    <div class="docs-preview__controls"><button class="bog-btn" data-type="secondary" data-size="small" id="notes-restart">Restart</button><label><input type="checkbox" id="notes-slow"> Slow motion (×8)</label></div>
+    <div class="docs-phone" id="notes-phone">
+      <div class="docs-phone__status" style="position:relative;z-index:3"><span>9:41</span><span>●●●</span></div>
+      <div class="bog-notes" id="notes" style="position:absolute;inset:0;min-height:0"></div>
+      <div id="notes-done" style="position:absolute;inset:0;display:none;place-items:center;font-family:var(--font-family-bog)"><button class="bog-btn" data-type="neutral" id="notes-again">Show the notes again</button></div>
+    </div>
+    <small>375 × 760 · press Next to see the Slide motion, or swipe the picture.</small>
+  </aside>
+<script>
+  // ---- Live preview: 1–8 notes ----
+  const NOTES = [
+    ["#e8f5ec", "Release Title", "We've improved the app for a smoother banking experience. Update now for the latest features."],
+    ["#fdeee3", "Split the bill", "Share any payment with friends in two taps — they pay you back right in the app."],
+    ["#e6eefc", "Faster transfers", "Transfers to other banks now arrive within minutes, any day of the week."],
+    ["#f3e9fd", "Savings goals", "Set a goal, pick a date and let small top-ups get you there."],
+    ["#fff6d9", "Card controls", "Freeze a card, change limits or turn off online payments in one place."],
+    ["#e3f6f6", "New statements", "Download a statement for any period as a PDF, in Georgian or English."],
+    ["#fde8ea", "Cashback", "See the cashback you earned on every purchase, right in the history."],
+    ["#ececef", "Dark mode", "The app now follows your phone's light or dark setting."]
+  ];
+  const notes = document.getElementById("notes"), done = document.getElementById("notes-done"), countEl = document.getElementById("notes-count");
+  let count = 3;
+  function render() {
+    notes.removeAttribute("data-current");
+    notes.innerHTML = '<button class="bog-icon-btn bog-notes__close" data-type="neutral" data-size="small" aria-label="Close"><span class="bog-icon" data-icon="close"></span></button>' +
+      '<div class="bog-notes__track">' + NOTES.slice(0, count).map(([bg, t, d]) =>
+        `<div class="bog-notes__slide"><div class="bog-notes__media" style="background-color:${bg}"></div><div class="bog-notes__text"><h2 class="bog-notes__title">${t}</h2><p class="bog-notes__desc">${d}</p></div></div>`).join("") + "</div>" +
+      `<footer class="bog-notes__footer"><div class="bog-dots" data-count="${count}" data-current="1"></div><button class="bog-btn bog-notes__next" data-type="primary" data-width="fill">${count > 1 ? "Next" : "Got it"}</button><span class="bog-notes__home"></span></footer>`;
+    if (window.BOG && BOG.dots) BOG.dots(notes.querySelector(".bog-dots"));
+    if (window.BOG && BOG.notesLayout) BOG.notesLayout();
+    notes.querySelector(".bog-notes__close").addEventListener("click", close);
+    notes.style.display = ""; done.style.display = "none";
+    countEl.innerHTML = Array.from({ length: 8 }, (_, i) => `<button type="button" data-count="${i + 1}" aria-pressed="${i + 1 === count}">${i + 1}</button>`).join("");
+  }
+  const close = () => { notes.style.display = "none"; done.style.display = "grid"; };
+  const label = () => { notes.querySelector(".bog-notes__next").textContent = notes.getAttribute("data-current") === String(count) ? "Got it" : "Next"; };
+  notes.addEventListener("notesdone", close);
+  notes.addEventListener("noteschange", label);
+  notes.addEventListener("scroll", label, true);
+  countEl.addEventListener("click", (e) => { const b = e.target.closest("[data-count]"); if (b) { count = +b.dataset.count; render(); } });
+  document.getElementById("notes-restart").addEventListener("click", render);
+  document.getElementById("notes-again").addEventListener("click", render);
+  document.getElementById("notes-slow").addEventListener("change", (e) => { notes.style.setProperty("--bog-notes-slow", e.target.checked ? "8" : "1"); });
+  render();
+
+  // ---- Motion handoff ----
+  const FIG = "https://www.figma.com/design/LCAlFnhOdhc9q4LDoajuhw/Component-Motion-Guidelines?node-id=";
+  const timeline = (rows, max) => {
+    const pct = (ms) => (ms / max * 100).toFixed(2) + "%";
+    return `<div class="motion-tl">${rows.map(([n, bars]) => `<span>${n}</span><div class="motion-tl__track">${bars.map(([st, l, kind]) =>
+      `<span class="motion-tl__bar"${kind ? ` data-kind="${kind}"` : ""} style="left:${pct(st)};width:${pct(l)}">${l}</span>`).join("")}</div>`).join("")}` +
+      `<span></span><div class="motion-tl__axis">${Array.from({ length: 11 }, (_, i) => `<span>${i * max / 10}</span>`).join("")}</div></div>`;
+  };
+  const spec = (rows) => `<table class="motion-spec"><thead><tr><th>Layer</th><th>Property</th><th>Keyframes</th><th>Timing</th><th>Easing (cubic-bezier)</th></tr></thead><tbody>${rows.map((r) =>
+    `<tr>${r.map((c, i) => `<td>${i === 4 ? `<code>${c}</code>` : c}</td>`).join("")}</tr>`).join("")}</tbody></table>`;
+  const SPEC = [
+    ["New picture (2)", "Position X", "+100% (screen width) → 0", "0–400 ms", "0.33, 0, 0.20, 1"],
+    ["Old picture (1)", "Position X", "0 → −100%", "50–450 ms", "0.33, 0, 0.06, 1"],
+    ["Old text (1)", "Position X", "0 → −50 px", "0–400 ms", "0.33, 0, 0.17, 1"],
+    ["Old text (1)", "Opacity", "100% → 0", "0–300 ms", "0.79, 0, 0.27, 1"],
+    ["New text (2)", "Position X", "+50 px → 0", "50–450 ms", "0.33, 0, 0.17, 1"],
+    ["New text (2)", "Opacity", "0 → 100%", "170–470 ms", "0.67, 0, 0.18, 1"]
+  ];
+  document.getElementById("motion-design").innerHTML =
+    "<p>The picture is the top part of the note (everything above the dots); the text is the title and description below it. The dots, button and close button stay still — the dots switch at the start.</p>" +
+    `<h3>Slide (Next)<a href="${FIG}2657-20030" target="_blank" rel="noopener">Figma ↗</a></h3>` +
+    timeline([["New picture · X", [[0, 400]]], ["Old picture · X", [[50, 400]]], ["Old text · X", [[0, 400]]], ["Old text · Opacity", [[0, 300, "fade"]]],
+      ["New text · X", [[50, 400]]], ["New text · Opacity", [[170, 300, "fade"]]]], 600) + spec(SPEC) +
+    "<h3>Rules</h3><ul>" +
+      "<li>The new picture is drawn above the old one: it starts first and covers it, and the old one trails 50 ms behind.</li>" +
+      "<li>The pictures move a full screen width; the text moves only 50 px — it cross-fades in place rather than travelling with the picture.</li>" +
+      "<li>The new text starts fading in at 170 ms while the old text is still fading out (gone at 300 ms), so the two briefly cross-fade.</li>" +
+      "<li>Swiping by hand follows the finger (plain paging); this motion is for the button.</li>" +
+      "<li>Going back (not in the guide) mirrors it: pictures and text move the other way with the same timings.</li>" +
+      "<li>Reduce Motion / Remove animations on: switch notes instantly.</li>" +
+    "</ul>" +
+    '<div class="motion-actions"><button class="bog-btn" data-type="secondary" data-size="small" data-copy-link="design">Copy link</button><button class="bog-btn" data-type="neutral" data-size="small" data-copy="spec">Copy spec as text</button></div>';
+  const SPEC_TEXT = ["Feature Notes Page — Slide motion (Next)", "Guide: " + FIG + "2657-20030",
+    ...SPEC.map((r) => "  " + r.join("  ·  ")), "New picture is drawn above the old one. Reduce Motion: instant."].join("\n");
+
+  const CODE = {
+    web: `<!-- Built in: bog-ui.js plays it when .bog-notes__next is pressed. From code: -->
+<script>BOG.notesGo(document.querySelector(".bog-notes"), 2);<\/script>
+
+// What bog-ui.js runs (w = screen width; a = old note, b = new note)
+const e = (...p) => \`cubic-bezier(\${p})\`;
+b.media.animate([{ transform: \`translateX(\${w}px)\` }, { transform: "none" }],            // drawn on top
+  { duration: 400, easing: e(0.33, 0, 0.2, 1) });
+a.media.animate([{ transform: "none" }, { transform: \`translateX(\${-w}px)\` }],
+  { duration: 400, delay: 50, easing: e(0.33, 0, 0.06, 1), fill: "both" });
+a.text.animate([{ transform: "none" }, { transform: "translateX(-50px)" }],
+  { duration: 400, easing: e(0.33, 0, 0.17, 1), fill: "both" });
+a.text.animate([{ opacity: 1 }, { opacity: 0 }],
+  { duration: 300, easing: e(0.79, 0, 0.27, 1), fill: "both" });
+b.text.animate([{ transform: "translateX(50px)" }, { transform: "none" }],
+  { duration: 400, delay: 50, easing: e(0.33, 0, 0.17, 1), fill: "both" });
+b.text.animate([{ opacity: 0 }, { opacity: 1 }],
+  { duration: 300, delay: 170, easing: e(0.67, 0, 0.18, 1), fill: "both" });
+// prefers-reduced-motion: reduce → no animation, the track just jumps`,
+    ios: `import SwiftUI
+
+struct FeatureNotes: View {
+    let notes: [Note]
+    @State private var index = 0          // note on screen
+    @State private var incoming: Int?     // note sliding in
+    @State private var p = (newPic: 0.0, oldPic: 0.0, oldTextX: 0.0, oldTextO: 1.0, newTextX: 0.0, newTextO: 0.0)
+    @Environment(\\.accessibilityReduceMotion) private var reduceMotion
+
+    func next(width w: CGFloat) {
+        guard index + 1 < notes.count, incoming == nil else { return }
+        if reduceMotion { index += 1; return }
+        incoming = index + 1
+        p = (w, 0, 0, 1, 50, 0)                          // start: new picture off-screen right, new text +50
+        withAnimation(.timingCurve(0.33, 0, 0.20, 1, duration: 0.40))              { p.newPic = 0 }
+        withAnimation(.timingCurve(0.33, 0, 0.06, 1, duration: 0.40).delay(0.05))  { p.oldPic = -w }
+        withAnimation(.timingCurve(0.33, 0, 0.17, 1, duration: 0.40))              { p.oldTextX = -50 }
+        withAnimation(.timingCurve(0.79, 0, 0.27, 1, duration: 0.30))              { p.oldTextO = 0 }
+        withAnimation(.timingCurve(0.33, 0, 0.17, 1, duration: 0.40).delay(0.05))  { p.newTextX = 0 }
+        withAnimation(.timingCurve(0.67, 0, 0.18, 1, duration: 0.30).delay(0.17)) { p.newTextO = 1 }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.47) { index += 1; incoming = nil }
+    }
+
+    // body: ZStack { picture(notes[index]).offset(x: p.oldPic)
+    //                if let n = incoming { picture(notes[n]).offset(x: p.newPic) } }   ← new picture on top
+    //       ZStack { text(notes[index]).offset(x: p.oldTextX).opacity(p.oldTextO)
+    //                if let n = incoming { text(notes[n]).offset(x: p.newTextX).opacity(p.newTextO) } }
+}`,
+    android: `import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.CubicBezierEasing
+import androidx.compose.animation.core.tween
+import kotlinx.coroutines.launch
+
+private fun ease(a: Float, b: Float, c: Float, d: Float) = CubicBezierEasing(a, b, c, d)
+
+class NotesSlide {
+    val newPic = Animatable(1f)     // fraction of screen width
+    val oldPic = Animatable(0f)
+    val oldTextX = Animatable(0f)   // dp
+    val oldTextA = Animatable(1f)
+    val newTextX = Animatable(50f)
+    val newTextA = Animatable(0f)
+
+    suspend fun play() = coroutineScope {
+        listOf(
+            launch { newPic.animateTo(0f, tween(400, easing = ease(0.33f, 0f, 0.20f, 1f))) },
+            launch { oldPic.animateTo(-1f, tween(400, delayMillis = 50, easing = ease(0.33f, 0f, 0.06f, 1f))) },
+            launch { oldTextX.animateTo(-50f, tween(400, easing = ease(0.33f, 0f, 0.17f, 1f))) },
+            launch { oldTextA.animateTo(0f, tween(300, easing = ease(0.79f, 0f, 0.27f, 1f))) },
+            launch { newTextX.animateTo(0f, tween(400, delayMillis = 50, easing = ease(0.33f, 0f, 0.17f, 1f))) },
+            launch { newTextA.animateTo(1f, tween(300, delayMillis = 170, easing = ease(0.67f, 0f, 0.18f, 1f))) }
+        ).joinAll()
+    }
+}
+
+// On Next: scope.launch { slide.play(); pagerState.scrollToPage(page + 1); slide.reset() }
+// Draw the new picture after the old one (on top): Modifier.graphicsLayer { translationX = newPic.value * size.width }
+// Compose follows the system "Remove animations" setting (animator duration scale 0) automatically.`
+  };
+  document.querySelectorAll("[data-snippet]").forEach((c) => { c.textContent = CODE[c.dataset.snippet]; });
+
+  // Tabs (shareable via #motion-ios etc.) + copy buttons
+  const tabs = document.querySelectorAll(".motion-tabs [data-tab]");
+  function openTab(name) {
+    tabs.forEach((t) => t.setAttribute("aria-selected", String(t.dataset.tab === name)));
+    document.querySelectorAll(".motion-pane").forEach((p) => { p.hidden = p.dataset.pane !== name; });
+  }
+  tabs.forEach((t) => t.addEventListener("click", () => { openTab(t.dataset.tab); history.replaceState(null, "", "#motion-" + t.dataset.tab); }));
+  const fromHash = location.hash.match(/^#motion-(design|ios|android|web)$/);
+  if (fromHash) { openTab(fromHash[1]); document.getElementById("motion").scrollIntoView(); }
+  function copy(btn, text) {
+    navigator.clipboard.writeText(text).then(() => { const was = btn.textContent; btn.textContent = "Copied"; setTimeout(() => { btn.textContent = was; }, 1200); });
+  }
+  document.addEventListener("click", (e) => {
+    const link = e.target.closest("[data-copy-link]"), code = e.target.closest("[data-copy]");
+    if (link) copy(link, location.href.split("#")[0] + "#motion-" + link.dataset.copyLink);
+    if (code) copy(code, code.dataset.copy === "spec" ? SPEC_TEXT : CODE[code.dataset.copy]);
+  });
+</script>
+  </main>
+</div>
+</body>
+</html>

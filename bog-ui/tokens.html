@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BOG UI — Tokens</title>
+<link rel="stylesheet" href="bog-ui.css">
+<link rel="stylesheet" href="docs/docs.css">
+<script src="docs/theme.js"></script>
+<script src="docs/components.js"></script>
+<script src="docs/colors.js"></script>
+<style>
+  .tk-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin: 0 0 14px; }
+  .tk-bar .docs-search { width: 280px; }
+  .tk-note { margin: 0 0 18px; color: var(--docs-muted); font-size: 13px; }
+  .tk-groups { display: flex; flex-wrap: wrap; gap: 6px; margin: 0 0 28px; }
+  .tk-groups a { padding: 6px 12px; border-radius: 999px; background: var(--docs-wash); color: var(--docs-ink-2); font-size: 13px; text-decoration: none; }
+  .tk-groups a:hover { background: var(--docs-wash-2); color: var(--docs-fg); }
+  .tk-group { margin: 0 0 36px; scroll-margin-top: 90px; }
+  .tk-group h3 { display: flex; align-items: baseline; gap: 8px; margin: 0 0 10px; font-size: 18px; font-weight: 500; letter-spacing: -0.01em; }
+  .tk-group h3 small { color: var(--docs-muted); font-size: 12px; font-weight: 400; }
+  .tk-table { width: 100%; border-collapse: collapse; border-spacing: 0; font-size: 13px; }
+  .tk-table th { padding: 6px 10px; border-bottom: 1px solid var(--docs-line); color: var(--docs-muted); font-size: 11px; font-weight: 500; text-align: left; text-transform: uppercase; letter-spacing: 0.04em; }
+  .tk-table td { padding: 6px 10px; border-bottom: 1px solid var(--docs-line); vertical-align: middle; }
+  .tk-table tr:hover td { background: var(--docs-wash); }
+  .tk-sw { position: relative; display: block; width: 40px; height: 28px; border-radius: 8px; overflow: hidden;
+           background: repeating-conic-gradient(#e5e6e7 0 25%, #fff 0 50%) 0 0 / 10px 10px; box-shadow: inset 0 0 0 1px var(--docs-line); }
+  .tk-sw::after { content: ""; position: absolute; inset: 0; background: var(--_c); }
+  .tk-mini { display: inline-flex; align-items: center; gap: 6px; font: 12px/1 ui-monospace, Menlo, monospace; color: var(--docs-ink-2); }
+  .tk-mini i { width: 14px; height: 14px; border-radius: 4px; box-shadow: inset 0 0 0 1px rgba(23,24,26,.12);
+               background: repeating-conic-gradient(#e5e6e7 0 25%, #fff 0 50%) 0 0 / 6px 6px; position: relative; overflow: hidden; }
+  .tk-mini i::after { content: ""; position: absolute; inset: 0; background: var(--_c); }
+  .tk-figma { color: var(--docs-fg); font-weight: 500; }
+  .tk-var { padding: 2px 6px; border: 0; border-radius: 6px; background: var(--docs-wash); color: var(--docs-ink-2); font: 12px/1.4 ui-monospace, Menlo, monospace; cursor: copy; }
+  .tk-var:hover { background: var(--docs-wash-2); color: var(--docs-fg); }
+  .tk-var[data-copied]::after { content: " ✓ copied"; color: var(--text-success); }
+  .tk-now { font: 12px/1 ui-monospace, Menlo, monospace; color: var(--docs-fg); }
+  .tk-same { color: var(--docs-muted); }
+  .tk-empty { padding: 40px 0; color: var(--docs-muted); text-align: center; }
+  .tk-soon { margin-top: 48px; }
+  @media (max-width: 900px) { .tk-table .tk-col-l, .tk-table .tk-col-d { display: none; } }
+</style>
+</head>
+<body>
+  <header class="docs-top" id="bog-top" data-current="tokens"></header>
+  <div class="home">
+    <h1>Tokens</h1>
+    <p class="lead">Design tokens behind every component. Colors come straight from the Figma <em>Mobile Tokens</em> file and switch with the theme: pick a brand and light / dark in the top bar and every component — and every swatch below — follows.</p>
+
+    <h2 class="home__section" id="colors">Colors</h2>
+    <p class="tk-note" id="tk-count"></p>
+    <div class="tk-bar">
+      <input type="search" class="docs-search" id="tk-search" placeholder="Search colors — name, variable or #hex" aria-label="Search colors" autocomplete="off">
+      <span id="tk-theme" style="color:var(--docs-muted);font-size:13px"></span>
+    </div>
+    <nav class="tk-groups" id="tk-groups" aria-label="Color groups"></nav>
+    <div id="tk-list"></div>
+
+    <section class="tk-soon">
+      <h2 class="home__section">Typography, spacing, radius, motion</h2>
+      <div class="docs-empty">Coming soon — they're in <code>tokens.css</code> already.</div>
+    </section>
+  </div>
+<script>
+  // Colour tokens (docs/colors.js, generated from Figma): swatch = the token's value in the current
+  // theme (read live from the page), plus its Retail Light and Retail Dark values.
+  const C = window.BOG_COLORS, list = document.getElementById("tk-list"), q = document.getElementById("tk-search");
+  const total = C.groups.reduce((n, g) => n + g.tokens.length, 0);
+  document.getElementById("tk-count").textContent = `${total} color tokens in ${C.groups.length} groups · source: Figma Mobile Tokens, collection Colors · click a variable to copy it.`;
+  const slug = (s) => s.toLowerCase().replace(/[^a-z0-9]+/g, "-");
+  document.getElementById("tk-groups").innerHTML = C.groups.map((g) => `<a href="#c-${slug(g.name)}">${g.name} <span style="opacity:.6">${g.tokens.length}</span></a>`).join("");
+  const mini = (hex) => `<span class="tk-mini"><i style="--_c:${hex}"></i>${hex}</span>`;
+  function render() {
+    const term = q.value.trim().toLowerCase();
+    let shown = 0;
+    list.innerHTML = C.groups.map((g) => {
+      const rows = g.tokens.filter(([f, v, l, d]) => !term || (f + " " + v + " " + l + " " + d).toLowerCase().includes(term));
+      shown += rows.length;
+      if (!rows.length) return "";
+      return `<section class="tk-group" id="c-${slug(g.name)}"><h3>${g.name} <small>${rows.length}</small></h3><table class="tk-table"><thead><tr><th style="width:56px"></th><th>Figma</th><th>CSS variable</th><th>Now</th><th class="tk-col-l">Retail Light</th><th class="tk-col-d">Retail Dark</th></tr></thead><tbody>` +
+        rows.map(([f, v, l, d]) => `<tr><td><span class="tk-sw" style="--_c:var(${v})"></span></td><td class="tk-figma">${f}</td><td><button type="button" class="tk-var" data-var="${v}">${v}</button></td><td class="tk-now" data-now="${v}"></td><td class="tk-col-l">${mini(l)}</td><td class="tk-col-d">${l === d ? '<span class="tk-same">same</span>' : mini(d)}</td></tr>`).join("") +
+        "</tbody></table></section>";
+    }).join("") || `<p class="tk-empty">No color matches “${term.replace(/[<>&"]/g, "")}”.</p>`;
+    fillNow();
+  }
+  // "Now": the computed value in the current brand + mode
+  function fillNow() {
+    const cs = getComputedStyle(document.documentElement);
+    list.querySelectorAll("[data-now]").forEach((td) => { td.textContent = cs.getPropertyValue(td.dataset.now).trim(); });
+    const b = (window.BOG_THEME && BOG_THEME.brands.find((x) => x[0] === BOG_THEME.brand())) || ["retail", "Retail"];
+    document.getElementById("tk-theme").textContent = `Showing: ${b[1]} ${document.documentElement.getAttribute("data-theme") === "dark" ? "Dark" : "Light"}`;
+  }
+  q.addEventListener("input", render);
+  document.addEventListener("bogthemechange", fillNow);
+  list.addEventListener("click", (e) => {
+    const b = e.target.closest("[data-var]"); if (!b) return;
+    navigator.clipboard && navigator.clipboard.writeText(`var(${b.dataset.var})`).then(() => { b.setAttribute("data-copied", ""); setTimeout(() => b.removeAttribute("data-copied"), 1200); });
+  });
+  render();
+</script>
+</body>
+</html>

@@ -1,0 +1,66 @@
+/* ==========================================================================
+   BOG UI — Keyboard Numeric
+   Figma: Keyboards Numeric (64781:8649) · _Keyboard Pad (64775:736)
+
+     <div class="bog-keypad" data-for="pin-input">      data-appearance="white | black | invert"
+       <button class="bog-keypad__key" value="1">1</button> … <button … value="9">9</button>
+       <button class="bog-keypad__key" data-key="face-id" aria-label="Face ID"></button>      or fingerprint · dot · empty <span>
+       <button class="bog-keypad__key" value="0">0</button>
+       <button class="bog-keypad__key" data-key="backspace" aria-label="Delete"></button>
+     </div>
+
+   3 × 4 grid, 56px keys (Heading/Medium 28 px). Pressed: a grey rounded pad.
+   bog-ui.js types into the input named by data-for (digits, "." for dot, backspace deletes)
+   and fires "keypad" with the key on the keypad; Face ID / fingerprint only fire the event.
+   ========================================================================== */
+
+.bog-keypad {
+  --_fg: var(--text-primary);
+  --_pressed: var(--button-secondary-grey-pressed);
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--spacing-gap-medium) var(--spacing-gap-default);
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 326px;
+  padding: var(--spacing-padding-medium) var(--spacing-padding-medium) var(--spacing-padding-default);
+  font-family: var(--font-family-bog);
+}
+.bog-keypad[data-appearance="white"]  { --_fg: var(--text-white-primary); --_pressed: var(--button-secondary-grey-inverse-pressed-static); }
+.bog-keypad[data-appearance="black"]  { --_fg: var(--text-black); --_pressed: var(--button-black-ghost-pressed); }
+.bog-keypad[data-appearance="invert"] { --_fg: var(--text-inverse-primary); --_pressed: var(--button-secondary-grey-inverse-pressed-static); }
+
+.bog-keypad__key {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 56px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-default);
+  background: transparent;
+  color: var(--_fg);
+  font: inherit;
+  font-size: var(--heading-medium-semibold-size);
+  line-height: var(--heading-medium-semibold-line-height);
+  font-weight: var(--heading-medium-semibold-weight);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+.bog-keypad__key:active,
+.bog-keypad__key[data-pressed] { background: var(--_pressed); }
+.bog-keypad__key:focus-visible { outline: 2px solid var(--text-accent); outline-offset: -2px; }
+.bog-keypad__key[data-key]::before {
+  content: "";
+  width: 24px;
+  height: 24px;
+  background-color: currentColor;
+  -webkit-mask: var(--_icon) center / contain no-repeat;
+          mask: var(--_icon) center / contain no-repeat;
+}
+.bog-keypad__key[data-key="face-id"]     { --_icon: url("../icons/face-id-24.svg"); }
+.bog-keypad__key[data-key="fingerprint"] { --_icon: url("../icons/fingerprint-24.svg"); }
+.bog-keypad__key[data-key="dot"]         { --_icon: url("../icons/dot-24.svg"); }
+.bog-keypad__key[data-key="backspace"]   { --_icon: url("../icons/backspace-24.svg"); }

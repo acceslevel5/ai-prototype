@@ -1,0 +1,62 @@
+/* ==========================================================================
+   BOG UI — Product Widget (BETA)
+   Figma: _Card item (56509:9760) · _Product Widget (57220:13185)
+
+   The home screen's product tiles — accounts, cards, deposits, loans — two to a row.
+     <div class="bog-products">                                 2–5 tiles; an odd last tile spans the row in the Row layout
+       <a class="bog-product" href="#">                         data-status="expired" · data-state="skeleton"
+         <span class="bog-product__media"><span class="bog-card-art" data-size="56"></span></span>
+         <span class="bog-product__title">Accounts and Cards</span>
+         <span class="bog-product__amount">1,000.00 ₾</span>
+         <span class="bog-status-badge" data-size="small" data-contrast="high" data-status="negative">Expired</span>   expired, instead of the amount
+         <span class="bog-product__helper">Message text</span>                                                       optional
+         <span class="bog-status-icon" data-size="x-small" data-status="negative" aria-label="Needs attention"></span>   optional notification
+       </a>
+       …
+     </div>
+   data-layout="row" on a tile puts the media on the right.
+   ========================================================================== */
+
+.bog-products { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--spacing-gap-small); font-family: var(--font-family-bog); }
+.bog-product {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0;
+  box-sizing: border-box;
+  min-width: 0;
+  padding: var(--spacing-padding-default);
+  border-radius: var(--radius-medium);
+  background: var(--layer-layer-02);
+  color: inherit;
+  text-decoration: none;
+  -webkit-tap-highlight-color: transparent;
+  transition: background-color 120ms ease;
+}
+.bog-product:is(:active, [data-pressed]):not([data-state="skeleton"]) { background: var(--layer-alpha-pressed-01); }
+.bog-product__media { display: flex; margin-bottom: var(--spacing-gap-medium); }
+.bog-product__title { max-width: 100%; color: var(--text-secondary); font-size: var(--body-small-size); line-height: var(--body-small-line-height); font-weight: var(--body-small-weight); }
+.bog-product__amount { max-width: 100%; margin-top: 6px; overflow: hidden; color: var(--text-primary); font-size: var(--label-large-size); line-height: var(--label-large-line-height); font-weight: var(--label-large-weight); white-space: nowrap; text-overflow: ellipsis; }
+.bog-product > .bog-status-badge { margin-top: 6px; }
+.bog-product__helper { margin-top: var(--spacing-gap-small); color: var(--text-secondary); font-size: var(--label-small-size); line-height: var(--label-small-line-height); font-weight: var(--label-small-weight); }
+.bog-product > .bog-status-icon { position: absolute; top: 12px; right: 12px; }
+/* Row layout: text on the left, media on the right */
+.bog-product[data-layout="row"],
+.bog-products > .bog-product:last-child:nth-child(odd):not(:only-child) {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-content: start;
+  column-gap: var(--spacing-gap-medium);
+}
+:is(.bog-product[data-layout="row"], .bog-products > .bog-product:last-child:nth-child(odd):not(:only-child)) > * { grid-column: 1; justify-self: start; }
+:is(.bog-product[data-layout="row"], .bog-products > .bog-product:last-child:nth-child(odd):not(:only-child)) > .bog-product__media { grid-column: 2; grid-row: 1 / span 4; margin: 0; }
+/* Skeleton */
+.bog-product[data-state="skeleton"] { pointer-events: none; }
+.bog-product[data-state="skeleton"] .bog-card-art { background: var(--support-skeleton); }
+.bog-product[data-state="skeleton"] .bog-card-art > * { visibility: hidden; }
+.bog-product[data-state="skeleton"] :is(.bog-product__title, .bog-product__amount, .bog-status-badge) { width: fit-content; min-width: 94px; color: transparent; background: var(--support-skeleton); background-clip: content-box; padding: 4px 0; border-radius: var(--radius-2x-small); }
+.bog-product[data-state="skeleton"] .bog-product__amount { min-width: 36px; height: 8px; padding: 6px 0; line-height: 0; box-sizing: content-box; }
+
+.bog-product[data-state="skeleton"] .bog-status-icon { display: none; }

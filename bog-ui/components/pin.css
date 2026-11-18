@@ -1,0 +1,78 @@
+/* ==========================================================================
+   BOG UI — PIN code Input
+   Figma: PIN code Input (64863:18145) · _Input PIN (64853:17552)
+
+     <label class="bog-pin">                               data-appearance="white | black" (static, over imagery)
+       <span class="bog-pin__title">Enter your PIN</span>
+       <span class="bog-pin__helper">Please enter your 4-digit code</span>
+       <span class="bog-pin__dots"><i></i><i></i><i></i><i></i></span>
+       <input class="bog-pin__input" type="password" inputmode="numeric" maxlength="4" autocomplete="one-time-code">
+     </label>
+
+   The hidden input takes the digits (from the phone keyboard or Keyboard Numeric); bog-ui.js
+   fills one dot per digit and fires "pincomplete" when all are in. data-state="error" turns the
+   dots and helper red — put the message in the helper. Static mockups: <i data-filled>.
+   ========================================================================== */
+
+.bog-pin {
+  --_title: var(--text-primary);
+  --_helper: var(--text-secondary);
+  --_ring: var(--border-border-02);
+  --_fill: var(--icon-primary);
+  --_error: var(--border-error);
+  --_error-text: var(--text-error);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-gap-small);
+  font-family: var(--font-family-bog);
+  text-align: center;
+  cursor: text;
+}
+.bog-pin[data-appearance="white"] { --_title: var(--text-white-primary); --_helper: var(--text-white-secondary); --_ring: var(--border-white-secondary); --_fill: var(--icon-white); --_error: var(--status-inverse-error-static); --_error-text: var(--status-inverse-error-static); }
+.bog-pin[data-appearance="black"] { --_title: var(--text-black); --_helper: var(--text-black); --_ring: rgba(27, 28, 29, 0.3); --_fill: var(--icon-black); }
+
+.bog-pin__title {
+  color: var(--_title);
+  font-size: var(--title-medium-size);
+  line-height: var(--title-medium-line-height);
+  font-weight: var(--title-medium-weight);
+}
+.bog-pin__helper {
+  color: var(--_helper);
+  font-size: var(--label-small-size);
+  line-height: var(--label-small-line-height);
+  font-weight: var(--label-small-weight);
+}
+.bog-pin__dots {
+  display: flex;
+  gap: var(--spacing-form-gap);
+  margin-top: calc(var(--spacing-gap-default) - var(--spacing-gap-small));
+}
+.bog-pin__dots > i {
+  width: 16px;
+  height: 16px;
+  box-sizing: border-box;
+  border-radius: var(--radius-full);
+  box-shadow: inset 0 0 0 var(--border-width-bold) var(--_ring);
+  transition: background-color 120ms ease, box-shadow 120ms ease, scale 160ms cubic-bezier(0.33, 0, 0, 1.7);
+}
+.bog-pin__dots > i[data-filled] { background: var(--_fill); box-shadow: none; scale: 1; }
+.bog-pin[data-state="error"] .bog-pin__helper { color: var(--_error-text); }
+.bog-pin[data-state="error"] .bog-pin__dots > i { background: none; box-shadow: inset 0 0 0 var(--border-width-bold) var(--_error); }
+.bog-pin[data-state="error"] .bog-pin__dots { animation: bog-pin-shake 300ms ease; }
+@keyframes bog-pin-shake { 25% { translate: -6px 0; } 50% { translate: 6px 0; } 75% { translate: -3px 0; } }
+
+/* The input stays focusable but invisible */
+.bog-pin__input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  border: 0;
+  caret-color: transparent;
+}
+.bog-pin:focus-within .bog-pin__dots { outline: 2px solid transparent; }
+@media (prefers-reduced-motion: reduce) { .bog-pin[data-state="error"] .bog-pin__dots { animation: none; } }

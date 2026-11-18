@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Search input — BOG UI</title>
+<link rel="stylesheet" href="../bog-ui.css">
+<link rel="stylesheet" href="docs.css">
+<script src="theme.js"></script>
+<script src="../bog-ui.js" defer></script>
+<script src="components.js" defer></script>
+<style>
+  .sv-grid { display: grid; grid-template-columns: 88px repeat(2, minmax(0, 360px)); gap: 16px 32px; align-items: center; }
+  .sv-grid > small { color: var(--docs-muted); font-size: 11px; }
+  .sv-overlay { background: var(--status-success-01, #e8f8ec); }
+  #sv-results { margin: 12px 0 0; padding: 0; list-style: none; font-family: var(--font-family-bog); font-size: 14px; line-height: 20px; color: var(--text-primary); }
+  #sv-results li { padding: 8px 0; border-bottom: 1px solid var(--border-border-01); }
+</style>
+</head>
+<body>
+<div class="docs">
+  <aside class="docs-nav">
+    <a class="docs-nav__brand" href="../index.html">BOG UI</a>
+    <nav id="bog-nav" data-current="search"></nav>
+  </aside>
+  <main class="docs-main">
+    <header><h1>Search input</h1><a class="figma" id="figma-link" href="#" target="_blank" rel="noopener">Open in Figma ↗</a></header>
+    <p class="lead">Filters a list or starts a search. Small (40) or Large (56); on the page (grey fill) or over imagery and colour (Overlay, white with a shadow). Focusing it outlines the box and shows Cancel; typing adds a clear button.</p>
+
+    <h2>Usage</h2>
+    <pre><code>&lt;div class="bog-search"&gt;                     &lt;!-- data-size="large" · data-placement="overlay" --&gt;
+  &lt;label class="bog-search__box"&gt;
+    &lt;span class="bog-search__icon"&gt;&lt;/span&gt;
+    &lt;input class="bog-search__input" type="search" placeholder="Search" aria-label="Search"&gt;
+    &lt;button type="button" class="bog-search__clear" aria-label="Clear"&gt;&lt;/button&gt;
+  &lt;/label&gt;
+  &lt;button type="button" class="bog-search__cancel"&gt;Cancel&lt;/button&gt;
+&lt;/div&gt;</code></pre>
+
+    <h2>Try it</h2>
+    <p class="lead">Tap the field and type to filter. Clear keeps the keyboard up; Cancel empties the field and leaves it.</p>
+    <div class="panel"><div style="width:343px"><div id="sv-try"></div><ul id="sv-results"></ul></div></div>
+
+    <h2>Variants</h2>
+    <div class="panel"><div class="sv-grid" id="sv-small"></div></div>
+    <div class="panel" style="margin-top:16px"><div class="sv-grid" id="sv-large"></div></div>
+  </main>
+</div>
+<script>
+  const search = (o = {}) => `<div class="bog-search"${o.size ? ` data-size="${o.size}"` : ""}${o.place ? ` data-placement="${o.place}"` : ""}${o.state ? ` data-state="${o.state}"` : ""}>` +
+    `<label class="bog-search__box"><span class="bog-search__icon"></span><input class="bog-search__input" type="search" placeholder="Search" aria-label="Search"${o.value ? ` value="${o.value}"` : ""}${o.static ? ' tabindex="-1"' : ""}>` +
+    `<button type="button" class="bog-search__clear" aria-label="Clear"></button></label><button type="button" class="bog-search__cancel">Cancel</button></div>`;
+  const STATES = [["Default", "", ""], ["Active", "active", ""], ["Typing", "typing", "Search"], ["Filled", "filled", "Search"], ["Skeleton", "skeleton", ""]];
+  const grid = (size) => "<small></small><small>Placement = Page</small><small>Placement = Overlay</small>" +
+    STATES.map(([n, state, value]) => `<small>${n}</small><div>${search({ size, state, value, static: 1 })}</div>` +
+      `<div class="sv-overlay" style="padding:12px;margin:-12px;border-radius:12px">${search({ size, place: "overlay", state, value, static: 1 })}</div>`).join("");
+  document.getElementById("sv-small").innerHTML = grid("");
+  document.getElementById("sv-large").innerHTML = grid("large");
+
+  // Try it: filter a short list of payees
+  const PAYEES = ["Nino Beridze", "Giorgi Kapanadze", "Mariam Lomidze", "Silknet", "Magti", "GWP — Water", "Telasi — Electricity", "Tbilisi Energy — Gas"];
+  document.getElementById("sv-try").innerHTML = search({});
+  const input = document.querySelector("#sv-try .bog-search__input"), out = document.getElementById("sv-results");
+  const render = () => {
+    const q = input.value.trim().toLowerCase();
+    const hits = PAYEES.filter((p) => p.toLowerCase().includes(q));
+    out.innerHTML = hits.length ? hits.map((p) => `<li>${p}</li>`).join("") : '<li style="color:var(--text-secondary)">No results</li>';
+  };
+  input.addEventListener("input", render);
+  render();
+</script>
+</body>
+</html>

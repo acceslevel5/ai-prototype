@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Section Page — BOG UI</title>
+<link rel="stylesheet" href="../bog-ui.css">
+<link rel="stylesheet" href="docs.css">
+<script src="theme.js"></script>
+<script src="../bog-ui.js" defer></script>
+<script src="components.js" defer></script>
+<style>.dx small{display:block;margin:0 0 8px;color:var(--docs-muted);font-size:11px}.dx{display:grid;gap:24px}.dx-panel{font-family:var(--font-family-bog);font-size:14px;line-height:20px;color:var(--text-primary);padding:16px 4px}</style>
+</head>
+<body>
+<div class="docs">
+  <aside class="docs-nav">
+    <a class="docs-nav__brand" href="../index.html">BOG UI</a>
+    <nav id="bog-nav" data-current="section-page"></nav>
+  </aside>
+  <main class="docs-main">
+    <header><h1>Section Page</h1><a class="figma" id="figma-link" href="#" target="_blank" rel="noopener">Open in Figma ↗</a></header>
+    <p class="lead">The layout most screens are made of: sections 32 px apart, each a header — a title, an optional description, a notification dot, a chevron when the header opens more, and a button on the right — over its content. Widget (BETA) puts a section in a white card for the home screen.</p>
+    <h2>Usage</h2>
+    <pre><code>&lt;main class="bog-section-page"&gt;
+  &lt;section class="bog-section"&gt;                                &lt;!-- data-size="small" · data-state="skeleton" --&gt;
+    &lt;header class="bog-section__header"&gt;
+      &lt;a class="bog-section__heading" href="…"&gt;                  &lt;!-- a div when the header doesn't open anything --&gt;
+        &lt;h2 class="bog-section__title"&gt;Added cards&lt;/h2&gt;
+        &lt;p class="bog-section__desc"&gt;Description&lt;/p&gt;
+      &lt;/a&gt;
+      &lt;button class="bog-btn" data-type="neutral" data-size="small"&gt;Button&lt;/button&gt;   &lt;!-- optional --&gt;
+    &lt;/header&gt;
+    &lt;div class="bog-section__content"&gt;…&lt;/div&gt;
+  &lt;/section&gt;
+&lt;/main&gt;</code></pre>
+    <h2>Section Page</h2>
+    <div class="panel"><div style="width:375px;background:var(--layer-layer-01);box-shadow:0 0 0 1px var(--border-alpha-01);border-radius:16px"><main class="bog-section-page">
+      <section class="bog-section"><header class="bog-section__header"><div class="bog-section__heading"><h2 class="bog-section__title">Section text</h2><p class="bog-section__desc">Description</p></div></header><div class="bog-section__content"><div style="height:24px;border-radius:4px;background:#f1d6ea;box-shadow:inset 0 0 0 1px #e58ad0"></div><div style="height:24px;border-radius:4px;background:#f1d6ea;box-shadow:inset 0 0 0 1px #e58ad0"></div><div style="height:24px;border-radius:4px;background:#f1d6ea;box-shadow:inset 0 0 0 1px #e58ad0"></div><div style="height:24px;border-radius:4px;background:#f1d6ea;box-shadow:inset 0 0 0 1px #e58ad0"></div></div></section>
+      <section class="bog-section"><header class="bog-section__header"><a class="bog-section__heading" href="#" onclick="return false"><h2 class="bog-section__title">Section text <span class="bog-badge-dot"></span></h2><p class="bog-section__desc">Description</p></a><button class="bog-btn" data-type="neutral" data-size="small">Button</button></header><div class="bog-section__content"><div style="height:24px;border-radius:4px;background:#f1d6ea;box-shadow:inset 0 0 0 1px #e58ad0"></div><div style="height:24px;border-radius:4px;background:#f1d6ea;box-shadow:inset 0 0 0 1px #e58ad0"></div><div style="height:24px;border-radius:4px;background:#f1d6ea;box-shadow:inset 0 0 0 1px #e58ad0"></div><div style="height:24px;border-radius:4px;background:#f1d6ea;box-shadow:inset 0 0 0 1px #e58ad0"></div></div></section>
+      <section class="bog-section" data-size="small"><header class="bog-section__header"><div class="bog-section__heading"><h2 class="bog-section__title">Section text</h2><p class="bog-section__desc">Description</p></div></header><div class="bog-section__content"><div style="height:24px;border-radius:4px;background:#f1d6ea;box-shadow:inset 0 0 0 1px #e58ad0"></div><div style="height:24px;border-radius:4px;background:#f1d6ea;box-shadow:inset 0 0 0 1px #e58ad0"></div><div style="height:24px;border-radius:4px;background:#f1d6ea;box-shadow:inset 0 0 0 1px #e58ad0"></div><div style="height:24px;border-radius:4px;background:#f1d6ea;box-shadow:inset 0 0 0 1px #e58ad0"></div></div></section>
+    </main></div></div>
+    <h2>Section headers</h2>
+    <div class="panel" style="display:flex;flex-direction:column;gap:24px;align-items:flex-start">
+      <div style="width:343px"><small style="display:block;margin:0 0 8px;color:var(--docs-muted);font-size:11px">Medium (17px)</small><section class="bog-section"><header class="bog-section__header"><div class="bog-section__heading"><h2 class="bog-section__title">Section text</h2><p class="bog-section__desc">Description</p></div></header></section></div>
+      <div style="width:343px"><small style="display:block;margin:0 0 8px;color:var(--docs-muted);font-size:11px">Small (14px)</small><section class="bog-section" data-size="small"><header class="bog-section__header"><div class="bog-section__heading"><h2 class="bog-section__title">Section text</h2><p class="bog-section__desc">Description</p></div></header></section></div>
+      <div style="width:343px"><small style="display:block;margin:0 0 8px;color:var(--docs-muted);font-size:11px">Interactive + notification + button</small><section class="bog-section"><header class="bog-section__header"><a class="bog-section__heading" href="#" onclick="return false"><h2 class="bog-section__title">Section text <span class="bog-badge-dot"></span></h2><p class="bog-section__desc">Description</p></a><button class="bog-btn" data-type="neutral" data-size="small">Button</button></header></section></div>
+      <div style="width:343px"><small style="display:block;margin:0 0 8px;color:var(--docs-muted);font-size:11px">Title only</small><section class="bog-section"><header class="bog-section__header"><div class="bog-section__heading"><h2 class="bog-section__title">Section text</h2></div></header></section></div>
+      <div style="width:343px"><small style="display:block;margin:0 0 8px;color:var(--docs-muted);font-size:11px">Skeleton</small><section class="bog-section" data-state="skeleton"><header class="bog-section__header"><div class="bog-section__heading"><h2 class="bog-section__title">Section text</h2><p class="bog-section__desc">Description</p></div></header></section></div>
+    </div>
+    <h2>Widget (BETA)</h2>
+    <div class="panel" style="display:flex;gap:24px;flex-wrap:wrap;align-items:flex-start;background:var(--layer-layer-02)">
+      <article class="bog-widget" style="width:332px"><header class="bog-section__header"><a class="bog-section__heading" href="#" onclick="return false"><h2 class="bog-section__title">Section text</h2><p class="bog-section__desc">Description</p></a></header><div class="bog-widget__content"><div style="height:24px;border-radius:4px;background:#f1d6ea;box-shadow:inset 0 0 0 1px #e58ad0"></div><div style="height:24px;border-radius:4px;background:#f1d6ea;box-shadow:inset 0 0 0 1px #e58ad0"></div></div><footer class="bog-widget__footer"><a class="bog-btn" data-type="neutral" data-size="small" data-width="fill" href="#" onclick="return false">See all</a></footer></article>
+      <article class="bog-widget" data-state="skeleton" style="width:332px"><header class="bog-section__header"><div class="bog-section__heading"><h2 class="bog-section__title">Section text</h2><p class="bog-section__desc">Description</p></div></header><div class="bog-widget__content"><div style="height:24px;border-radius:4px;background:#f1d6ea;box-shadow:inset 0 0 0 1px #e58ad0"></div><div style="height:24px;border-radius:4px;background:#f1d6ea;box-shadow:inset 0 0 0 1px #e58ad0"></div></div><footer class="bog-widget__footer"><span class="bog-btn" data-type="neutral" data-size="small" data-width="fill">See all</span></footer></article>
+    </div>
+  </main>
+</div>
+</body>
+</html>

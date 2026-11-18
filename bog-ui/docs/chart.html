@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Data Visualization — BOG UI</title>
+<link rel="stylesheet" href="../bog-ui.css">
+<link rel="stylesheet" href="docs.css">
+<script src="theme.js"></script>
+<script src="../bog-ui.js" defer></script>
+<script src="components.js" defer></script>
+<style>.dx small{display:block;margin:0 0 8px;color:var(--docs-muted);font-size:11px}.dx{display:grid;gap:24px}.dx-panel{font-family:var(--font-family-bog);font-size:14px;line-height:20px;color:var(--text-primary);padding:16px 4px}</style>
+</head>
+<body>
+<div class="docs">
+  <aside class="docs-nav">
+    <a class="docs-nav__brand" href="../index.html">BOG UI</a>
+    <nav id="bog-nav" data-current="chart"></nav>
+  </aside>
+  <main class="docs-main">
+    <header><h1>Data Visualization</h1><a class="figma" id="figma-link" href="#" target="_blank" rel="noopener">Open in Figma ↗</a></header>
+    <p class="lead">Charts for spending and goals: Donut Chart (Large and Mini), Card Chart and Sparkline. bog-ui.js draws them from a list of numbers. Give the donut a target and it shows how far off it is — a dashed outline for what's missing, a hatched red part and a tick for what's over.</p>
+    <h2>Usage</h2>
+    <pre><code>&lt;div class="bog-donut" data-values="25,16,3,3,13,12,24" data-selectable&gt;   &lt;!-- data-size="mini" · data-max · data-colors · data-labels --&gt;
+  &lt;div class="bog-donut__center"&gt;&lt;span class="bog-donut__label"&gt;Spent&lt;/span&gt;&lt;span class="bog-donut__value"&gt;124.00 ₾&lt;/span&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;svg class="bog-sparkline" data-values="3,5,5,8,10,9,7,9,4,2,1"&gt;&lt;/svg&gt;
+&lt;script&gt; el.dataset.values = "…"; BOG.donut(el); &lt;/script&gt;</code></pre>
+    <h2>Try it</h2>
+    <p class="lead">Tap a segment to select it; tap it again to clear.</p>
+    <div class="panel" style="display:flex;gap:32px;align-items:center;flex-wrap:wrap">
+      <div class="bog-donut" data-size="large" data-values="25,16,3,3,13,12,24" data-selectable id="donut-try"><div class="bog-donut__center"><span class="bog-donut__label">Utilities</span><span class="bog-donut__value">124.00 ₾</span></div></div>
+      <p id="donut-out" style="margin:0;font-family:var(--font-family-bog);color:var(--text-secondary)">Nothing selected</p>
+    </div>
+    <h2>Donut Chart — Large</h2>
+    <div class="panel" style="display:flex;gap:40px;flex-wrap:wrap;align-items:center">
+      <div><small style="display:block;margin:0 0 8px;color:var(--docs-muted);font-size:11px">Empty</small><div class="bog-donut" data-size="large" data-values=""><div class="bog-donut__center"><span class="bog-donut__label">Title</span><span class="bog-donut__value">0.00 ₾</span></div></div></div>
+      <div><small style="display:block;margin:0 0 8px;color:var(--docs-muted);font-size:11px">Single</small><div class="bog-donut" data-size="large" data-values="100" data-colors="var(--dv-09)"><div class="bog-donut__center"><span class="bog-donut__label">Title</span><span class="bog-donut__value">0.00 ₾</span></div></div></div>
+      <div><small style="display:block;margin:0 0 8px;color:var(--docs-muted);font-size:11px">Multiple</small><div class="bog-donut" data-size="large" data-values="25,16,3,3,13,12,24"><div class="bog-donut__center"><span class="bog-donut__label">Title</span><span class="bog-donut__value">124.00 ₾</span></div></div></div>
+      <div><small style="display:block;margin:0 0 8px;color:var(--docs-muted);font-size:11px">Multiple, selected</small><div class="bog-donut" data-size="large" data-values="25,16,3,3,13,12,24" data-selected="0"><div class="bog-donut__center"><span class="bog-donut__label">Title</span><span class="bog-donut__value">124.00 ₾</span></div></div></div>
+      <div><small style="display:block;margin:0 0 8px;color:var(--docs-muted);font-size:11px">Overflow — 109 of 100</small><div class="bog-donut" data-size="large" data-values="30,6,14,24,35" data-max="100"><div class="bog-donut__center"><span class="bog-donut__value">109%</span><span class="bog-donut__label">Label</span></div></div></div>
+      <div><small style="display:block;margin:0 0 8px;color:var(--docs-muted);font-size:11px">Incomplete — 56 of 100</small><div class="bog-donut" data-size="large" data-values="30,6,20" data-max="100"><div class="bog-donut__center"><span class="bog-donut__value">56%</span><span class="bog-donut__label">Label</span></div></div></div>
+      <div><small style="display:block;margin:0 0 8px;color:var(--docs-muted);font-size:11px">Complete</small><div class="bog-donut" data-size="large" data-values="60,14,10,16" data-max="100"><div class="bog-donut__center"><span class="bog-donut__value">100%</span><span class="bog-donut__label"></span></div></div></div>
+      <div style="padding:24px 40px"><small style="display:block;margin:0 0 8px;color:var(--docs-muted);font-size:11px">Data labels</small><div class="bog-donut" data-size="large" data-values="25,16,3,3,13,12,30" data-colors="var(--dv-01),var(--dv-02),var(--dv-03),var(--dv-05),var(--dv-07),var(--dv-06),var(--dv-09)" data-labels="12% TSLA,30% MSFT,,,,40$ QQQ,12% TSLA"><div class="bog-donut__center"><span class="bog-donut__value">100.12 $</span><span class="bog-donut__label">Total amount</span></div></div></div>
+    </div>
+    <h2>Donut Chart — Mini</h2>
+    <div class="panel" style="display:flex;gap:24px;align-items:center">
+      <div class="bog-donut" data-size="mini" data-values="" data-max="100"><div class="bog-donut__center"><span class="bog-donut__value">0%</span></div></div><div class="bog-donut" data-size="mini" data-values="30,10,14,10" data-max="100"><div class="bog-donut__center"><span class="bog-donut__value">64%</span></div></div><div class="bog-donut" data-size="mini" data-values="60,20,20" data-max="100"><div class="bog-donut__center"><span class="bog-donut__value">100%</span></div></div><div class="bog-donut" data-size="mini" data-values="40,30,10,29" data-max="100"><div class="bog-donut__center"><span class="bog-donut__value">109%</span></div></div>
+    </div>
+    <h2>Card Chart</h2>
+    <div class="panel" style="display:flex;flex-direction:column;gap:12px;align-items:flex-start">
+      <div class="bog-chart-card"><div class="bog-donut" data-size="mini" data-values="" data-max="100"><div class="bog-donut__center"><span class="bog-donut__value">0%</span></div></div><div class="bog-chart-card__text"><p class="bog-chart-card__title">Empty</p></div></div><div class="bog-chart-card"><div class="bog-donut" data-size="mini" data-values="30,10,14,10" data-max="100"><div class="bog-donut__center"><span class="bog-donut__value">64%</span></div></div><div class="bog-chart-card__text"><p class="bog-chart-card__title">Incomplete</p><p class="bog-chart-card__desc">Incomplete description</p></div></div><div class="bog-chart-card"><div class="bog-donut" data-size="mini" data-values="40,30,10,29" data-max="100"><div class="bog-donut__center"><span class="bog-donut__value">109%</span></div></div><div class="bog-chart-card__text"><p class="bog-chart-card__title">Overflow</p><p class="bog-chart-card__desc">Total description</p></div></div><div class="bog-chart-card"><div class="bog-donut" data-size="mini" data-values="60,20,20" data-max="100"><div class="bog-donut__center"><span class="bog-donut__value">100%</span></div></div><div class="bog-chart-card__text"><p class="bog-chart-card__title">Complete</p></div></div>
+    </div>
+    <h2>Sparkline</h2>
+    <div class="panel" style="display:flex;gap:24px;flex-wrap:wrap">
+      <div><small style="display:block;margin:0 0 8px;color:var(--docs-muted);font-size:11px">Positive</small><svg class="bog-sparkline" data-values="2,5,5,8,10,9.6,8,10,6,3.5,3,1.5"></svg></div>
+      <div><small style="display:block;margin:0 0 8px;color:var(--docs-muted);font-size:11px">Negative</small><svg class="bog-sparkline" data-trend="negative" data-values="9,8,9,6,7,5,6,3,4,2,2.5,1"></svg></div>
+    </div>
+<script>
+  document.addEventListener("segmentselect", (e) => {
+    const names = ["Electricity", "Internet", "Mobile", "TV", "Water", "Gas", "Other"];
+    document.getElementById("donut-out").textContent = e.detail.index === null ? "Nothing selected" : names[e.detail.index] + " selected";
+  });
+</script>
+  </main>
+</div>
+</body>
+</html>

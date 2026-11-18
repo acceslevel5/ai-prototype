@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Static List — BOG UI</title>
+<link rel="stylesheet" href="../bog-ui.css">
+<link rel="stylesheet" href="docs.css">
+<script src="theme.js"></script>
+<script src="../bog-ui.js" defer></script>
+<script src="components.js" defer></script>
+<style>.dx small{display:block;margin:0 0 8px;color:var(--docs-muted);font-size:11px}.dx{display:grid;gap:24px}.dx-panel{font-family:var(--font-family-bog);font-size:14px;line-height:20px;color:var(--text-primary);padding:16px 4px}</style>
+</head>
+<body>
+<div class="docs">
+  <aside class="docs-nav">
+    <a class="docs-nav__brand" href="../index.html">BOG UI</a>
+    <nav id="bog-nav" data-current="static-list"></nav>
+  </aside>
+  <main class="docs-main">
+    <header><h1>Static List</h1><a class="figma" id="figma-link" href="#" target="_blank" rel="noopener">Open in Figma ↗</a></header>
+    <p class="lead">Short read-only details with their values — loan terms, a payment breakdown — each row a label on the left and its value on the right. Rows don't react to taps; an optional info icon opens a Tooltip. Two to five rows.</p>
+    <h2>Usage</h2>
+    <pre><code>&lt;dl class="bog-static-list"&gt;
+  &lt;div class="bog-static"&gt;                       &lt;!-- data-type="blank" · data-disabled · data-state="skeleton" --&gt;
+    &lt;dt&gt;Interest rate&lt;/dt&gt;
+    &lt;dd&gt;9.50 % &lt;span class="bog-tooltip" data-align="right"&gt;…&lt;/span&gt;&lt;/dd&gt;
+  &lt;/div&gt;
+&lt;/dl&gt;</code></pre>
+    <h2>Example</h2>
+    <p class="lead">Tap the info icon.</p>
+    <div class="panel"><dl class="bog-static-list" style="width:292px;padding-bottom:48px">
+      <div class="bog-static"><dt>Loan amount</dt><dd>5,000.00 ₾</dd></div><div class="bog-static"><dt>Interest rate</dt><dd>9.50 %<span class="bog-tooltip" data-align="right"><button class="bog-tooltip__trigger" aria-label="More about the interest rate" aria-expanded="false"></button><span class="bog-tooltip__bubble" role="tooltip">Fixed for the whole term</span></span></dd></div><div class="bog-static"><dt>Term</dt><dd>24 months</dd></div><div class="bog-static"><dt>Monthly payment</dt><dd>229.58 ₾</dd></div>
+    </dl></div>
+    <h2>Variants</h2>
+    <div class="panel"><dl class="bog-static-list" style="width:292px">
+      <div class="bog-static"><dt>Static item text</dt><dd>Value<span class="bog-tooltip" data-align="right"><button class="bog-tooltip__trigger" aria-label="More about the value" aria-expanded="false"></button><span class="bog-tooltip__bubble" role="tooltip">Tooltip text</span></span></dd></div>
+      <div class="bog-static" data-disabled><dt>Static item text</dt><dd>Value</dd></div>
+      <div class="bog-static" data-type="blank"><dt>Static item text</dt><dd>Value<span class="bog-tooltip" data-align="right"><button class="bog-tooltip__trigger" aria-label="More about the value" aria-expanded="false"></button><span class="bog-tooltip__bubble" role="tooltip">Tooltip text</span></span></dd></div>
+      <div class="bog-static" data-type="blank" data-disabled><dt>Static item text</dt><dd>Value</dd></div>
+      <div class="bog-static" data-state="skeleton"><dt>Static item text</dt><dd>Value</dd></div>
+    </dl></div>
+  </main>
+</div>
+</body>
+</html>

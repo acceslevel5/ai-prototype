@@ -1,0 +1,88 @@
+/* ==========================================================================
+   BOG UI — Accordion (BETA)
+   Figma: Accordion (71927:11708) · _Accordion Item (71927:11700) · _Accordion Header (71927:11571)
+
+   Built on <details>, so it works without JavaScript and is accessible by default:
+     <div class="bog-accordion">                              data-single — opening one closes the others (bog-ui.js)
+       <details class="bog-accordion__item" open>
+         <summary class="bog-accordion__header">
+           <span class="bog-accordion__lead">…icon, avatar or checkbox…</span>     optional
+           <span class="bog-accordion__titles">
+             <span class="bog-accordion__subtitle">Subtitle</span>                  2 Line - Reverse / 3 Line
+             <span class="bog-accordion__title">Fees and limits</span>
+             <span class="bog-accordion__secondary">Secondary text</span>           2 Line / 3 Line
+           </span>
+           <span class="bog-accordion__value">12.00 ₾</span>                       optional right slot
+         </summary>
+         <div class="bog-accordion__content">
+           <p>A short paragraph…</p>
+           …or a component: Summary, child rows, a button…
+         </div>
+       </details>
+     </div>
+   Disabled: aria-disabled="true" on the item. Skeleton: data-state="skeleton" on .bog-accordion.
+   Every closed item has a 1px divider under it.
+   ========================================================================== */
+
+.bog-accordion { font-family: var(--font-family-bog); }
+.bog-accordion__item { border-bottom: 1px solid var(--border-alpha-01); }
+.bog-accordion__item[open] { border-bottom-color: transparent; }
+.bog-accordion__header {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-gap-medium);
+  min-height: 56px;
+  box-sizing: border-box;
+  padding: var(--spacing-padding-small) var(--spacing-padding-x-small);
+  border-radius: var(--radius-button-small);
+  list-style: none;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.bog-accordion__header::-webkit-details-marker { display: none; }
+.bog-accordion__header:active { background: var(--layer-alpha-pressed-01); }
+.bog-accordion__header:focus-visible { outline: 2px solid var(--text-accent); outline-offset: -2px; }
+.bog-accordion__header::after {
+  content: "";
+  flex: none;
+  width: 16px;
+  height: 16px;
+  background: var(--icon-primary);
+  -webkit-mask: url("../icons/chevron-down.svg") center / contain no-repeat;
+          mask: url("../icons/chevron-down.svg") center / contain no-repeat;
+  transition: rotate 200ms cubic-bezier(0.33, 0, 0.67, 1);
+}
+.bog-accordion__item[open] > .bog-accordion__header::after { rotate: 180deg; }
+.bog-accordion__lead { flex: none; display: flex; }
+.bog-accordion__titles { display: flex; flex: 1 1 auto; flex-direction: column; justify-content: center; gap: 2px; min-width: 0; min-height: 40px; }
+.bog-accordion__title { color: var(--text-primary); font-size: var(--label-large-size); line-height: var(--label-large-line-height); font-weight: var(--label-large-weight); }
+:is(.bog-accordion__subtitle, .bog-accordion__secondary) { color: var(--text-secondary); font-size: var(--body-small-size); line-height: var(--body-small-line-height); font-weight: var(--body-small-weight); }
+.bog-accordion__value { flex: none; color: var(--text-primary); font-size: var(--label-large-size); line-height: var(--label-large-line-height); font-weight: var(--label-large-weight); white-space: nowrap; }
+.bog-accordion__content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-gap-default);
+  margin-top: var(--spacing-padding-small);
+  padding: var(--spacing-padding-m-small, 6px) var(--spacing-padding-x-small) var(--spacing-padding-large);
+  color: var(--text-secondary);
+  font-size: var(--body-medium-size);
+  line-height: var(--body-medium-line-height);
+  font-weight: var(--body-medium-weight);
+}
+.bog-accordion__content > p { margin: 0; }
+/* Opening: the content fades and slides in */
+.bog-accordion__item[open] > .bog-accordion__content { animation: bog-accordion-in 240ms cubic-bezier(0.33, 0, 0.13, 1); }
+@keyframes bog-accordion-in { from { opacity: 0; translate: 0 -6px; } }
+/* Disabled */
+.bog-accordion__item[aria-disabled="true"] > .bog-accordion__header { pointer-events: none; cursor: default; }
+.bog-accordion__item[aria-disabled="true"] :is(.bog-accordion__title, .bog-accordion__subtitle, .bog-accordion__secondary, .bog-accordion__value) { color: var(--text-disabled); }
+.bog-accordion__item[aria-disabled="true"] > .bog-accordion__header::after { background: var(--icon-disabled); }
+/* Skeleton: a bar per header */
+.bog-accordion[data-state="skeleton"] .bog-accordion__header { pointer-events: none; }
+.bog-accordion[data-state="skeleton"] .bog-accordion__header > * { visibility: hidden; }
+.bog-accordion[data-state="skeleton"] .bog-accordion__header::after { visibility: hidden; }
+.bog-accordion[data-state="skeleton"] .bog-accordion__header { background: linear-gradient(var(--support-skeleton) 0 0) 4px 50% / 128px 12px no-repeat; }
+@media (prefers-reduced-motion: reduce) {
+  .bog-accordion__header::after { transition: none; }
+  .bog-accordion__item[open] > .bog-accordion__content { animation: none; }
+}

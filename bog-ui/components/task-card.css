@@ -1,0 +1,91 @@
+/* ==========================================================================
+   BOG UI — Task Card
+   Figma: Task Card (52557:11698) · _Task Card item (52557:11654)
+
+   Tasks of a challenge or a loyalty programme, side by side. Done ones get a green check;
+   a locked one hides its picture until it's unlocked.
+     <div class="bog-tasks">                                        a row that scrolls sideways · data-state="skeleton"
+       <a class="bog-task" href="#" data-status="incomplete">       incomplete | completed | unlockable
+         <span class="bog-task__media"><img src="…" alt=""></span>
+         <span class="bog-task__text">Pay 5 times with your card</span>
+       </a>
+       …
+     </div>
+   ========================================================================== */
+
+.bog-tasks { display: flex; gap: var(--spacing-gap-small); overflow-x: auto; scrollbar-width: none; scroll-snap-type: x proximity; }
+.bog-tasks::-webkit-scrollbar { display: none; }
+.bog-task {
+  --_layer: var(--decorative-warmgray-layer);   /* Decorative/WarmGray/layer */
+  position: relative;
+  display: block;
+  flex: none;
+  width: 180px;
+  height: 240px;
+  overflow: hidden;
+  border-radius: var(--radius-medium);
+  background: var(--_layer);
+  color: inherit;
+  font-family: var(--font-family-bog);
+  text-decoration: none;
+  scroll-snap-align: start;
+  -webkit-tap-highlight-color: transparent;
+}
+.bog-task__media { position: absolute; inset: 0; background: url("../assets/media/placeholder.png") center 40% / 56px no-repeat; }
+.bog-task__media > img { display: block; width: 100%; height: 100%; object-fit: cover; }
+/* Text on a gradient that fades the picture into the card */
+.bog-task__text {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: flex-end;
+  box-sizing: border-box;
+  min-height: 104px;
+  padding: var(--spacing-padding-default) var(--spacing-padding-medium, 12px);
+  background: linear-gradient(to bottom, var(--decorative-warmgray-layer-alpha-none), var(--_layer) 64%);
+  color: var(--text-primary);
+  font-size: var(--body-medium-size);
+  line-height: var(--body-medium-line-height);
+  font-weight: var(--body-medium-weight);
+}
+/* Status circle, top left */
+.bog-task::before {
+  content: "";
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  z-index: 1;
+  width: 24px;
+  height: 24px;
+  border-radius: var(--radius-full);
+  background: var(--layer-alpha-02);
+}
+.bog-task[data-status="completed"]::after {
+  content: "";
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  z-index: 2;
+  width: 24px;
+  height: 24px;
+  background: var(--icon-white);
+  -webkit-mask: url("../icons/check-16.svg") center / 16px no-repeat;
+          mask: url("../icons/check-16.svg") center / 16px no-repeat;
+}
+.bog-task[data-status="completed"]::before { background: var(--status-success-02); }
+.bog-task[data-status="unlockable"]::before { display: none; }
+.bog-task[data-status="unlockable"] .bog-task__media { filter: grayscale(1); opacity: 0.6; }
+.bog-task:is(:active, [data-pressed]) { --_layer: color-mix(in srgb, var(--decorative-warmgray-layer), var(--text-primary) 5%); }   /* no pressed token: 5 % towards the text colour (#edebeb in light) */
+/* Skeleton */
+:is(.bog-tasks[data-state="skeleton"] .bog-task, .bog-task[data-state="skeleton"]) { --_layer: var(--support-skeleton-background); pointer-events: none; }
+:is(.bog-tasks[data-state="skeleton"] .bog-task, .bog-task[data-state="skeleton"])::before,
+:is(.bog-tasks[data-state="skeleton"] .bog-task, .bog-task[data-state="skeleton"])::after,
+:is(.bog-tasks[data-state="skeleton"] .bog-task, .bog-task[data-state="skeleton"]) .bog-task__media { display: none; }
+:is(.bog-tasks[data-state="skeleton"] .bog-task, .bog-task[data-state="skeleton"]) .bog-task__text {
+  color: transparent;
+  background:
+    linear-gradient(var(--support-skeleton) 0 0) 12px calc(100% - 40px) / 128px 12px no-repeat,
+    linear-gradient(var(--support-skeleton) 0 0) 12px calc(100% - 16px) / 64px 12px no-repeat;
+}

@@ -1,0 +1,75 @@
+/* ==========================================================================
+   BOG UI — Tooltip
+   Figma: Tooltip (41120:93)
+
+     <span class="bog-tooltip" data-align="right">        left | center | right · left-center | right-center (beside)
+       <button class="bog-tooltip__trigger" aria-label="About the transfer fee" aria-expanded="false"></button>
+       <span class="bog-tooltip__bubble" role="tooltip">The fee is charged by the receiving bank</span>
+     </span>
+   data-position="top" opens it above (near the bottom of the screen); default below.
+   Tap the info icon to open; tap anywhere else or the icon again to close (bog-ui.js).
+   One line, plain text, no links. Only one tooltip is open at a time (data-pinned keeps one open, e.g. in docs).
+   ========================================================================== */
+
+.bog-tooltip { position: relative; display: inline-flex; vertical-align: middle; font-family: var(--font-family-bog); }
+.bog-tooltip__trigger {
+  position: relative;
+  display: inline-flex;
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: var(--icon-primary);
+  -webkit-mask: url("../icons/info.svg") center / contain no-repeat;
+          mask: url("../icons/info.svg") center / contain no-repeat;
+  cursor: pointer;
+}
+.bog-tooltip__trigger::after { content: ""; position: absolute; inset: -14px; }   /* 44px tap target */
+.bog-tooltip__bubble {
+  position: absolute;
+  top: calc(100% + 10px);
+  left: -20px;
+  z-index: 20;
+  padding: var(--spacing-padding-small) var(--spacing-padding-default);
+  border-radius: var(--radius-button-small);
+  background: var(--layer-inverse-01);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.04);
+  color: var(--text-inverse-primary);
+  font-size: var(--body-small-size);
+  line-height: var(--body-small-line-height);
+  font-weight: var(--body-small-weight);
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  translate: 0 -4px;
+  transition: opacity 150ms ease, translate 150ms ease;
+}
+/* Arrow: an 8×6 triangle pointing at the icon */
+.bog-tooltip__bubble::before {
+  content: "";
+  position: absolute;
+  bottom: 100%;
+  left: 16px;
+  border: 4px solid transparent;
+  border-bottom: 6px solid var(--layer-inverse-01);
+  border-top: 0;
+}
+.bog-tooltip[data-open] .bog-tooltip__bubble { opacity: 1; translate: 0 0; pointer-events: auto; }
+.bog-tooltip[data-align="center"] .bog-tooltip__bubble { left: 50%; translate: -50% -4px; }
+.bog-tooltip[data-align="center"][data-open] .bog-tooltip__bubble { translate: -50% 0; }
+.bog-tooltip[data-align="center"] .bog-tooltip__bubble::before { left: calc(50% - 4px); }
+.bog-tooltip[data-align="right"] .bog-tooltip__bubble { left: auto; right: -20px; }
+.bog-tooltip[data-align="right"] .bog-tooltip__bubble::before { left: auto; right: 16px; }
+/* Above the icon */
+.bog-tooltip[data-position="top"] .bog-tooltip__bubble { top: auto; bottom: calc(100% + 10px); translate: 0 4px; }
+.bog-tooltip[data-position="top"][data-align="center"] .bog-tooltip__bubble { translate: -50% 4px; }
+.bog-tooltip[data-position="top"] .bog-tooltip__bubble::before { bottom: auto; top: 100%; border-bottom: 0; border-top: 6px solid var(--layer-inverse-01); }
+/* Beside the icon */
+.bog-tooltip:is([data-align="left-center"], [data-align="right-center"]) .bog-tooltip__bubble { top: 50%; translate: 0 -50%; }
+.bog-tooltip[data-align="right-center"] .bog-tooltip__bubble { left: calc(100% + 10px); }
+.bog-tooltip[data-align="left-center"] .bog-tooltip__bubble { left: auto; right: calc(100% + 10px); }
+.bog-tooltip:is([data-align="left-center"], [data-align="right-center"]) .bog-tooltip__bubble::before { top: calc(50% - 4px); bottom: auto; border: 4px solid transparent; }
+.bog-tooltip[data-align="right-center"] .bog-tooltip__bubble::before { left: -6px; border-right: 6px solid var(--layer-inverse-01); border-left: 0; }
+.bog-tooltip[data-align="left-center"] .bog-tooltip__bubble::before { left: auto; right: -6px; border-left: 6px solid var(--layer-inverse-01); border-right: 0; }
+@media (prefers-reduced-motion: reduce) { .bog-tooltip__bubble { transition: none; } }

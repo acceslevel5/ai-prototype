@@ -1,0 +1,85 @@
+/* ==========================================================================
+   BOG UI — Full pages: Feature Notes Page · Important Information Page
+   Figma: Feature Notes Page (64127:67532) · Important Information Page (62752:24532)
+   (Section Page → section.css; Account Picker Page is built from library parts — see its docs page.)
+
+   Feature Notes — "what's new" after an update: a picture on top, then slider dots, a title,
+   a short description and one button. Several notes swipe sideways (bog-ui.js moves the dots).
+     <div class="bog-notes">
+       <button class="bog-icon-btn bog-notes__close" data-type="neutral" data-size="small" aria-label="Close"><span class="bog-icon" data-icon="close"></span></button>
+       <div class="bog-notes__track">
+         <div class="bog-notes__slide">
+           <div class="bog-notes__media"><img src="…" alt=""></div>
+           <div class="bog-notes__text"><h2 class="bog-notes__title">Release Title</h2><p class="bog-notes__desc">…</p></div>
+         </div>
+         …
+       </div>
+       <footer class="bog-notes__footer">
+         <div class="bog-dots" data-count="3" data-current="1"></div>
+         <button class="bog-btn" data-type="primary" data-width="fill">Next</button>
+         <span class="bog-notes__home"></span>
+       </footer>
+     </div>
+
+   Important Information — a Bottom Sheet with long terms users must read before they confirm:
+     <div class="bog-sheet__content" data-must-read> …text… <button class="bog-must-read__more" aria-label="Scroll down"></button></div>
+     …<button class="bog-btn" data-type="primary" data-width="fill" data-requires-read disabled>Confirm</button>
+   bog-ui.js enables [data-requires-read] buttons in the same sheet once the text is scrolled to the end
+   (State=Read) and hides the scroll-down button; it fires "mustread" on the content.
+   ========================================================================== */
+
+/* ---- Feature Notes ----------------------------------------------------- */
+.bog-notes {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+  min-height: 600px;
+  overflow: hidden;
+  background: var(--layer-layer-01);
+  font-family: var(--font-family-bog);
+}
+.bog-notes__close { position: absolute; top: 40px; left: 16px; z-index: 2; }
+.bog-notes__track {
+  display: flex;
+  flex: 1 1 auto;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  overscroll-behavior-x: contain;
+}
+.bog-notes__track::-webkit-scrollbar { display: none; }
+.bog-notes__slide { display: flex; flex: 0 0 100%; flex-direction: column; scroll-snap-align: start; }
+.bog-notes__media { flex: 1 1 auto; min-height: 240px; background: #e8f5ec url("../assets/media/placeholder.png") center / 72px no-repeat; }
+.bog-notes__media > img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.bog-notes__text { display: flex; flex: none; flex-direction: column; gap: var(--spacing-gap-default); box-sizing: border-box; min-height: 132px; padding: 44px 24px 0; text-align: center; }   /* the dots sit in its top 44px; it grows with larger text (Feature Note scales Full) */
+.bog-notes__title { margin: 0; color: var(--text-primary); font-size: 18px; line-height: 24px; font-weight: 600; }
+.bog-notes__desc { margin: 0; min-height: 40px; color: var(--text-secondary); font-size: var(--body-medium-size); line-height: var(--body-medium-line-height); font-weight: var(--body-medium-weight); }
+.bog-notes__footer { position: relative; display: flex; flex-direction: column; align-items: center; gap: 24px; padding: 24px 24px 0; background: var(--layer-layer-01); }
+.bog-notes__footer > .bog-dots { position: absolute; top: -108px; left: 50%; translate: -50% 0; }
+.bog-notes__home { display: block; width: 100%; height: 34px; background: linear-gradient(var(--layer-inverse-01) 0 0) center 21px / 144px 5px no-repeat; border-radius: 3px; }
+
+/* ---- Important Information: must read before confirming ---------------- */
+[data-must-read] { position: relative; overflow-y: auto; overscroll-behavior: contain; }
+[data-must-read] p { margin: 0 0 20px; color: var(--text-primary); font-size: var(--body-medium-size); line-height: var(--body-medium-line-height); font-weight: var(--body-medium-weight); }
+[data-must-read] a { color: var(--text-accent); }
+/* Fade the last lines while there's more to read */
+[data-must-read]:not([data-read]) { -webkit-mask: linear-gradient(#000 calc(100% - 64px), rgba(0, 0, 0, 0.35)); mask: linear-gradient(#000 calc(100% - 64px), rgba(0, 0, 0, 0.35)); }
+.bog-must-read__more {
+  position: sticky;
+  bottom: 8px;
+  left: 50%;
+  display: block;
+  width: 40px;
+  height: 40px;
+  margin: -48px auto 8px;
+  border: 0;
+  border-radius: var(--radius-full);
+  background: var(--button-primary-default, var(--status-accent-02));
+  cursor: pointer;
+  transition: opacity 200ms ease, scale 200ms ease;
+}
+.bog-must-read__more::before { content: ""; position: absolute; inset: 10px; background: var(--icon-white); -webkit-mask: url("../icons/chevron-down.svg") center / contain no-repeat; mask: url("../icons/chevron-down.svg") center / contain no-repeat; }
+[data-must-read][data-read] .bog-must-read__more { opacity: 0; scale: 0.6; pointer-events: none; }

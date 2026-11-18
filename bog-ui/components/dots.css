@@ -1,0 +1,25 @@
+/* ==========================================================================
+   BOG UI — Slider Indicator (page dots)
+   Figma: Slider Indicator (46424:1188)
+
+     <div class="bog-dots" data-count="6" data-current="2" role="tablist" aria-label="Slides"></div>
+   bog-ui.js draws the dots: 2–5 pages show every dot; from 6 up a window of five slides
+   along, and the dots at its edges shrink (6px, then 4px) to say there's more.
+   data-appearance="white" — white dots over imagery. BOG.dots(el, current) moves it.
+   ========================================================================== */
+
+.bog-dots { --_on: var(--icon-accent); --_off: var(--support-support-02); display: inline-flex; align-items: center; gap: 4px; height: 8px; }
+.bog-dots[data-appearance="white"] { --_on: var(--icon-white); --_off: rgba(255, 255, 255, 0.4); }
+.bog-dots > i {
+  flex: none;
+  width: 8px;
+  height: 8px;
+  border-radius: var(--radius-full);
+  background: var(--_off);
+  opacity: 0.6;
+  transition: width 200ms ease, height 200ms ease, background-color 200ms ease, opacity 200ms ease;
+}
+.bog-dots > i[aria-current] { background: var(--_on); opacity: 1; }
+.bog-dots > i[data-size="6"] { width: 6px; height: 6px; }
+.bog-dots > i[data-size="4"] { width: 4px; height: 4px; }
+.bog-dots > i[hidden] { display: none; }

@@ -1,0 +1,98 @@
+/* ==========================================================================
+   BOG UI — OTP Verification
+   Figma: OTP Verification (65051:82556)
+
+   Built from existing parts: an optional SMS / Email Radio Button Group, a Text Input
+   for the code, the "We've sent…" message, a resend countdown and a Resend button.
+     <div class="bog-otp">                                   data-state="loading | expired" · data-appearance="inverse"
+       <fieldset class="bog-radio-group" data-direction="horizontal">…SMS / Email…</fieldset>   optional
+       <div class="bog-field">…<input class="bog-field__input" inputmode="numeric" maxlength="4">…</div>
+       <div class="bog-otp__info">
+         <p class="bog-otp__sent">We've sent a verification code to ••• •• 56 78</p>
+         <p class="bog-otp__expired">This verification code has expired</p>          expired only
+         <p class="bog-otp__timer" data-otp-timer="35">Resend code in <b>00:35</b></p>
+         <button type="button" class="bog-otp__resend">Resend code</button>
+       </div>
+     </div>
+   bog-ui.js counts the timer down; at 0 it hides it and enables Resend (fires "otpresend" on click).
+   ========================================================================== */
+
+.bog-otp {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-gap-large);
+  width: 100%;
+  font-family: var(--font-family-bog);
+}
+.bog-otp .bog-radio-group__label { color: var(--text-helper); }
+.bog-otp__info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--spacing-gap-small);
+}
+.bog-otp__info > p {
+  margin: 0;
+  padding-left: var(--spacing-padding-small);
+  color: var(--text-secondary);
+  font-size: var(--body-medium-size);
+  line-height: var(--body-medium-line-height);
+  font-weight: var(--body-medium-weight);
+}
+.bog-otp__timer b { margin-left: var(--spacing-gap-x-small); font-weight: 700; font-variant-numeric: tabular-nums; }
+.bog-otp__timer[hidden] { display: none; }
+.bog-otp__expired { display: none; align-items: center; gap: var(--spacing-gap-x-small); }
+.bog-otp[data-state="expired"] .bog-otp__expired { display: flex; }
+.bog-otp .bog-otp__expired {
+  color: var(--text-error);
+  font-size: var(--label-small-size);
+  line-height: var(--label-small-line-height);
+  font-weight: var(--label-small-weight);
+}
+.bog-otp__expired::before {
+  content: "";
+  flex: none;
+  width: 16px;
+  height: 16px;
+  background-color: var(--icon-error);
+  -webkit-mask: url("../icons/status-alert.svg") center / contain no-repeat;
+          mask: url("../icons/status-alert.svg") center / contain no-repeat;
+}
+
+/* Resend: small text button, accent and underlined, with the retry icon */
+.bog-otp__resend {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-gap-small);
+  height: 32px;
+  margin: 0;
+  padding: 0 var(--spacing-padding-medium);
+  border: 0;
+  border-radius: var(--radius-button-small);
+  background: none;
+  color: var(--text-accent);
+  font: inherit;
+  font-size: var(--label-medium-size);
+  line-height: var(--label-medium-line-height);
+  font-weight: var(--label-medium-weight);
+  text-decoration: underline;
+  cursor: pointer;
+}
+.bog-otp__resend::before {
+  content: "";
+  width: 16px;
+  height: 16px;
+  background-color: currentColor;
+  -webkit-mask: url("../icons/retry-16.svg") center / contain no-repeat;
+          mask: url("../icons/retry-16.svg") center / contain no-repeat;
+}
+.bog-otp__resend:disabled { color: var(--text-disabled); cursor: default; }
+.bog-otp__resend:not(:disabled):active { background: var(--layer-alpha-pressed-01); }
+
+/* Loading: everything dims while the code is being sent */
+.bog-otp[data-state="loading"] { pointer-events: none; }
+.bog-otp[data-state="loading"] :is(.bog-radio-group, .bog-field, .bog-otp__timer, .bog-otp__resend) { opacity: 0.4; }
+/* Inverse Static */
+.bog-otp[data-appearance="inverse"] .bog-otp__info > p { color: var(--text-white-secondary); }
+.bog-otp[data-appearance="inverse"] .bog-otp__resend { color: var(--background-inverse-accent-static); }
+.bog-otp[data-appearance="inverse"] .bog-otp__expired { color: var(--status-inverse-error-static); }

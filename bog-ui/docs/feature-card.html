@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Feature Card — BOG UI</title>
+<link rel="stylesheet" href="../bog-ui.css">
+<link rel="stylesheet" href="docs.css">
+<script src="theme.js"></script>
+<script src="../bog-ui.js" defer></script>
+<script src="components.js" defer></script>
+<style>.dx small{display:block;margin:0 0 8px;color:var(--docs-muted);font-size:11px}.dx{display:grid;gap:24px}.dx-panel{font-family:var(--font-family-bog);font-size:14px;line-height:20px;color:var(--text-primary);padding:16px 4px}</style>
+</head>
+<body>
+<div class="docs">
+  <aside class="docs-nav">
+    <a class="docs-nav__brand" href="../index.html">BOG UI</a>
+    <nav id="bog-nav" data-current="feature-card"></nav>
+  </aside>
+  <main class="docs-main">
+    <header><h1>Feature Card</h1><a class="figma" id="figma-link" href="#" target="_blank" rel="noopener">Open in Figma ↗</a></header>
+    <p class="lead">A partner offer: a picture with the offer on a coloured tab, the brand's logo, name and category. Small for rows of offers, Large for a featured one, Mini for a dense grid of brands. Optional tags for a cap or a countdown.</p>
+    <h2>Usage</h2>
+    <pre><code>&lt;a class="bog-feature" href="…" data-size="small"&gt;          &lt;!-- mini | small | large · data-state="skeleton" --&gt;
+  &lt;span class="bog-feature__media"&gt;
+    &lt;img src="…" alt=""&gt;
+    &lt;span class="bog-feature__tags"&gt;&lt;span class="bog-feature__tag"&gt;Max. 500 ₾&lt;/span&gt;&lt;span class="bog-feature__tag" data-type="timer"&gt;2 Days&lt;/span&gt;&lt;/span&gt;
+    &lt;span class="bog-feature__offer" data-brand&gt;&lt;span class="bog-feature__offer-label" data-status="sale"&gt;25% Discount&lt;/span&gt;&lt;/span&gt;
+  &lt;/span&gt;
+  &lt;span class="bog-feature__info"&gt;
+    &lt;span class="bog-media-circle" data-size="32"&gt;&lt;img src="logo.png" alt=""&gt;&lt;/span&gt;
+    &lt;span class="bog-feature__text"&gt;&lt;span class="bog-feature__title"&gt;Brand Title&lt;/span&gt;&lt;span class="bog-feature__desc"&gt;Category&lt;/span&gt;&lt;/span&gt;
+  &lt;/span&gt;
+&lt;/a&gt;</code></pre>
+    <h2>Sizes</h2>
+    <div class="panel" style="display:flex;gap:24px;flex-wrap:wrap;align-items:flex-start">
+      <div><small style="display:block;margin:0 0 8px;color:var(--docs-muted);font-size:11px">Small</small><a class="bog-feature" href="#" onclick="return false" data-size="small"><span class="bog-feature__media"><span class="bog-feature__offer" data-brand><span class="bog-feature__offer-label" data-status="sale">25% Discount</span></span></span><span class="bog-feature__info"><span class="bog-media-circle" data-size="32"></span><span class="bog-feature__text"><span class="bog-feature__title">Brand Title</span><span class="bog-feature__desc">Category</span></span></span></a></div>
+      <div><small style="display:block;margin:0 0 8px;color:var(--docs-muted);font-size:11px">Small + Cap + Timer</small><a class="bog-feature" href="#" onclick="return false" data-size="small"><span class="bog-feature__media"><span class="bog-feature__tags"><span class="bog-feature__tag">Max. 500 ₾</span><span class="bog-feature__tag" data-type="timer">2 Days</span></span><span class="bog-feature__offer" data-brand><span class="bog-feature__offer-label" data-status="cashback">20% Cashback</span></span></span><span class="bog-feature__info"><span class="bog-media-circle" data-size="32"></span><span class="bog-feature__text"><span class="bog-feature__title">Brand Title</span><span class="bog-feature__desc">Category</span></span></span></a></div>
+      <div><small style="display:block;margin:0 0 8px;color:var(--docs-muted);font-size:11px">Large</small><a class="bog-feature" href="#" onclick="return false" data-size="large"><span class="bog-feature__media"><span class="bog-feature__offer" data-brand><span class="bog-feature__offer-label" data-status="cashback">50% Cashback</span></span></span><span class="bog-feature__info"><span class="bog-media-circle" data-size="32"></span><span class="bog-feature__text"><span class="bog-feature__title">Brand Title</span><span class="bog-feature__desc">Category</span></span></span></a></div>
+      <div><small style="display:block;margin:0 0 8px;color:var(--docs-muted);font-size:11px">Mini</small><a class="bog-feature" href="#" onclick="return false" data-size="mini"><span class="bog-feature__media"></span><span class="bog-feature__info"><span class="bog-feature__text"><span class="bog-feature__title">Title</span></span></span></a></div>
+    </div>
+    <h2>Offer statuses</h2>
+    <div class="panel" style="display:flex;gap:16px;flex-wrap:wrap;align-items:flex-start">
+      <a class="bog-feature" href="#" onclick="return false" data-size="small"><span class="bog-feature__media"><span class="bog-feature__offer" data-brand><span class="bog-feature__offer-label" data-status="mr">5X MR</span></span></span><span class="bog-feature__info"><span class="bog-media-circle" data-size="32"></span><span class="bog-feature__text"><span class="bog-feature__title">Brand Title</span><span class="bog-feature__desc">Category</span></span></span></a><a class="bog-feature" href="#" onclick="return false" data-size="small"><span class="bog-feature__media"><span class="bog-feature__offer" data-brand><span class="bog-feature__offer-label" data-status="plus">2X PLUS</span></span></span><span class="bog-feature__info"><span class="bog-media-circle" data-size="32"></span><span class="bog-feature__text"><span class="bog-feature__title">Brand Title</span><span class="bog-feature__desc">Category</span></span></span></a><a class="bog-feature" href="#" onclick="return false" data-size="small"><span class="bog-feature__media"><span class="bog-feature__offer" data-brand><span class="bog-feature__offer-label" data-status="cashback">20% Cashback</span></span></span><span class="bog-feature__info"><span class="bog-media-circle" data-size="32"></span><span class="bog-feature__text"><span class="bog-feature__title">Brand Title</span><span class="bog-feature__desc">Category</span></span></span></a><a class="bog-feature" href="#" onclick="return false" data-size="small"><span class="bog-feature__media"><span class="bog-feature__offer" data-brand><span class="bog-feature__offer-label" data-status="sale">25% Discount</span></span></span><span class="bog-feature__info"><span class="bog-media-circle" data-size="32"></span><span class="bog-feature__text"><span class="bog-feature__title">Brand Title</span><span class="bog-feature__desc">Category</span></span></span></a><a class="bog-feature" href="#" onclick="return false" data-size="small"><span class="bog-feature__media"><span class="bog-feature__offer" data-brand><span class="bog-feature__offer-label" data-status="other">Other</span></span></span><span class="bog-feature__info"><span class="bog-media-circle" data-size="32"></span><span class="bog-feature__text"><span class="bog-feature__title">Brand Title</span><span class="bog-feature__desc">Category</span></span></span></a>
+    </div>
+    <h2>States</h2>
+    <div class="panel" style="display:flex;gap:16px;flex-wrap:wrap;align-items:flex-start">
+      <div><small style="display:block;margin:0 0 8px;color:var(--docs-muted);font-size:11px">Pressed</small><a class="bog-feature" href="#" onclick="return false" data-size="small" data-pressed><span class="bog-feature__media"><span class="bog-feature__offer" data-brand><span class="bog-feature__offer-label" data-status="sale">25% Discount</span></span></span><span class="bog-feature__info"><span class="bog-media-circle" data-size="32"></span><span class="bog-feature__text"><span class="bog-feature__title">Brand Title</span><span class="bog-feature__desc">Category</span></span></span></a></div>
+      <div><small style="display:block;margin:0 0 8px;color:var(--docs-muted);font-size:11px">Skeleton</small><a class="bog-feature" href="#" onclick="return false" data-size="small" data-state="skeleton"><span class="bog-feature__media"></span><span class="bog-feature__info"><span class="bog-media-circle" data-size="32"></span><span class="bog-feature__text"><span class="bog-feature__title">Brand Title</span><span class="bog-feature__desc">Category</span></span></span></a></div>
+      <div><small style="display:block;margin:0 0 8px;color:var(--docs-muted);font-size:11px">Mini, skeleton</small><a class="bog-feature" href="#" onclick="return false" data-size="mini" data-state="skeleton"><span class="bog-feature__media"></span><span class="bog-feature__info"><span class="bog-feature__text"><span class="bog-feature__title">Title</span></span></span></a></div>
+      <div><small style="display:block;margin:0 0 8px;color:var(--docs-muted);font-size:11px">Large, skeleton</small><a class="bog-feature" href="#" onclick="return false" data-size="large" data-state="skeleton"><span class="bog-feature__media"></span><span class="bog-feature__info"><span class="bog-media-circle" data-size="32"></span><span class="bog-feature__text"><span class="bog-feature__title">Brand Title</span><span class="bog-feature__desc">Category</span></span></span></a></div>
+    </div>
+  </main>
+</div>
+</body>
+</html>

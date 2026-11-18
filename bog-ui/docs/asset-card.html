@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Asset Card — BOG UI</title>
+<link rel="stylesheet" href="../bog-ui.css">
+<link rel="stylesheet" href="docs.css">
+<script src="theme.js"></script>
+<script src="../bog-ui.js" defer></script>
+<script src="components.js" defer></script>
+<style>.dx small{display:block;margin:0 0 8px;color:var(--docs-muted);font-size:11px}.dx{display:grid;gap:24px}.dx-panel{font-family:var(--font-family-bog);font-size:14px;line-height:20px;color:var(--text-primary);padding:16px 4px}</style>
+</head>
+<body>
+<div class="docs">
+  <aside class="docs-nav">
+    <a class="docs-nav__brand" href="../index.html">BOG UI</a>
+    <nav id="bog-nav" data-current="asset-card"></nav>
+  </aside>
+  <main class="docs-main docs-split"><div>
+    <header><h1>Asset Card</h1><a class="figma" id="figma-link" href="#" target="_blank" rel="noopener">Open in Figma ↗</a></header>
+    <p class="lead">One holding in an investment portfolio: its ticker and name, today's change and its value. The change is green with an up arrow when positive, red with a down arrow when negative, grey with no arrow when flat. Cards sit in a row that scrolls sideways and load in one after another — from the left, the right, below or above — with a small delay between cards. Try it in the phone on the right.</p>
+    <h2>Usage</h2>
+    <pre><code>&lt;div class="bog-asset-group" data-animate="left" data-stagger="70"&gt;   &lt;!-- load-in: left | right | bottom | top (optional) --&gt;
+  &lt;a class="bog-asset" href="…" data-trend="positive"&gt;          &lt;!-- positive | negative | neutral · data-state="skeleton" --&gt;
+    &lt;span class="bog-asset__head"&gt;
+      &lt;span class="bog-asset__label"&gt;&lt;span class="bog-asset__ticker"&gt;BTC&lt;/span&gt;&lt;span class="bog-asset__name"&gt;Bitcoin&lt;/span&gt;&lt;/span&gt;
+      &lt;span class="bog-media-circle" data-size="32"&gt;&lt;img src="…" alt=""&gt;&lt;/span&gt;
+    &lt;/span&gt;
+    &lt;span class="bog-asset__foot"&gt;&lt;span class="bog-asset__trend"&gt;+4.00%&lt;/span&gt;&lt;span class="bog-asset__value"&gt;1,250.00 $&lt;/span&gt;&lt;/span&gt;
+  &lt;/a&gt;
+&lt;/div&gt;
+&lt;script&gt;BOG.assetIn(group, { from: "right", stagger: 70 });   // replay from code&lt;/script&gt;</code></pre>
+    <h2>Group</h2>
+    <p class="lead">Scroll sideways; press a card to see the pressed state.</p>
+    <div class="panel"><div class="bog-asset-group" style="width:375px;padding:0 16px;box-sizing:border-box">
+      <a class="bog-asset" href="#" onclick="return false" data-trend="positive"><span class="bog-asset__head"><span class="bog-asset__label"><span class="bog-asset__ticker">BTC</span><span class="bog-asset__name">Bitcoin</span></span><span class="bog-media-circle" data-size="32"></span></span><span class="bog-asset__foot"><span class="bog-asset__trend">+4.00%</span><span class="bog-asset__value">1,250.00 $</span></span></a><a class="bog-asset" href="#" onclick="return false" data-trend="negative"><span class="bog-asset__head"><span class="bog-asset__label"><span class="bog-asset__ticker">AAPL</span><span class="bog-asset__name">Apple</span></span><span class="bog-media-circle" data-size="32"></span></span><span class="bog-asset__foot"><span class="bog-asset__trend">-1.25%</span><span class="bog-asset__value">842.10 $</span></span></a><a class="bog-asset" href="#" onclick="return false" data-trend="neutral"><span class="bog-asset__head"><span class="bog-asset__label"><span class="bog-asset__ticker">GLD</span><span class="bog-asset__name">Gold</span></span><span class="bog-media-circle" data-size="32"></span></span><span class="bog-asset__foot"><span class="bog-asset__trend">0.00%</span><span class="bog-asset__value">300.00 $</span></span></a><a class="bog-asset" href="#" onclick="return false" data-trend="positive"><span class="bog-asset__head"><span class="bog-asset__label"><span class="bog-asset__ticker">ETH</span><span class="bog-asset__name">Ethereum</span></span><span class="bog-media-circle" data-size="32"></span></span><span class="bog-asset__foot"><span class="bog-asset__trend">+12.40%</span><span class="bog-asset__value">96.30 $</span></span></a>
+    </div></div>
+    <h2>Trends and states</h2>
+    <div class="panel" style="display:flex;gap:16px;flex-wrap:wrap;align-items:flex-start">
+      <div><small style="display:block;margin:0 0 8px;color:var(--docs-muted);font-size:11px">Positive</small><a class="bog-asset" href="#" onclick="return false" data-trend="positive"><span class="bog-asset__head"><span class="bog-asset__label"><span class="bog-asset__ticker">CRY</span><span class="bog-asset__name">Crypto</span></span><span class="bog-media-circle" data-size="32"></span></span><span class="bog-asset__foot"><span class="bog-asset__trend">+4.00%</span><span class="bog-asset__value">0.00 $</span></span></a></div>
+      <div><small style="display:block;margin:0 0 8px;color:var(--docs-muted);font-size:11px">Negative</small><a class="bog-asset" href="#" onclick="return false" data-trend="negative"><span class="bog-asset__head"><span class="bog-asset__label"><span class="bog-asset__ticker">CRY</span><span class="bog-asset__name">Crypto</span></span><span class="bog-media-circle" data-size="32"></span></span><span class="bog-asset__foot"><span class="bog-asset__trend">-4.00%</span><span class="bog-asset__value">0.00 $</span></span></a></div>
+      <div><small style="display:block;margin:0 0 8px;color:var(--docs-muted);font-size:11px">Neutral</small><a class="bog-asset" href="#" onclick="return false" data-trend="neutral"><span class="bog-asset__head"><span class="bog-asset__label"><span class="bog-asset__ticker">CRY</span><span class="bog-asset__name">Crypto</span></span><span class="bog-media-circle" data-size="32"></span></span><span class="bog-asset__foot"><span class="bog-asset__trend">0.00%</span><span class="bog-asset__value">0.00 $</span></span></a></div>
+      <div><small style="display:block;margin:0 0 8px;color:var(--docs-muted);font-size:11px">Pressed</small><a class="bog-asset" href="#" onclick="return false" data-trend="positive" data-pressed><span class="bog-asset__head"><span class="bog-asset__label"><span class="bog-asset__ticker">CRY</span><span class="bog-asset__name">Crypto</span></span><span class="bog-media-circle" data-size="32"></span></span><span class="bog-asset__foot"><span class="bog-asset__trend">+4.00%</span><span class="bog-asset__value">0.00 $</span></span></a></div>
+      <div><small style="display:block;margin:0 0 8px;color:var(--docs-muted);font-size:11px">Skeleton</small><a class="bog-asset" href="#" onclick="return false" data-trend="positive" data-state="skeleton"><span class="bog-asset__head"><span class="bog-asset__label"><span class="bog-asset__ticker">CRY</span><span class="bog-asset__name">Crypto</span></span><span class="bog-media-circle" data-size="32"></span></span><span class="bog-asset__foot"><span class="bog-asset__trend">+4.00%</span><span class="bog-asset__value">0.00 $</span></span></a></div>
+    </div>
+  </div>
+
+  <aside class="docs-preview" aria-label="Mobile preview">
+    <div class="docs-preview__controls"><span>Load in</span><div class="docs-sort" id="ai-from" role="group" aria-label="Load-in direction"><button type="button" data-from="left" aria-pressed="true">Left → right</button><button type="button" data-from="right" aria-pressed="false">Right → left</button><button type="button" data-from="bottom" aria-pressed="false">From bottom</button><button type="button" data-from="top" aria-pressed="false">From top</button></div></div>
+    <div class="docs-preview__controls"><span>Delay</span><div class="docs-sort" id="ai-step" role="group" aria-label="Delay between cards"><button type="button" data-step="40" aria-pressed="false">40 ms</button><button type="button" data-step="70" aria-pressed="true">70 ms</button><button type="button" data-step="120" aria-pressed="false">120 ms</button></div></div>
+    <div class="docs-preview__controls"><button class="bog-btn" data-type="secondary" data-size="small" id="ai-replay">Replay</button><label><input type="checkbox" id="ai-slow"> Slow motion (×5)</label></div>
+    <div class="docs-phone" id="ai-phone">
+      <div class="docs-phone__status"><span>9:41</span><span>●●●</span></div>
+      <div class="docs-phone__nav"><span class="bog-icon" data-icon="chevron-right"></span>Investments</div>
+      <div style="padding:16px 16px 24px;font-family:var(--font-family-bog)">
+        <p style="margin:0 0 4px;color:var(--text-secondary);font-size:14px;line-height:20px">Portfolio value</p>
+        <div class="bog-amount" data-size="large"><div class="bog-amount__main"><span class="bog-amount__value">12,480.00</span><span class="bog-amount__currency">$</span></div></div>
+      </div>
+      <p style="margin:0;padding:0 16px 12px;font:600 16px/24px var(--font-family-bog);color:var(--text-primary)">Your assets</p>
+      <div class="bog-asset-group" id="ai-group" data-animate="left" style="padding:0 16px;box-sizing:border-box"></div>
+    </div>
+    <small>375 × 760 · pick a direction or delay to replay.</small>
+  </aside>
+<script>
+  // ---- Live preview: Asset Card load-in ----
+  const ASSETS = [
+    ["BTC", "Bitcoin", "positive", "+4.00%", "1,250.00 $"], ["AAPL", "Apple", "negative", "−1.20%", "980.40 $"],
+    ["GLD", "Gold", "neutral", "0.00%", "640.00 $"], ["ETH", "Ethereum", "positive", "+2.35%", "310.75 $"],
+    ["TSLA", "Tesla", "negative", "−3.10%", "455.20 $"]
+  ];
+  const card = ([t, n, tr, ch, v]) => `<a class="bog-asset" href="#" onclick="return false" data-trend="${tr}"><span class="bog-asset__head"><span class="bog-asset__label"><span class="bog-asset__ticker">${t}</span><span class="bog-asset__name">${n}</span></span><span class="bog-media-circle" data-size="32"></span></span><span class="bog-asset__foot"><span class="bog-asset__trend">${ch}</span><span class="bog-asset__value">${v}</span></span></a>`;
+  const g1 = document.getElementById("ai-group");
+  g1.innerHTML = ASSETS.map(card).join("");   // data-animate="left": bog-ui.js plays the first load-in
+  const opt = { from: "left", stagger: 70, slow: 1 };
+  function play() {
+    if (!window.BOG || !BOG.assetIn) return;
+    g1.scrollTo({ left: 0, behavior: "instant" });
+    BOG.assetIn(g1, opt);
+  }
+  function pick(groupId, attr, key, conv) {
+    document.getElementById(groupId).addEventListener("click", (e) => {
+      const b = e.target.closest("[data-" + attr + "]"); if (!b) return;
+      opt[key] = conv(b.dataset[attr]);
+      document.querySelectorAll("#" + groupId + " [data-" + attr + "]").forEach((x) => x.setAttribute("aria-pressed", String(x === b)));
+      play();
+    });
+  }
+  pick("ai-from", "from", "from", String);
+  pick("ai-step", "step", "stagger", Number);
+  document.getElementById("ai-replay").addEventListener("click", play);
+  document.getElementById("ai-slow").addEventListener("change", (e) => { opt.slow = e.target.checked ? 5 : 1; play(); });
+</script>
+  </main>
+</div>
+</body>
+</html>

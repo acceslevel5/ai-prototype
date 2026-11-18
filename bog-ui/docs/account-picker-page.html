@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Account Picker Page — BOG UI</title>
+<link rel="stylesheet" href="../bog-ui.css">
+<link rel="stylesheet" href="docs.css">
+<script src="theme.js"></script>
+<script src="../bog-ui.js" defer></script>
+<script src="components.js" defer></script>
+<style>.dx small{display:block;margin:0 0 8px;color:var(--docs-muted);font-size:11px}.dx{display:grid;gap:24px}.dx-panel{font-family:var(--font-family-bog);font-size:14px;line-height:20px;color:var(--text-primary);padding:16px 4px}</style>
+</head>
+<body>
+<div class="docs">
+  <aside class="docs-nav">
+    <a class="docs-nav__brand" href="../index.html">BOG UI</a>
+    <nav id="bog-nav" data-current="account-picker-page"></nav>
+  </aside>
+  <main class="docs-main">
+    <header><h1>Account Picker Page</h1><a class="figma" id="figma-link" href="#" target="_blank" rel="noopener">Open in Figma ↗</a></header>
+    <p class="lead">Where the money comes from: a full screen of choices — a wallet, adding a new card, the cards already added and the user's accounts — with a sticky Choose. Choosing with nothing selected shows the error on the picker; with nothing to choose from it's an Empty State. Built entirely from library components.</p>
+    <h2>Built from</h2>
+    <p class="lead">Navigation Bar · Section Page · Radio Card · Account Picker (card number and balance) · Payment Method icons · Empty State · Sticky Bar.</p>
+    <h2>Try it</h2>
+    <p class="lead">Pick something and press Choose — or press Choose first to see the error. The buttons switch the Figma variants.</p>
+    <div class="panel" style="display:flex;flex-direction:column;align-items:flex-start;gap:16px">
+      <div class="bog-segmented" role="radiogroup" aria-label="Variant" id="ap-variant" style="width:375px"><button class="bog-segment" role="radio" aria-checked="true" data-v="none">Default</button><button class="bog-segment" role="radio" aria-checked="false" data-v="error">Error</button><button class="bog-segment" role="radio" aria-checked="false" data-v="empty">Empty</button></div>
+      <div style="position:relative;display:flex;flex-direction:column;width:375px;height:812px;flex:none;overflow:hidden;border-radius:24px;background:var(--layer-layer-01);box-shadow:0 0 0 1px var(--border-alpha-01)" id="ap-phone">
+        <header class="bog-navbar" data-background><div class="bog-statusbar"></div><div class="bog-navbar__header"><button class="bog-icon-btn" data-type="neutral" data-size="small" aria-label="Back"><span class="bog-icon" data-icon="chevron-left"></span></button><div class="bog-navbar__titles"><h1 class="bog-navbar__title">Where from?</h1></div><div class="bog-navbar__actions"><button class="bog-icon-btn" data-type="neutral" data-size="small" aria-label="Chat"><span class="bog-icon" data-icon="chat"></span></button></div></div></header>
+        <div style="flex:1 1 auto;overflow-y:auto" id="ap-scroll">
+          <main class="bog-section-page" id="ap-list">
+            <section class="bog-section"><div class="bog-section__content" style="gap:12px">
+              <label class="bog-choice-card" data-align="right"><input type="radio" class="bog-radio__input" name="ap" data-pick-radio><span class="bog-choice-card__text"><span class="bog-choice-card__title" style="display:flex;align-items:center;gap:12px"><span class="bog-pay-icon" data-brand="digital" data-background></span>Apple Pay</span></span></label>
+              <button type="button" class="bog-choice-card" style="border:0;background:none;text-align:left;font:inherit"><span></span><span class="bog-choice-card__text"><span class="bog-choice-card__title" style="display:flex;align-items:center;gap:12px"><span class="bog-icon-holder" data-size="32"><span class="bog-icon" data-icon="plus"></span></span>Add Card</span></span><span class="bog-icon" data-icon="plus"></span></button>
+            </div></section>
+            <section class="bog-section" data-size="small"><header class="bog-section__header" style="min-height:0"><div class="bog-section__heading"><h2 class="bog-section__title">Added cards</h2></div></header><div class="bog-section__content" style="gap:12px"><div class="bog-picker" data-pick><div class="bog-picker__box" role="button" tabindex="0"><div class="bog-picker__head"><div class="bog-picker__info"><span class="bog-picker__title">Mastercard</span><span class="bog-picker__number">****0000</span></div><span class="bog-pay-icon" data-brand="mastercard" data-background style="width:40px;height:26px"></span></div></div></div><div class="bog-picker" data-pick><div class="bog-picker__box" role="button" tabindex="0"><div class="bog-picker__head"><div class="bog-picker__info"><span class="bog-picker__title">Visa</span><span class="bog-picker__number">****4821</span></div><span class="bog-pay-icon" data-brand="visa" data-background style="width:40px;height:26px"></span></div></div></div></div></section>
+            <section class="bog-section" data-size="small"><header class="bog-section__header" style="min-height:0"><div class="bog-section__heading"><h2 class="bog-section__title">Select an account</h2></div></header><div class="bog-section__content"><div class="bog-picker" data-pick id="pick-account"><div class="bog-picker__box" role="button" tabindex="0"><div class="bog-picker__head"><div class="bog-picker__info"><span class="bog-picker__title">Multi-currency Account<span class="bog-picker__fav"></span></span><div class="bog-amount" data-size="medium"><div class="bog-amount__main"><span class="bog-amount__value">2,000.00</span><span class="bog-amount__currency">₾</span></div></div></div><span class="bog-card-art" data-size="56"></span></div><div class="bog-amount__balances"><span class="bog-amount__balance" data-active><span class="bog-amount__num">200.00</span>₾</span><span class="bog-amount__balance" data-active><span class="bog-amount__num">28.00</span>$</span><span class="bog-amount__balance"><span class="bog-amount__num">0.00</span>€</span><span class="bog-amount__balance"><span class="bog-amount__num">0.00</span>£</span></div></div><p class="bog-picker__message">No account selected</p></div></div></section>
+          </main>
+          <div id="ap-empty" style="display:none;place-items:center;height:100%"><div class="bog-empty" data-type="error"><p class="bog-empty__title">Error</p><p class="bog-empty__desc">We couldn't load your cards and accounts. Try again in a moment.</p><div class="bog-empty__actions"><button class="bog-btn" data-type="neutral" id="ap-retry">Try again</button></div></div></div>
+        </div>
+        <footer class="bog-stickybar" style="position:relative"><p class="bog-stickybar__helper" id="ap-helper">You can change it before you pay</p><div class="bog-stickybar__buttons"><button class="bog-btn" data-type="primary" data-width="fill" id="ap-choose">Choose</button></div><span class="bog-stickybar__home"></span></footer>
+      </div>
+    </div>
+<script>
+  const phone = document.getElementById("ap-phone"), acc = document.getElementById("pick-account");
+  const pickers = () => phone.querySelectorAll("[data-pick]"), radio = phone.querySelector("[data-pick-radio]");
+  const clear = () => { pickers().forEach((p) => p.removeAttribute("data-selected")); acc.removeAttribute("data-validation"); };
+  phone.addEventListener("click", (e) => {
+    const box = e.target.closest("[data-pick] .bog-picker__box");
+    if (box) { clear(); radio.checked = false; box.parentElement.setAttribute("data-selected", ""); }
+  });
+  radio.addEventListener("change", clear);
+  const showError = () => { clear(); radio.checked = false; acc.setAttribute("data-validation", "error"); acc.scrollIntoView({ block: "nearest", behavior: "smooth" }); };
+  document.getElementById("ap-choose").addEventListener("click", () => {
+    const any = radio.checked || phone.querySelector("[data-pick][data-selected]");
+    document.getElementById("ap-helper").textContent = any ? "Selected — continuing to payment" : "You can change it before you pay";
+    if (!any) showError();
+  });
+  function variant(v) {
+    document.querySelectorAll("#ap-variant [data-v]").forEach((t) => t.setAttribute("aria-checked", String(t.dataset.v === v)));
+    document.getElementById("ap-list").style.display = v === "empty" ? "none" : "";
+    document.getElementById("ap-empty").style.display = v === "empty" ? "grid" : "none";
+    clear(); radio.checked = false;
+    if (v === "error") showError();
+  }
+  document.getElementById("ap-variant").addEventListener("click", (e) => { const t = e.target.closest("[data-v]"); if (t) variant(t.dataset.v); });
+  document.getElementById("ap-retry").addEventListener("click", () => variant("none"));
+</script>
+  </main>
+</div>
+</body>
+</html>

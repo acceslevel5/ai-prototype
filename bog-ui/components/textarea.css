@@ -1,0 +1,66 @@
+/* ==========================================================================
+   BOG UI — Text area
+   Figma: Text area (44920:16766)
+
+   A .bog-field (text-input.css) with a <textarea> — same label, states, validation,
+   read-only, disabled and skeleton — plus a growing box (min 96px) and a counter.
+     <div class="bog-field" data-type="textarea">
+       <label class="bog-field__box">
+         <span class="bog-field__text">
+           <span class="bog-field__label">Comment</span>
+           <textarea class="bog-field__input" placeholder="Write a few words" maxlength="140"></textarea>
+         </span>
+         <span class="bog-field__counter">0/140</span>              optional (bog-ui.js keeps it in sync)
+       </label>
+       <p class="bog-field__message">Message text</p>              optional
+     </div>
+   The textarea grows with its text up to data-rows lines (default 5), then scrolls.
+   ========================================================================== */
+
+.bog-field[data-type="textarea"] .bog-field__box {
+  flex-direction: column;
+  align-items: stretch;
+  gap: var(--spacing-gap-x-small);
+  height: auto;
+  min-height: 96px;
+  padding: var(--spacing-padding-medium) var(--spacing-padding-default) var(--spacing-padding-small);
+}
+.bog-field[data-type="textarea"] .bog-field__text {
+  flex: 1 1 auto;
+  justify-content: flex-start;
+  padding: 0;
+}
+textarea.bog-field__input {
+  resize: none;
+  overflow-y: auto;
+  scrollbar-width: thin;
+}
+/* Floated: the textarea shows, at least two lines tall, growing to data-rows lines */
+.bog-field[data-type="textarea"]:is(:focus-within, :has(.bog-field__input:not(:placeholder-shown)),
+              [data-state="active"], [data-state="typing"], [data-state="filled"]) .bog-field__input {
+  height: auto;
+  min-height: 40px;
+  max-height: calc(var(--body-large-line-height) * var(--_rows, 5));
+  field-sizing: content;
+}
+.bog-field[data-type="textarea"][data-rows="3"] { --_rows: 3; }
+.bog-field[data-type="textarea"][data-rows="4"] { --_rows: 4; }
+.bog-field[data-type="textarea"][data-rows="6"] { --_rows: 6; }
+.bog-field[data-type="textarea"][data-rows="8"] { --_rows: 8; }
+
+/* Counter: bottom right, Label/xSmall */
+.bog-field__counter {
+  align-self: flex-end;
+  color: var(--text-secondary);
+  font-size: var(--label-xsmall-size);
+  line-height: var(--label-xsmall-line-height);
+  font-weight: var(--label-xsmall-weight);
+  font-variant-numeric: tabular-nums;
+}
+.bog-field[data-appearance="inverse"] .bog-field__counter { color: var(--text-white-secondary); }
+/* Read-only, disabled and skeleton have no counter */
+.bog-field[data-type="textarea"]:is(:has(.bog-field__input[readonly]), :has(.bog-field__input:disabled)) .bog-field__counter { display: none; }
+
+/* The message sits 8px in, under the box */
+.bog-field[data-type="textarea"] .bog-field__message { padding-left: var(--spacing-padding-small); }
+.bog-field[data-type="textarea"][data-state="skeleton"] .bog-field__message { margin-left: var(--spacing-padding-small); padding: 0; }

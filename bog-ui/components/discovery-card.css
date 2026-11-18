@@ -1,0 +1,50 @@
+/* ==========================================================================
+   BOG UI — Discovery Card (+ group)
+   Figma: Discovery Card (56958:14663) · _Discovery Card (56958:14651)
+
+   A picture with a short title — stories, offers or guides to explore. Seen ones fade.
+     <div class="bog-discovery">                       a row that scrolls sideways
+       <a class="bog-discovery__card" href="#">        data-seen · data-state="skeleton"
+         <span class="bog-discovery__media"><img src="…" alt=""></span>
+         <span class="bog-discovery__title">Card Title</span>
+       </a>
+       …
+     </div>
+   ========================================================================== */
+
+.bog-discovery { display: flex; gap: var(--spacing-gap-medium); overflow-x: auto; scrollbar-width: none; scroll-snap-type: x proximity; }
+.bog-discovery::-webkit-scrollbar { display: none; }
+.bog-discovery__card {
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  gap: var(--spacing-gap-small);
+  width: 176px;
+  min-height: 180px;
+  color: inherit;
+  font-family: var(--font-family-bog);
+  text-decoration: none;
+  scroll-snap-align: start;
+  -webkit-tap-highlight-color: transparent;
+}
+.bog-discovery__media {
+  position: relative;
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  border-radius: var(--radius-medium);
+  background: var(--support-skeleton-background) url("../assets/media/placeholder.png") center / 56px no-repeat;
+}
+.bog-discovery__media > img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.bog-discovery__media::after { content: ""; position: absolute; inset: 0; background: transparent; transition: background-color 120ms ease; }
+.bog-discovery__card:is(:active, [data-pressed]) .bog-discovery__media::after { background: rgba(0, 0, 0, 0.08); }
+.bog-discovery__title { display: -webkit-box; overflow: hidden; padding-left: var(--spacing-padding-x-small); color: var(--text-primary); font-size: 14px; line-height: 20px; font-weight: 600; letter-spacing: -0.1px; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+/* Seen: faded */
+.bog-discovery__card[data-seen] .bog-discovery__media { opacity: 0.5; }
+.bog-discovery__card[data-seen] .bog-discovery__title { color: var(--text-disabled); }
+/* Skeleton */
+.bog-discovery__card[data-state="skeleton"] { pointer-events: none; }
+.bog-discovery__card[data-state="skeleton"] .bog-discovery__media { background: var(--support-skeleton-background); }
+.bog-discovery__card[data-state="skeleton"] .bog-discovery__media > * { visibility: hidden; }
+.bog-discovery__card[data-state="skeleton"] .bog-discovery__title { width: 128px; height: 12px; margin: 4px 0 0 4px; padding: 0; border-radius: var(--radius-2x-small); background: var(--support-skeleton); color: transparent; }

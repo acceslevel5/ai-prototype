@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tabs — BOG UI</title>
+<link rel="stylesheet" href="../bog-ui.css">
+<link rel="stylesheet" href="docs.css">
+<script src="theme.js"></script>
+<script src="../bog-ui.js" defer></script>
+<script src="components.js" defer></script>
+<style>.dx small{display:block;margin:0 0 8px;color:var(--docs-muted);font-size:11px}.dx{display:grid;gap:24px}.dx-panel{font-family:var(--font-family-bog);font-size:14px;line-height:20px;color:var(--text-primary);padding:16px 4px}</style>
+</head>
+<body>
+<div class="docs">
+  <aside class="docs-nav">
+    <a class="docs-nav__brand" href="../index.html">BOG UI</a>
+    <nav id="bog-nav" data-current="tabs"></nav>
+  </aside>
+  <main class="docs-main">
+    <header><h1>Tabs</h1><a class="figma" id="figma-link" href="#" target="_blank" rel="noopener">Open in Figma ↗</a></header>
+    <p class="lead">Switch between related groups of content on the same screen — one panel at a time. The selected tab gets an orange underline and a bold label. Fixed: two or three tabs sharing the width. Wrapped: up to five, each as wide as its label; the row scrolls. Same content in another period or view → Segmented Control.</p>
+
+    <h2>Usage</h2>
+    <pre><code>&lt;div class="bog-tabs" role="tablist"&gt;               &lt;!-- data-type="wrapped" --&gt;
+  &lt;button class="bog-tab" role="tab" aria-selected="true" aria-controls="p-history"&gt;History&lt;/button&gt;
+  &lt;button class="bog-tab" role="tab" aria-selected="false" aria-controls="p-details"&gt;Details&lt;/button&gt;
+  &lt;button class="bog-tab" role="tab" aria-selected="false" aria-controls="p-limits"&gt;Limits&lt;/button&gt;
+&lt;/div&gt;
+&lt;section id="p-history" role="tabpanel"&gt;…&lt;/section&gt;
+&lt;section id="p-details" role="tabpanel" hidden&gt;…&lt;/section&gt;</code></pre>
+
+    <h2>Try it</h2>
+    <div class="panel"><div style="width:375px">
+      <div class="bog-tabs" role="tablist">
+        <button class="bog-tab" role="tab" aria-selected="true" aria-controls="tp1">History</button>
+        <button class="bog-tab" role="tab" aria-selected="false" aria-controls="tp2" tabindex="-1">Details</button>
+        <button class="bog-tab" role="tab" aria-selected="false" aria-controls="tp3" tabindex="-1">Limits</button>
+      </div>
+      <div class="dx-panel" id="tp1" role="tabpanel">Last transactions on the card.</div>
+      <div class="dx-panel" id="tp2" role="tabpanel" hidden>Card number, expiry date and holder.</div>
+      <div class="dx-panel" id="tp3" role="tabpanel" hidden>Daily and monthly spending limits.</div>
+    </div></div>
+
+    <h2>Types</h2>
+    <div class="panel"><div class="dx" style="width:375px">
+      <div><small>Type = Fixed</small><div class="bog-tabs"><button class="bog-tab" aria-selected="true">Tab</button><button class="bog-tab">Tab</button><button class="bog-tab">Tab</button></div></div>
+      <div><small>Type = Wrapped (scrolls when it doesn't fit)</small><div class="bog-tabs" data-type="wrapped"><button class="bog-tab" aria-selected="true">Overview</button><button class="bog-tab">Schedule</button><button class="bog-tab">Payments</button><button class="bog-tab">Documents</button><button class="bog-tab">Terms</button></div></div>
+    </div></div>
+
+    <h2>Tab item states</h2>
+    <div class="panel"><div class="bog-tabs" data-type="wrapped" style="width:auto;box-shadow:none;gap:16px">
+      <button class="bog-tab">Default</button>
+      <button class="bog-tab" style="background:var(--layer-alpha-pressed-01)">Pressed</button>
+      <button class="bog-tab" aria-selected="true">Selected</button>
+      <button class="bog-tab" aria-selected="true" style="background:var(--layer-alpha-pressed-01)">Pressed</button>
+      <button class="bog-tab" disabled>Disabled</button>
+      <button class="bog-tab" data-state="skeleton">Skeleton</button>
+    </div></div>
+  </main>
+</div>
+</body>
+</html>

@@ -1,0 +1,69 @@
+/* ==========================================================================
+   BOG UI — Currency Option · Currency Selector
+   Figma: Currency Option (43692:23471) · Currency Selector (43648:2878)
+
+   Currency Option — a 16px flag and the code:
+     <span class="bog-currency-option"><img src="bog-ui/assets/flags/us.svg" alt="">USD</span>
+
+   Currency Selector — the option plus a chevron, opens a list of currencies:
+     <button class="bog-currency-selector" data-size="medium">        data-type="fill" · data-size="small | medium | large (default)"
+       <span class="bog-currency-option"><img src="bog-ui/assets/flags/ge.svg" alt="">GEL</span>
+     </button>
+   Ghost: no background until pressed. Fill: grey background. Disabled: disabled attribute.
+   Skeleton: data-state="skeleton". Flags in bog-ui/assets/flags (ge, us, gb, eu, ch, ae, tr, il, …).
+   ========================================================================== */
+
+.bog-currency-option {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-gap-x-small);
+  color: var(--text-primary);
+  font-family: var(--font-family-bog);
+  font-size: var(--subtitle-medium-size);
+  line-height: var(--subtitle-medium-line-height);
+  font-weight: var(--subtitle-medium-weight);
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.bog-currency-option > img { flex: none; width: 16px; height: 16px; border-radius: var(--radius-full); }
+.bog-currency-option[data-disabled] { color: var(--text-disabled); }
+.bog-currency-option[data-disabled] > img { opacity: 0.4; }
+
+.bog-currency-selector {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-gap-2x-small);
+  box-sizing: border-box;
+  height: 56px;
+  margin: 0;
+  padding: var(--spacing-padding-default);
+  border: 0;
+  border-radius: var(--radius-medium);
+  background: transparent;
+  font: inherit;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.bog-currency-selector[data-size="medium"] { height: 40px; padding: var(--spacing-padding-small) var(--spacing-padding-medium); border-radius: var(--radius-button-small); }
+.bog-currency-selector[data-size="small"]  { height: 32px; padding: var(--spacing-padding-x-small) var(--spacing-padding-small); border-radius: var(--radius-button-small); }
+.bog-currency-selector::after {
+  content: "";
+  flex: none;
+  width: 16px;
+  height: 16px;
+  background-color: var(--icon-primary);
+  -webkit-mask: url("../icons/chevron-down.svg") center / contain no-repeat;
+          mask: url("../icons/chevron-down.svg") center / contain no-repeat;
+}
+.bog-currency-selector[data-type="fill"],
+.bog-currency-selector:active:not(:disabled) { background: var(--button-secondary-grey-default); }
+.bog-currency-selector[data-type="fill"]:active:not(:disabled) { background: var(--button-secondary-grey-pressed); }
+.bog-currency-selector:disabled { cursor: default; background: transparent; }
+.bog-currency-selector:disabled .bog-currency-option { color: var(--text-disabled); }
+.bog-currency-selector:disabled .bog-currency-option > img { opacity: 0.4; }
+.bog-currency-selector:disabled::after { background-color: var(--icon-disabled); }
+.bog-currency-selector:focus-visible { outline: 2px solid var(--text-accent); outline-offset: 2px; }
+/* Skeleton: a 60×16 bar */
+.bog-currency-selector[data-state="skeleton"] { pointer-events: none; background: none; }
+.bog-currency-selector[data-state="skeleton"] > *, .bog-currency-selector[data-state="skeleton"]::after { display: none; }
+.bog-currency-selector[data-state="skeleton"]::before { content: ""; width: 60px; height: 16px; border-radius: var(--radius-x-small); background: var(--support-skeleton); }

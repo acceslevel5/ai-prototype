@@ -1,0 +1,60 @@
+/* ==========================================================================
+   BOG UI — Loading Spinner
+   Figma: Loading Spinner (114:613)
+
+     <div class="bog-spinner" role="status">                    data-size · data-type · data-disabled
+       <span class="bog-spinner__ring"></span>
+       <span class="bog-spinner__label">Loading...</span>            optional
+     </div>
+
+   data-size   x-large (48) | large (40) | medium (32, default) | small (24) | x-small (16)
+   data-type   primary (default, themed orange) | inverse (themed, on dark surfaces)
+               static-primary (fixed light orange) | white (fixed white) — over imagery or colour
+   data-disabled  a still grey ring, no label
+   ========================================================================== */
+
+.bog-spinner {
+  --_ring: var(--icon-accent);
+  --_label: var(--text-primary);
+  --_size: 32px;
+  --_svg: url("../icons/spinner/32.svg");
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-gap-small);
+  font-family: var(--font-family-bog);
+}
+.bog-spinner[data-size="x-large"] { --_size: 48px; --_svg: url("../icons/spinner/48.svg"); }
+.bog-spinner[data-size="large"]   { --_size: 40px; --_svg: url("../icons/spinner/40.svg"); }
+.bog-spinner[data-size="small"]   { --_size: 24px; --_svg: url("../icons/spinner/24.svg"); }
+.bog-spinner[data-size="x-small"] { --_size: 16px; --_svg: url("../icons/spinner/16.svg"); }
+
+.bog-spinner[data-type="inverse"]        { --_ring: var(--icon-inverse-primary); --_label: var(--text-inverse-primary); }
+.bog-spinner[data-type="static-primary"] { --_ring: var(--background-inverse-accent-static); --_label: var(--text-white-primary); }
+.bog-spinner[data-type="white"]          { --_ring: var(--icon-white); --_label: var(--text-white-primary); }
+.bog-spinner[data-disabled]              { --_ring: var(--icon-disabled); }
+.bog-spinner[data-disabled][data-type^="static"],
+.bog-spinner[data-disabled][data-type="white"] { --_ring: var(--support-static-02); }
+
+.bog-spinner__ring {
+  flex: none;
+  width: var(--_size);
+  height: var(--_size);
+  background-color: var(--_ring);
+  -webkit-mask: var(--_svg) center / contain no-repeat;
+          mask: var(--_svg) center / contain no-repeat;
+  animation: bog-spinner-turn 800ms linear infinite;
+}
+.bog-spinner[data-disabled] .bog-spinner__ring { animation: none; }
+.bog-spinner[data-disabled] .bog-spinner__label { display: none; }
+.bog-spinner__label {
+  color: var(--_label);
+  font-size: var(--label-xsmall-size);
+  line-height: var(--label-xsmall-line-height);
+  font-weight: var(--label-xsmall-weight);
+  white-space: nowrap;
+}
+@keyframes bog-spinner-turn { to { rotate: 360deg; } }
+@media (prefers-reduced-motion: reduce) {
+  .bog-spinner__ring { animation-duration: 2400ms; }
+}

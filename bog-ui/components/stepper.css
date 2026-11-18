@@ -1,0 +1,85 @@
+/* ==========================================================================
+   BOG UI — Numeric Stepper
+   Figma: Numeric Stepper (54301:47922)
+
+     <div class="bog-stepper" data-min="0" data-max="10">          data-state="loading | skeleton"
+       <button class="bog-icon-btn" data-type="neutral" data-size="small" aria-label="Decrease" data-step="-1"><span class="bog-icon" data-icon="minus"></span></button>
+       <output class="bog-stepper__value">0</output>
+       <button class="bog-icon-btn" data-type="neutral" data-size="small" aria-label="Increase" data-step="1"><span class="bog-icon" data-icon="plus"></span></button>
+     </div>
+     <p class="bog-stepper__helper">Helper text</p>          optional, right-aligned under it
+
+   bog-ui.js steps the value, disables − at data-min and + at data-max, and fires "change".
+   Disabled: disable both buttons and add data-disabled.
+
+   Motion (Component Motion Guidelines › Numeric Stepper, "made with Scale" 362:9475): the pressed
+   button dips to 90% and springs back; the digits that change roll — + down, − up — as in Number Input.
+   bog-ui.js plays it; Reduce Motion turns it off.
+   At a limit, pressing the disabled button shakes the number (error) and fires "steplimit".
+   data-roll="odometer" swaps the guide's roll for the odometer digits (odometer.css) — experimental.
+   ========================================================================== */
+
+.bog-stepper {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--font-family-bog);
+}
+.bog-stepper > .bog-icon-btn { margin: var(--spacing-padding-x-small); }
+/* A disabled − / + lets presses through to the stepper, which shakes the number (bog-ui.js) */
+.bog-stepper > .bog-icon-btn:disabled { pointer-events: none; }
+.bog-stepper__value {
+  min-width: 32px;
+  padding: 0 var(--spacing-padding-x-small);
+  box-sizing: border-box;
+  color: var(--text-primary);
+  font-size: var(--body-large-size);
+  line-height: var(--body-large-line-height);
+  font-weight: var(--body-large-weight);
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+}
+.bog-stepper[data-disabled] .bog-stepper__value { color: var(--text-disabled); }
+/* Value roll: bog-ui.js lays the old and new number over the value while it changes */
+.bog-stepper[data-rolling] .bog-stepper__value { color: transparent; }
+.bog-stepper__roll {
+  position: absolute;
+  box-sizing: border-box;
+  padding: 0 var(--spacing-padding-x-small);
+  color: var(--text-primary);
+  font-size: var(--body-large-size);
+  line-height: var(--body-large-line-height);
+  font-weight: var(--body-large-weight);
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+  white-space: pre;
+  pointer-events: none;
+}
+.bog-stepper__roll > span { position: absolute; inset: 0; padding: inherit; }
+.bog-stepper__helper {
+  margin: 2px 0 0;
+  padding-right: var(--spacing-padding-x-small);
+  color: var(--text-secondary);
+  font-family: var(--font-family-bog);
+  font-size: var(--label-small-size);
+  line-height: var(--label-small-line-height);
+  font-weight: var(--label-small-weight);
+  text-align: right;
+}
+/* Loading: a 16px spinner replaces the value, both buttons disabled */
+.bog-stepper[data-state="loading"] .bog-stepper__value { color: transparent; position: relative; }
+.bog-stepper[data-state="loading"] .bog-stepper__value::after {
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: calc(50% - 8px);
+  width: 16px;
+  height: 16px;
+  background-color: var(--icon-accent);
+  -webkit-mask: url("../icons/spinner/16.svg") center / contain no-repeat;
+          mask: url("../icons/spinner/16.svg") center / contain no-repeat;
+  animation: bog-spinner-turn 800ms linear infinite;
+}
+/* Skeleton: a 96×32 block */
+.bog-stepper[data-state="skeleton"] { width: 96px; height: 32px; margin: 4px 8px; border-radius: var(--radius-button-small); background: var(--support-skeleton-background); }
+.bog-stepper[data-state="skeleton"] > * { display: none; }

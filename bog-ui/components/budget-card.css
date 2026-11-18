@@ -1,0 +1,65 @@
+/* ==========================================================================
+   BOG UI — Budget Card (+ Budget Card Group)
+   Figma: Budget Card (22457:179) · Budget Card Group (42938:26803)
+
+   A spending category with how much of its budget is used.
+     <a class="bog-budget" href="#" style="--value: 35%">             data-type="outlined" · data-state="skeleton"
+       <span class="bog-budget__head">
+         <span class="bog-icon-holder" data-size="40"><span class="bog-icon"></span></span>
+         <span class="bog-budget__text"><span class="bog-budget__title">Groceries</span><span class="bog-budget__desc">12 transactions</span></span>
+       </span>
+       <span class="bog-budget__bar"></span>
+       <span class="bog-budget__amounts"><span>350.00 ₾</span><span>1,000.00 ₾</span></span>
+     </a>
+   The bar is Progress Bar, Neutral-inverse, Thin. Group: <div class="bog-budget-group"> — two columns.
+   ========================================================================== */
+
+.bog-budget {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-gap-medium);
+  box-sizing: border-box;
+  min-width: 160px;
+  padding: var(--spacing-padding-default);
+  border-radius: var(--radius-medium);
+  background: var(--layer-layer-02);
+  color: inherit;
+  font-family: var(--font-family-bog);
+  text-decoration: none;
+  -webkit-tap-highlight-color: transparent;
+  transition: background-color 120ms ease;
+}
+.bog-budget[data-type="outlined"] { background: none; box-shadow: inset 0 0 0 1px var(--border-border-03); }
+.bog-budget:is(:active, [data-pressed]):not([data-state="skeleton"]) { background: var(--layer-alpha-pressed-01); }
+.bog-budget__head { display: flex; align-items: flex-start; gap: var(--spacing-gap-small); }
+.bog-budget__text { display: flex; flex: 1 1 auto; flex-direction: column; gap: 2px; min-width: 0; }
+.bog-budget__title { color: var(--text-primary); font-size: var(--body-medium-size); line-height: var(--body-medium-line-height); font-weight: var(--body-medium-weight); }
+.bog-budget__desc { overflow: hidden; color: var(--text-secondary); font-size: var(--body-small-size); line-height: var(--body-small-line-height); font-weight: var(--body-small-weight); white-space: nowrap; text-overflow: ellipsis; }
+.bog-budget__bar {
+  position: relative;
+  height: 4px;
+  border-radius: var(--radius-full);
+  background: var(--layer-alpha-03);
+}
+.bog-budget__bar::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: max(4px, var(--value, 0%));
+  border-radius: inherit;
+  background: var(--layer-inverse-01);
+  transition: width 400ms cubic-bezier(0.33, 0, 0.67, 1);
+}
+.bog-budget__amounts { display: flex; justify-content: space-between; gap: var(--spacing-gap-small); margin-top: calc(var(--spacing-gap-medium) * -1 + 4px); color: var(--text-primary); font-size: var(--label-small-size); line-height: var(--label-small-line-height); font-weight: var(--label-small-weight); white-space: nowrap; }
+
+/* Skeleton */
+.bog-budget[data-state="skeleton"] { pointer-events: none; }
+.bog-budget[data-state="skeleton"] .bog-icon-holder { background: var(--support-skeleton); }
+.bog-budget[data-state="skeleton"] .bog-icon-holder > * { visibility: hidden; }
+.bog-budget[data-state="skeleton"] :is(.bog-budget__title, .bog-budget__desc) { width: fit-content; color: transparent; background: var(--support-skeleton); background-clip: content-box; padding: 4px 0; border-radius: var(--radius-2x-small); }
+.bog-budget[data-state="skeleton"] .bog-budget__title { min-width: 80px; }
+.bog-budget[data-state="skeleton"] .bog-budget__bar { background: var(--support-skeleton); }
+.bog-budget[data-state="skeleton"] .bog-budget__amounts { visibility: hidden; }
+.bog-budget[data-state="skeleton"] .bog-budget__bar::before { display: none; }
+
+.bog-budget-group { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--spacing-gap-medium); }

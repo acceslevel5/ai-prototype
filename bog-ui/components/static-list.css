@@ -1,0 +1,26 @@
+/* ==========================================================================
+   BOG UI — Static List
+   Figma: Static List (996:16019)
+
+   Read-only details and their values — loan terms, a payment breakdown. Rows don't react to taps.
+     <dl class="bog-static-list">
+       <div class="bog-static">                                    data-type="blank" (no label) · data-disabled · data-state="skeleton"
+         <dt>Interest rate</dt>
+         <dd>9.50 % <span class="bog-tooltip" data-align="right">…Tooltip…</span></dd>   the info icon is optional
+       </div>
+       …
+     </dl>
+   Label and value take half the row each; a long label wraps and the value stays centred beside it.
+   ========================================================================== */
+
+.bog-static-list { display: flex; flex-direction: column; margin: 0; font-family: var(--font-family-bog); }
+.bog-static { display: flex; align-items: center; gap: var(--spacing-gap-small); padding: var(--spacing-padding-2x-small) 0; }
+.bog-static > dt,
+.bog-static > dd { flex: 1 1 0; min-width: 0; margin: 0; font-size: var(--body-small-size); line-height: var(--body-small-line-height); }
+.bog-static > dt { color: var(--text-primary); font-weight: var(--body-small-weight); }
+.bog-static > dd { display: flex; align-items: center; justify-content: flex-end; gap: var(--spacing-gap-small); color: var(--text-primary); font-weight: 700; text-align: right; }
+.bog-static[data-type="blank"] > dt { visibility: hidden; }
+.bog-static[data-disabled] > :is(dt, dd) { color: var(--text-disabled); }
+.bog-static[data-disabled] .bog-tooltip { display: none; }
+.bog-static[data-state="skeleton"] > * { visibility: hidden; }
+.bog-static[data-state="skeleton"] { min-height: 22px; background: linear-gradient(var(--support-skeleton) 0 0) 0 50% / min(176px, 60%) 8px no-repeat; border-radius: var(--radius-2x-small); }

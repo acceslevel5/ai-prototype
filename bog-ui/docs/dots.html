@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Slider Indicator — BOG UI</title>
+<link rel="stylesheet" href="../bog-ui.css">
+<link rel="stylesheet" href="docs.css">
+<script src="theme.js"></script>
+<script src="../bog-ui.js" defer></script>
+<script src="components.js" defer></script>
+<style>.dx small{display:block;margin:0 0 8px;color:var(--docs-muted);font-size:11px}.dx{display:grid;gap:24px}.dx-panel{font-family:var(--font-family-bog);font-size:14px;line-height:20px;color:var(--text-primary);padding:16px 4px}</style>
+</head>
+<body>
+<div class="docs">
+  <aside class="docs-nav">
+    <a class="docs-nav__brand" href="../index.html">BOG UI</a>
+    <nav id="bog-nav" data-current="dots"></nav>
+  </aside>
+  <main class="docs-main">
+    <header><h1>Slider Indicator</h1><a class="figma" id="figma-link" href="#" target="_blank" rel="noopener">Open in Figma ↗</a></header>
+    <p class="lead">Page dots under a carousel or an onboarding pager. Up to five pages show every dot; from six up, a window of five slides along and the dots at its edges shrink to say there are more. White appearance over imagery.</p>
+    <h2>Usage</h2>
+    <pre><code>&lt;div class="bog-dots" data-count="8" data-current="1" aria-label="Slides"&gt;&lt;/div&gt;
+&lt;script&gt; BOG.dots(el, 3); /* move to page 3 */ &lt;/script&gt;</code></pre>
+    <h2>Try it</h2>
+    <div class="panel" style="display:flex;flex-direction:column;gap:20px">
+      <div class="bog-dots" id="dots-try" data-count="8" data-current="1" aria-label="Slides"></div>
+      <div style="display:flex;gap:8px"><button class="bog-btn" data-type="neutral" data-size="small" id="dots-prev">Previous</button><button class="bog-btn" data-type="primary" data-size="small" id="dots-next">Next</button></div>
+    </div>
+    <h2>Counts</h2>
+    <div class="panel" style="display:flex;flex-direction:column;align-items:flex-start;gap:16px">
+      <div style="display:flex;align-items:center;gap:16px"><small style="width:120px;color:var(--docs-muted)">2 pages</small><div class="bog-dots" data-count="2" data-current="1"></div></div>
+      <div style="display:flex;align-items:center;gap:16px"><small style="width:120px;color:var(--docs-muted)">5 pages</small><div class="bog-dots" data-count="5" data-current="3"></div></div>
+      <div style="display:flex;align-items:center;gap:16px"><small style="width:120px;color:var(--docs-muted)">10, first</small><div class="bog-dots" data-count="10" data-current="1"></div></div>
+      <div style="display:flex;align-items:center;gap:16px"><small style="width:120px;color:var(--docs-muted)">10, middle</small><div class="bog-dots" data-count="10" data-current="5"></div></div>
+      <div style="display:flex;align-items:center;gap:16px"><small style="width:120px;color:var(--docs-muted)">10, last</small><div class="bog-dots" data-count="10" data-current="10"></div></div>
+      <div style="display:flex;align-items:center;gap:16px;padding:12px 16px;border-radius:12px;background:#3b1f12"><small style="width:104px;color:#fff">White</small><div class="bog-dots" data-appearance="white" data-count="6" data-current="2"></div></div>
+    </div>
+<script>
+  document.getElementById("dots-prev").onclick = () => { const d = document.getElementById("dots-try"); BOG.dots(d, +d.dataset.current - 1); };
+  document.getElementById("dots-next").onclick = () => { const d = document.getElementById("dots-try"); BOG.dots(d, +d.dataset.current + 1); };
+</script>
+  </main>
+</div>
+</body>
+</html>

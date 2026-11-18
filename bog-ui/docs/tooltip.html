@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tooltip — BOG UI</title>
+<link rel="stylesheet" href="../bog-ui.css">
+<link rel="stylesheet" href="docs.css">
+<script src="theme.js"></script>
+<script src="../bog-ui.js" defer></script>
+<script src="components.js" defer></script>
+<style>.dx small{display:block;margin:0 0 8px;color:var(--docs-muted);font-size:11px}.dx{display:grid;gap:24px}.dx-panel{font-family:var(--font-family-bog);font-size:14px;line-height:20px;color:var(--text-primary);padding:16px 4px}</style>
+</head>
+<body>
+<div class="docs">
+  <aside class="docs-nav">
+    <a class="docs-nav__brand" href="../index.html">BOG UI</a>
+    <nav id="bog-nav" data-current="tooltip"></nav>
+  </aside>
+  <main class="docs-main">
+    <header><h1>Tooltip</h1><a class="figma" id="figma-link" href="#" target="_blank" rel="noopener">Open in Figma ↗</a></header>
+    <p class="lead">A short explanation behind an info icon. Tap the icon to open it; tap anywhere else to close. One line of plain text, no links — anything longer belongs in a bottom sheet. The arrow points at the icon from the left, centre or right of the bubble, or from the side.</p>
+    <h2>Usage</h2>
+    <pre><code>&lt;span class="bog-tooltip" data-align="center"&gt;     &lt;!-- left | center | right | left-center | right-center · data-position="top" --&gt;
+  &lt;button class="bog-tooltip__trigger" aria-label="About the fee" aria-expanded="false"&gt;&lt;/button&gt;
+  &lt;span class="bog-tooltip__bubble" role="tooltip"&gt;The receiving bank sets this fee&lt;/span&gt;
+&lt;/span&gt;</code></pre>
+    <h2>Try it</h2>
+    <p class="lead">Tap the icons.</p>
+    <div class="panel"><div style="display:flex;flex-direction:column;gap:56px;padding:16px 0 72px;width:343px">
+      <div class="dx-panel" style="display:flex;align-items:center;gap:6px;padding:0">Transfer fee <span class="bog-tooltip" data-align="left"><button class="bog-tooltip__trigger" aria-label="More info" aria-expanded="false"></button><span class="bog-tooltip__bubble" role="tooltip">The receiving bank sets this fee</span></span></div>
+      <div class="dx-panel" style="display:flex;align-items:center;justify-content:center;gap:6px;padding:0">Exchange rate <span class="bog-tooltip" data-align="center"><button class="bog-tooltip__trigger" aria-label="More info" aria-expanded="false"></button><span class="bog-tooltip__bubble" role="tooltip">Updated every 5 minutes</span></span></div>
+      <div class="dx-panel" style="display:flex;align-items:center;justify-content:flex-end;gap:6px;padding:0">Cashback <span class="bog-tooltip" data-align="right"><button class="bog-tooltip__trigger" aria-label="More info" aria-expanded="false"></button><span class="bog-tooltip__bubble" role="tooltip">Paid on the 5th of next month</span></span></div>
+    </div>
+    </div>
+    <h2>Arrow positions</h2>
+    <div class="panel" style="display:grid;grid-template-columns:repeat(3,1fr);gap:72px 40px;padding:24px 40px 72px">
+      <div><span class="bog-tooltip" data-align="left" data-open data-pinned><button class="bog-tooltip__trigger" aria-label="More info" aria-expanded="false"></button><span class="bog-tooltip__bubble" role="tooltip">Tooltip text</span></span></div>
+      <div style="text-align:center"><span class="bog-tooltip" data-align="center" data-open data-pinned><button class="bog-tooltip__trigger" aria-label="More info" aria-expanded="false"></button><span class="bog-tooltip__bubble" role="tooltip">Tooltip text</span></span></div>
+      <div style="text-align:right"><span class="bog-tooltip" data-align="right" data-open data-pinned><button class="bog-tooltip__trigger" aria-label="More info" aria-expanded="false"></button><span class="bog-tooltip__bubble" role="tooltip">Tooltip text</span></span></div>
+      <div style="padding-top:48px"><span class="bog-tooltip" data-align="left" data-open data-pinned data-position="top"><button class="bog-tooltip__trigger" aria-label="More info" aria-expanded="false"></button><span class="bog-tooltip__bubble" role="tooltip">Opens above</span></span></div>
+      <div style="padding-top:48px;text-align:center"><span class="bog-tooltip" data-align="center" data-open data-pinned data-position="top"><button class="bog-tooltip__trigger" aria-label="More info" aria-expanded="false"></button><span class="bog-tooltip__bubble" role="tooltip">Opens above</span></span></div>
+      <div style="padding-top:48px;text-align:right"><span class="bog-tooltip" data-align="right" data-open data-pinned data-position="top"><button class="bog-tooltip__trigger" aria-label="More info" aria-expanded="false"></button><span class="bog-tooltip__bubble" role="tooltip">Opens above</span></span></div>
+      <div><span class="bog-tooltip" data-align="right-center" data-open data-pinned><button class="bog-tooltip__trigger" aria-label="More info" aria-expanded="false"></button><span class="bog-tooltip__bubble" role="tooltip">Beside, on the right</span></span></div>
+      <div></div>
+      <div style="text-align:right"><span class="bog-tooltip" data-align="left-center" data-open data-pinned><button class="bog-tooltip__trigger" aria-label="More info" aria-expanded="false"></button><span class="bog-tooltip__bubble" role="tooltip">Beside, on the left</span></span></div>
+    </div>
+  </main>
+</div>
+</body>
+</html>

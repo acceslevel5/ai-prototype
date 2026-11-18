@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Segmented Control — BOG UI</title>
+<link rel="stylesheet" href="../bog-ui.css">
+<link rel="stylesheet" href="docs.css">
+<script src="theme.js"></script>
+<script src="../bog-ui.js" defer></script>
+<script src="components.js" defer></script>
+<style>.dx small{display:block;margin:0 0 8px;color:var(--docs-muted);font-size:11px}.dx{display:grid;gap:24px}.dx-panel{font-family:var(--font-family-bog);font-size:14px;line-height:20px;color:var(--text-primary);padding:16px 4px}</style>
+</head>
+<body>
+<div class="docs">
+  <aside class="docs-nav">
+    <a class="docs-nav__brand" href="../index.html">BOG UI</a>
+    <nav id="bog-nav" data-current="segmented"></nav>
+  </aside>
+  <main class="docs-main">
+    <header><h1>Segmented Control</h1><a class="figma" id="figma-link" href="#" target="_blank" rel="noopener">Open in Figma ↗</a></header>
+    <p class="lead">Switch between a few views of the same content in place — a period, a category or a list/grid view. Large holds two to five segments, Small up to six (like a chart's periods). Icon only: two universally known icons, each with an accessible name. A different kind of content → Tabs.</p>
+
+    <h2>Usage</h2>
+    <pre><code>&lt;div class="bog-segmented" role="radiogroup" aria-label="Period"&gt;        &lt;!-- data-size="small" · data-state="skeleton" --&gt;
+  &lt;button class="bog-segment" role="radio" aria-checked="true"&gt;24 h&lt;/button&gt;
+  &lt;button class="bog-segment" role="radio" aria-checked="false"&gt;Week&lt;/button&gt;
+  &lt;button class="bog-segment" role="radio" aria-checked="false"&gt;All&lt;/button&gt;
+&lt;/div&gt;
+
+&lt;div class="bog-segmented" data-type="icon" role="radiogroup" aria-label="View"&gt;
+  &lt;button class="bog-segment" role="radio" aria-checked="true" aria-label="List view" data-icon="list-view"&gt;&lt;/button&gt;
+  &lt;button class="bog-segment" role="radio" aria-checked="false" aria-label="Grid view" data-icon="dashboard"&gt;&lt;/button&gt;
+&lt;/div&gt;</code></pre>
+
+    <h2>Try it</h2>
+    <div class="panel"><div style="width:320px">
+      <div class="bog-segmented" role="radiogroup" aria-label="Wallet" id="sg-try">
+        <button class="bog-segment" role="radio" aria-checked="true">My crypto</button>
+        <button class="bog-segment" role="radio" aria-checked="false" tabindex="-1">Discover</button>
+      </div>
+      <p class="dx-panel" id="sg-out">Your crypto assets.</p>
+    </div></div>
+
+    <h2>Variants</h2>
+    <div class="panel"><div class="dx" style="width:320px">
+      <div><small>Large</small><div class="bog-segmented"><button class="bog-segment" aria-checked="true">Label</button><button class="bog-segment" aria-checked="false">Label</button><button class="bog-segment" aria-checked="false">Label</button></div></div>
+      <div><small>Large · Skeleton</small><div class="bog-segmented" data-state="skeleton"><button class="bog-segment">Label</button><button class="bog-segment">Label</button><button class="bog-segment">Label</button></div></div>
+      <div><small>Small · six segments</small><div class="bog-segmented" data-size="small"><button class="bog-segment" aria-checked="false">1 h</button><button class="bog-segment" aria-checked="true">24 h</button><button class="bog-segment" aria-checked="false">Week</button><button class="bog-segment" aria-checked="false">Month</button><button class="bog-segment" aria-checked="false">Year</button><button class="bog-segment" aria-checked="false">All</button></div></div>
+      <div><small>Small · Skeleton</small><div class="bog-segmented" data-size="small" data-state="skeleton"><button class="bog-segment">Label</button><button class="bog-segment">Label</button><button class="bog-segment">Label</button></div></div>
+      <div><small>Icon only</small><div class="bog-segmented" data-type="icon"><button class="bog-segment" aria-checked="true" aria-label="List view" data-icon="list-view"></button><button class="bog-segment" aria-checked="false" aria-label="Grid view" data-icon="dashboard"></button></div></div>
+      <div><small>Icon only · Skeleton</small><div class="bog-segmented" data-type="icon" data-state="skeleton"><button class="bog-segment" data-icon="list-view"></button><button class="bog-segment" data-icon="dashboard"></button></div></div>
+    </div></div>
+<script>
+  document.getElementById("sg-try").addEventListener("change", (e) => {
+    const on = e.currentTarget.querySelector('[aria-checked="true"]').textContent;
+    document.getElementById("sg-out").textContent = on === "My crypto" ? "Your crypto assets." : "Coins to discover and buy.";
+  });
+</script>
+  </main>
+</div>
+</body>
+</html>

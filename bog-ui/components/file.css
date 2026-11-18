@@ -1,0 +1,186 @@
+/* ==========================================================================
+   BOG UI — File uploader · File Attachment
+   Figma: File uploader (47089:30940, items 47247:2964) · File Attachment (63076:1927, item 62989:1397)
+
+   File uploader — several files of one kind (receipts for a claim):
+     <div class="bog-uploader">                                      data-state="error | skeleton" · data-disabled
+       <p class="bog-uploader__title">Upload files</p>
+       <p class="bog-uploader__limits">Max file size: 10 MB • Up to 5 files</p>
+       <button class="bog-btn" data-type="neutral" data-size="small" data-width="fill"><span class="bog-icon" data-icon="upload"></span>Add file</button>
+       <p class="bog-uploader__message">Message text</p>               error only
+       <ul class="bog-uploader__files">                                data-type="media | compact"
+         <li class="bog-file" data-state="loading" style="--value:40%">
+           <span class="bog-file__thumb"><img src="…" alt=""></span>     media only
+           <span class="bog-file__info">
+             <span class="bog-file__name">receipt.pdf</span>
+             <span class="bog-file__bar"></span><span class="bog-file__size">3.4 MB</span>    loading
+             <span class="bog-file__status">Uploaded</span>             success | info | error | warning
+           </span>
+           <button class="bog-file__retry" aria-label="Retry receipt.pdf"></button>          error only
+           <button class="bog-file__remove" aria-label="Remove receipt.pdf"></button>
+         </li>
+       </ul>
+     </div>
+
+   File Attachment — one named document per row:
+     <div class="bog-attach" data-state="default | loading | uploaded | error | readonly | skeleton">
+       <span class="bog-attach__media"></span>                         upload icon, spinner or a preview <img>
+       <span class="bog-attach__info"><span class="bog-attach__label">Proof of income</span><span class="bog-attach__hint">PNG or JPG, max 10 MB</span></span>
+       <span class="bog-attach__actions">…icon buttons (delete, upload, retry, close)…</span>
+     </div>
+   bog-ui.js removes a file row on × (it fires "fileremove" first).
+   ========================================================================== */
+
+/* ---- File uploader ------------------------------------------------------ */
+.bog-uploader {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-gap-x-small);
+  box-sizing: border-box;
+  width: 100%;
+  padding: var(--spacing-padding-default);
+  border-radius: var(--radius-medium);
+  box-shadow: inset 0 0 0 var(--border-width-default) var(--border-border-01);
+  font-family: var(--font-family-bog);
+}
+.bog-uploader > p { margin: 0; }
+.bog-uploader__title { color: var(--text-primary); font-size: var(--label-large-size); line-height: var(--label-large-line-height); font-weight: var(--label-large-weight); }
+.bog-uploader__limits { color: var(--text-helper); font-size: var(--body-small-size); line-height: var(--body-small-line-height); font-weight: var(--body-small-weight); }
+.bog-uploader > .bog-btn { margin-top: calc(var(--spacing-gap-medium) - var(--spacing-gap-x-small)); }
+.bog-uploader__message { display: none; }
+.bog-uploader[data-state="error"] { box-shadow: inset 0 0 0 var(--border-width-default) var(--border-error); }
+.bog-uploader[data-state="error"] .bog-uploader__message {
+  display: flex;
+  gap: var(--spacing-gap-x-small);
+  margin-top: var(--spacing-gap-small);
+  color: var(--text-error);
+  font-size: var(--label-small-size);
+  line-height: var(--label-small-line-height);
+  font-weight: var(--label-small-weight);
+}
+.bog-uploader__message::before { content: ""; flex: none; width: 16px; height: 16px; background-color: var(--icon-error); -webkit-mask: url("../icons/status-alert.svg") center / contain no-repeat; mask: url("../icons/status-alert.svg") center / contain no-repeat; }
+.bog-uploader[data-disabled] :is(.bog-uploader__title, .bog-uploader__limits) { color: var(--text-disabled); }
+.bog-uploader[data-state="skeleton"] > * { visibility: hidden; }
+.bog-uploader[data-state="skeleton"] {
+  background:
+    linear-gradient(var(--support-skeleton) 0 0) 16px 16px / 96px 12px no-repeat,
+    linear-gradient(var(--support-skeleton) 0 0) 16px 36px / 128px 8px no-repeat,
+    linear-gradient(var(--support-skeleton-background) 0 0) 16px 56px / calc(100% - 32px) 32px no-repeat;
+}
+
+/* File rows */
+.bog-uploader__files { display: flex; flex-direction: column; gap: var(--spacing-gap-small); margin: var(--spacing-gap-large) 0 0; padding: 0; list-style: none; }
+.bog-uploader__files:empty { display: none; }
+.bog-file {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-gap-small);
+  min-height: 44px;
+  padding: var(--spacing-padding-small) var(--spacing-padding-small) var(--spacing-padding-small) var(--spacing-padding-medium);
+  border-radius: var(--radius-button-small);
+  background: var(--layer-layer-02);
+  font-family: var(--font-family-bog);
+}
+.bog-file__thumb { flex: none; width: 40px; height: 40px; overflow: hidden; border-radius: var(--radius-x-small); background: var(--support-skeleton-background) url("../assets/media/placeholder.png") center / cover; }
+.bog-file__thumb > img { width: 100%; height: 100%; object-fit: cover; }
+.bog-file__info { display: flex; flex: 1 1 auto; flex-direction: column; gap: var(--spacing-gap-x-small); min-width: 0; margin-right: var(--spacing-gap-medium); }
+.bog-file__name { overflow: hidden; color: var(--text-primary); font-size: var(--body-small-size); line-height: var(--body-small-line-height); font-weight: var(--body-small-weight); white-space: nowrap; text-overflow: ellipsis; }
+.bog-file__bar { display: none; height: 4px; border-radius: var(--radius-full); background: linear-gradient(var(--status-accent-02) 0 0) 0 0 / max(8px, var(--value, 0%)) 100% no-repeat, var(--layer-alpha-03); }
+.bog-file__size { display: none; color: var(--text-secondary); font-size: var(--label-xsmall-size); line-height: var(--label-xsmall-line-height); font-weight: var(--label-xsmall-weight); }
+.bog-file[data-state="loading"] :is(.bog-file__bar, .bog-file__size) { display: block; }
+.bog-file[data-state="loading"] .bog-file__status { display: none; }
+.bog-file__status {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-gap-x-small);
+  font-size: var(--label-small-size);
+  line-height: var(--label-small-line-height);
+  font-weight: var(--label-small-weight);
+}
+.bog-file__status::before { content: ""; flex: none; width: 16px; height: 16px; background-color: currentColor; -webkit-mask: var(--_s) center / contain no-repeat; mask: var(--_s) center / contain no-repeat; }
+.bog-file[data-state="success"] .bog-file__status { color: var(--text-success); --_s: url("../icons/status-success.svg"); }
+.bog-file[data-state="info"] .bog-file__status    { color: var(--text-info); --_s: url("../icons/info-fill.svg"); }
+.bog-file[data-state="error"] .bog-file__status   { color: var(--text-error); --_s: url("../icons/status-alert.svg"); }
+.bog-file[data-state="warning"] .bog-file__status { color: var(--text-warning); --_s: url("../icons/status-alert.svg"); }
+.bog-file__note { margin: var(--spacing-gap-small) 0 0; color: var(--text-primary); font-size: var(--body-small-size); line-height: var(--body-small-line-height); white-space: normal; }
+.bog-file__note + .bog-btn { align-self: flex-start; }
+/* Compact (Infinite): one line, status as an icon on the right */
+.bog-uploader__files[data-type="compact"] .bog-file__status { display: none; }
+.bog-uploader__files[data-type="compact"] .bog-file::after { content: ""; flex: none; order: 1; width: 16px; height: 16px; }
+.bog-uploader__files[data-type="compact"] .bog-file[data-state="success"]::after { background: var(--icon-success) ; -webkit-mask: url("../icons/status-success.svg") center / contain no-repeat; mask: url("../icons/status-success.svg") center / contain no-repeat; }
+.bog-uploader__files[data-type="compact"] .bog-file[data-state="loading"]::after { background: var(--icon-accent); -webkit-mask: url("../icons/spinner/16.svg") center / contain no-repeat; mask: url("../icons/spinner/16.svg") center / contain no-repeat; animation: bog-spinner-turn 800ms linear infinite; }
+.bog-uploader__files[data-type="compact"] .bog-file[data-state="loading"] :is(.bog-file__bar, .bog-file__size) { display: none; }
+.bog-uploader__files[data-type="compact"] .bog-file :is(.bog-file__retry, .bog-file__remove) { order: 2; }
+
+/* Small icon actions: 32px tap target, 12–16px icon */
+:is(.bog-file__remove, .bog-file__retry, .bog-attach__action) {
+  position: relative;
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-full);
+  background: none;
+  color: var(--icon-primary);
+  cursor: pointer;
+}
+:is(.bog-file__remove, .bog-file__retry, .bog-attach__action)::before { content: ""; width: 16px; height: 16px; background-color: currentColor; -webkit-mask: var(--_i) center / contain no-repeat; mask: var(--_i) center / contain no-repeat; }
+:is(.bog-file__remove, .bog-file__retry, .bog-attach__action):active { background: var(--layer-alpha-pressed-01); }
+.bog-file__remove { --_i: url("../icons/close-12.svg"); }
+.bog-file__remove::before { width: 12px; height: 12px; }
+.bog-file__retry { --_i: url("../icons/retry-16.svg"); }
+.bog-attach__action[data-action="delete"] { --_i: url("../icons/delete-16.svg"); }
+.bog-attach__action[data-action="upload"] { --_i: url("../icons/upload-16.svg"); }
+.bog-attach__action[data-action="retry"]  { --_i: url("../icons/retry-16.svg"); }
+.bog-attach__action[data-action="cancel"] { --_i: url("../icons/close.svg"); }
+
+/* ---- File Attachment ---------------------------------------------------- */
+.bog-attach-list { display: flex; flex-direction: column; gap: var(--spacing-gap-medium); }
+.bog-attach {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-gap-medium);
+  box-sizing: border-box;
+  min-height: 72px;
+  padding: var(--spacing-padding-medium) var(--spacing-padding-small) var(--spacing-padding-medium) var(--spacing-padding-medium);
+  border-radius: var(--radius-medium);
+  background: var(--layer-layer-02);
+  font-family: var(--font-family-bog);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.bog-attach:is(:active, [data-pressed]):not([data-state="readonly"], [data-disabled], [data-state="skeleton"]) { background: var(--layer-alpha-pressed-01); }
+.bog-attach__media {
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  overflow: hidden;
+  border-radius: var(--radius-x-small);
+  color: var(--icon-primary);
+}
+.bog-attach__media::before { content: ""; width: 24px; height: 24px; background-color: currentColor; -webkit-mask: url("../icons/upload-16.svg") center / 20px no-repeat; mask: url("../icons/upload-16.svg") center / 20px no-repeat; }
+.bog-attach__media:has(img) { background: var(--support-skeleton-background); }
+.bog-attach__media:has(img)::before { display: none; }
+.bog-attach__media > img { width: 100%; height: 100%; object-fit: cover; }
+.bog-attach[data-state="loading"] .bog-attach__media::before { width: 32px; height: 32px; background-color: var(--icon-accent); -webkit-mask: url("../icons/spinner/32.svg") center / contain no-repeat; mask: url("../icons/spinner/32.svg") center / contain no-repeat; animation: bog-spinner-turn 800ms linear infinite; }
+.bog-attach__info { display: flex; flex: 1 1 auto; flex-direction: column; gap: var(--spacing-gap-m-small, 6px); min-width: 0; }
+.bog-attach__label { color: var(--text-primary); font-size: var(--label-large-size); line-height: var(--label-large-line-height); font-weight: var(--label-large-weight); }
+.bog-attach__hint { color: var(--text-helper); font-size: var(--body-small-size); line-height: var(--body-small-line-height); font-weight: var(--body-small-weight); }
+.bog-attach[data-state="error"] .bog-attach__hint { display: flex; gap: var(--spacing-gap-x-small); color: var(--text-error); font-size: var(--label-small-size); line-height: var(--label-small-line-height); font-weight: var(--label-small-weight); }
+.bog-attach[data-state="error"] .bog-attach__hint::before { content: ""; flex: none; width: 16px; height: 16px; background-color: var(--icon-error); -webkit-mask: url("../icons/status-alert.svg") center / contain no-repeat; mask: url("../icons/status-alert.svg") center / contain no-repeat; }
+.bog-attach__actions { display: flex; flex: none; gap: var(--spacing-gap-small); }
+.bog-attach[data-state="readonly"] { background: none; box-shadow: inset 0 0 0 var(--border-width-default) var(--border-selected-neutral); cursor: default; }
+.bog-attach[data-disabled] { cursor: default; }
+.bog-attach[data-disabled] :is(.bog-attach__label, .bog-attach__hint) { color: var(--text-disabled); }
+.bog-attach[data-disabled] .bog-attach__media { color: var(--icon-disabled); }
+.bog-attach[data-state="skeleton"] { cursor: default; }
+.bog-attach[data-state="skeleton"] > * { display: none; }
+.bog-attach[data-state="skeleton"]::before { content: ""; width: 160px; height: 36px; background: linear-gradient(var(--support-skeleton) 0 0) 0 4px / 160px 12px no-repeat, linear-gradient(var(--support-skeleton) 0 0) 0 26px / 96px 8px no-repeat; }

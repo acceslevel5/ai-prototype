@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sticky Bar — BOG UI</title>
+<link rel="stylesheet" href="../bog-ui.css">
+<link rel="stylesheet" href="docs.css">
+<script src="theme.js"></script>
+<script src="../bog-ui.js" defer></script>
+<script src="components.js" defer></script>
+<style>.dx small{display:block;margin:0 0 8px;color:var(--docs-muted);font-size:11px}.dx{display:grid;gap:24px}.dx-panel{font-family:var(--font-family-bog);font-size:14px;line-height:20px;color:var(--text-primary);padding:16px 4px}</style>
+</head>
+<body>
+<div class="docs">
+  <aside class="docs-nav">
+    <a class="docs-nav__brand" href="../index.html">BOG UI</a>
+    <nav id="bog-nav" data-current="stickybar"></nav>
+  </aside>
+  <main class="docs-main">
+    <header><h1>Sticky Bar</h1><a class="figma" id="figma-link" href="#" target="_blank" rel="noopener">Open in Figma ↗</a></header>
+    <p class="lead">The bottom action area of a screen. Content scrolls under it and fades out above the buttons. Holds the main action (and a second one, or an icon button beside it), an optional helper line or slot, and the iOS home indicator. Black appearance for dark screens; Overlay placement for sheets and modals.</p>
+    <h2>Usage</h2>
+    <pre><code>&lt;footer class="bog-stickybar"&gt;                    &lt;!-- data-appearance="black" · data-placement="overlay" --&gt;
+  &lt;p class="bog-stickybar__helper"&gt;You can cancel any time&lt;/p&gt;
+  &lt;div class="bog-stickybar__buttons"&gt;
+    &lt;button class="bog-btn" data-type="primary" data-width="fill"&gt;Continue&lt;/button&gt;
+  &lt;/div&gt;
+  &lt;span class="bog-stickybar__home"&gt;&lt;/span&gt;
+&lt;/footer&gt;</code></pre>
+    <h2>Try it</h2>
+    <p class="lead">Scroll the screen — the cards slide under the bar and fade.</p>
+    <div class="panel" style="display:flex;flex-wrap:wrap;gap:24px">
+      <div style="position:relative;width:375px;height:300px;overflow:auto;border-radius:16px;background:var(--layer-layer-01);box-shadow:0 0 0 1px var(--border-alpha-01)"><div style="padding:16px;display:grid;gap:12px"><div style="height:64px;border-radius:12px;background:var(--layer-layer-02)"></div><div style="height:64px;border-radius:12px;background:var(--layer-layer-02)"></div><div style="height:64px;border-radius:12px;background:var(--layer-layer-02)"></div><div style="height:64px;border-radius:12px;background:var(--layer-layer-02)"></div><div style="height:64px;border-radius:12px;background:var(--layer-layer-02)"></div></div><footer class="bog-stickybar"><p class="bog-stickybar__helper">You can cancel any time</p><div class="bog-stickybar__buttons"><button class="bog-btn" data-type="primary" data-width="fill">Continue</button></div><span class="bog-stickybar__home"></span></footer></div>
+      <div style="position:relative;width:375px;height:300px;overflow:auto;border-radius:16px;background:var(--layer-layer-01);box-shadow:0 0 0 1px var(--border-alpha-01)"><div style="padding:16px;display:grid;gap:12px"><div style="height:64px;border-radius:12px;background:var(--layer-layer-02)"></div><div style="height:64px;border-radius:12px;background:var(--layer-layer-02)"></div><div style="height:64px;border-radius:12px;background:var(--layer-layer-02)"></div><div style="height:64px;border-radius:12px;background:var(--layer-layer-02)"></div><div style="height:64px;border-radius:12px;background:var(--layer-layer-02)"></div></div><footer class="bog-stickybar"><div class="bog-stickybar__buttons"><button class="bog-btn" data-type="primary" data-width="fill">Pay 120.00 ₾</button><button class="bog-btn" data-type="neutral" data-width="fill">Save as template</button></div><span class="bog-stickybar__home"></span></footer></div>
+    </div>
+    <h2>Variants</h2>
+    <div class="panel" style="display:flex;flex-wrap:wrap;gap:24px;align-items:flex-start">
+      <div class="dx"><div><small>Icon button + button</small><div style="width:375px;background:var(--layer-layer-01)"><footer class="bog-stickybar" style="position:static"><div class="bog-stickybar__buttons" data-layout="row"><button class="bog-icon-btn" data-type="neutral" aria-label="Chat"><span class="bog-icon" data-icon="chat"></span></button><button class="bog-btn" data-type="primary" data-width="fill">Apply</button></div><span class="bog-stickybar__home"></span></footer></div></div>
+      <div><small>Slot — an agreement</small><div style="width:375px;background:var(--layer-layer-01)"><footer class="bog-stickybar" style="position:static"><div class="bog-stickybar__slot"><label class="bog-checkbox"><input type="checkbox" class="bog-checkbox__input"><span class="bog-checkbox__box"></span><span class="bog-checkbox__label">I agree to the terms</span></label></div><div class="bog-stickybar__buttons"><button class="bog-btn" data-type="primary" data-width="fill">Continue</button></div><span class="bog-stickybar__home"></span></footer></div></div></div>
+      <div class="dx"><div><small>Black</small><div style="width:375px;background:#1b1c1d"><footer class="bog-stickybar" data-appearance="black" style="position:static"><p class="bog-stickybar__helper">Message text</p><div class="bog-stickybar__buttons"><button class="bog-btn" data-type="primary" data-width="fill">Primary</button></div><span class="bog-stickybar__home"></span></footer></div></div>
+      <div><small>Overlay (in a sheet) — no home indicator</small><div style="width:375px;background:var(--layer-layer-01)"><footer class="bog-stickybar" data-placement="overlay" style="position:static"><div class="bog-stickybar__buttons"><button class="bog-btn" data-type="primary" data-width="fill">Done</button></div></footer></div></div></div>
+    </div>
+  </main>
+</div>
+</body>
+</html>

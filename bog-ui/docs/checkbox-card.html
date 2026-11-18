@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Checkbox Card — BOG UI</title>
+<link rel="stylesheet" href="../bog-ui.css">
+<link rel="stylesheet" href="docs.css">
+<script src="theme.js"></script>
+<script src="../bog-ui.js" defer></script>
+<script src="components.js" defer></script>
+<style>.dx small{display:block;margin:0 0 8px;color:var(--docs-muted);font-size:11px}.dx{display:grid;gap:24px}.dx-panel{font-family:var(--font-family-bog);font-size:14px;line-height:20px;color:var(--text-primary);padding:16px 4px}</style>
+</head>
+<body>
+<div class="docs">
+  <aside class="docs-nav">
+    <a class="docs-nav__brand" href="../index.html">BOG UI</a>
+    <nav id="bog-nav" data-current="checkbox-card"></nav>
+  </aside>
+  <main class="docs-main">
+    <header><h1>Checkbox Card</h1><a class="figma" id="figma-link" href="#" target="_blank" rel="noopener">Open in Figma ↗</a></header>
+    <p class="lead">Choose any number of options — including none — when each needs details to decide, like card add-ons with a price. Tapping anywhere on the card selects or clears it; one card never changes another. Control on the left for text-first cards, on the right for cards that lead with an icon. Exactly one choice → Radio Card.</p>
+    <h2>Usage</h2>
+    <pre><code>&lt;div class="bog-choice-card-group"&gt;                       &lt;!-- data-state="error | readonly | skeleton" --&gt;
+  &lt;label class="bog-choice-card"&gt;                           &lt;!-- data-align="right" --&gt;
+    &lt;input type="checkbox" class="bog-checkbox__input" name="addons"&gt;
+    &lt;span class="bog-choice-card__text"&gt;
+      &lt;span class="bog-choice-card__title"&gt;Travel insurance&lt;/span&gt;
+      &lt;span class="bog-choice-card__desc"&gt;Covers the whole trip&lt;/span&gt;
+    &lt;/span&gt;
+    &lt;span class="bog-choice-card__slot"&gt;&lt;b&gt;4.00 ₾&lt;/b&gt;&lt;small&gt;/month&lt;/small&gt;&lt;/span&gt;
+  &lt;/label&gt;
+  …
+  &lt;p class="bog-choice-card__message"&gt;Choose at least one option&lt;/p&gt;
+&lt;/div&gt;</code></pre>
+    <h2>Try it</h2>
+    <div class="panel"><div style="width:343px" id="cc-try"></div></div>
+    <h2>States</h2>
+    <div class="panel"><div style="display:grid;grid-template-columns:repeat(2,324px);gap:24px 32px" id="cc-grid"></div></div>
+    <h2>Slot and list group</h2>
+    <div class="panel"><div style="display:grid;grid-template-columns:repeat(2,324px);gap:24px 32px" id="cc-slot"></div></div>
+<script>
+  const TYPE = "checkbox"; let n = 0;
+  const card = (o = {}) => `<label class="bog-choice-card"${o.right ? ' data-align="right"' : ""}${o.st ? ` data-state="${o.st}"` : ""}>` +
+    `<input type="${TYPE}" class="bog-${TYPE}__input" name="${o.name || "cc" + n++}"${o.on ? " checked" : ""}${o.dis ? " disabled" : ""}${o.static ? ' tabindex="-1"' : ""}>` +
+    `<span class="bog-choice-card__text"><span class="bog-choice-card__title">${o.title || "Title"}</span>${o.desc === false ? "" : `<span class="bog-choice-card__desc">${o.desc || "Description"}</span>`}</span>` +
+    (o.slot ? `<span class="bog-choice-card__slot"><b>${o.slot}</b><small>${o.cap || "Caption"}</small></span>` : "") +
+    (o.list ? `<span class="bog-choice-card__list">${o.list.map(([a, b]) => `<span><span>${a}</span><b>${b}</b></span>`).join("")}</span>` : "") + "</label>" +
+    (o.msg ? `<p class="bog-choice-card__message">${o.msg}</p>` : "");
+  const lab = (t, h) => `<div><small style="display:block;margin-bottom:8px;color:var(--docs-muted);font-size:11px">${t}</small>${h}</div>`;
+  const ROWS = [["Enabled", {}], ["Selected", { on: 1 }], ["Error", { st: "error", msg: "Message text" }], ["Error · selected", { st: "error", on: 1, msg: "Message text" }],
+    ["Read-only · selected", { st: "readonly", on: 1 }], ["Read-only", { st: "readonly" }], ["Disabled", { dis: 1 }], ["Disabled · selected", { dis: 1, on: 1 }], ["Skeleton", { st: "skeleton" }]];
+  document.getElementById("cc-grid").innerHTML = ROWS.map(([t, o]) => lab(t + " · Left", card(o)) + lab(t + " · Right", card({ ...o, right: 1 }))).join("") +
+    lab("Pressed (while the finger is down)", card({}).replace('class="bog-choice-card"', 'class="bog-choice-card" style="background:var(--layer-alpha-pressed-01)"')) + "<div></div>";
+  document.getElementById("cc-slot").innerHTML = lab("Amount + Caption slot", card({ title: "Premium", desc: "Unlimited transfers", slot: "4.00 ₾", cap: "/month" })) +
+    lab("List group", card({ title: "Travel insurance", desc: "Covers the whole trip", on: 1, list: [["Medical", "50,000 ₾"], ["Baggage", "1,000 ₾"], ["Delay", "200 ₾"]] }));
+  const TRY = TYPE === "checkbox"
+    ? [["SMS alerts", "For every card payment", "0.50 ₾"], ["Travel insurance", "Covers the whole trip", "4.00 ₾"], ["Concierge", "24/7 personal assistant", "12.00 ₾"]]
+    : [["Standard", "Ready in 5 working days", "Free"], ["Express", "Ready tomorrow", "10.00 ₾"], ["Courier", "Delivered to your door", "15.00 ₾"]];
+  document.getElementById("cc-try").innerHTML = `<div class="bog-choice-card-group" id="cc-group">${TRY.map(([t, d, p], i) => card({ title: t, desc: d, slot: p, cap: TYPE === "checkbox" ? "/month" : "", name: "try", on: TYPE === "radio" && i === 0 })).join("")}</div>`;
+</script>
+  </main>
+</div>
+</body>
+</html>

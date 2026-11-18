@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Loading Spinner — BOG UI</title>
+<link rel="stylesheet" href="../bog-ui.css">
+<link rel="stylesheet" href="docs.css">
+<script src="theme.js"></script>
+<script src="../bog-ui.js" defer></script>
+<script src="components.js" defer></script>
+<style>.dx small{display:block;margin:0 0 8px;color:var(--docs-muted);font-size:11px}.dx{display:grid;gap:24px}.dx-panel{font-family:var(--font-family-bog);font-size:14px;line-height:20px;color:var(--text-primary);padding:16px 4px}</style>
+</head>
+<body>
+<div class="docs">
+  <aside class="docs-nav">
+    <a class="docs-nav__brand" href="../index.html">BOG UI</a>
+    <nav id="bog-nav" data-current="spinner"></nav>
+  </aside>
+  <main class="docs-main">
+    <header><h1>Loading Spinner</h1><a class="figma" id="figma-link" href="#" target="_blank" rel="noopener">Open in Figma ↗</a></header>
+    <p class="lead">Shows that something is loading when you can't say how long it will take. Five sizes, an optional "Loading..." label, and colours for light surfaces, dark surfaces and imagery. Disabled shows a still grey ring. For known progress use Progress Bar or Progress Circular.</p>
+    <h2>Usage</h2>
+    <pre><code>&lt;div class="bog-spinner" data-size="large" role="status"&gt;      &lt;!-- data-type="inverse | static-primary | white" · data-disabled --&gt;
+  &lt;span class="bog-spinner__ring"&gt;&lt;/span&gt;
+  &lt;span class="bog-spinner__label"&gt;Loading...&lt;/span&gt;
+&lt;/div&gt;</code></pre>
+    <h2>Sizes × types</h2>
+    <div class="panel"><table id="sp-grid"></table></div>
+    <div class="panel dark" style="margin-top:16px;background:linear-gradient(135deg,#3b1f12,#a2461c)"><table id="sp-static"></table></div>
+<script>
+  const S = [["x-large", "x-Large · 48"], ["large", "Large · 40"], ["medium", "Medium · 32"], ["small", "Small · 24"], ["x-small", "x-Small · 16"]];
+  const sp = (size, type, dis) => `<div class="bog-spinner" data-size="${size}"${type ? ` data-type="${type}"` : ""}${dis ? " data-disabled" : ""} role="status"><span class="bog-spinner__ring"></span><span class="bog-spinner__label">Loading...</span></div>`;
+  const tbl = (cols) => "<tr><th></th>" + cols.map(([n]) => `<th>${n}</th>`).join("") + "</tr>" + S.map(([s, n]) => `<tr><th>${n}</th>${cols.map(([, t, d]) => `<td style="text-align:center">${sp(s, t, d)}</td>`).join("")}</tr>`).join("");
+  document.getElementById("sp-grid").innerHTML = tbl([["Primary", ""], ["Disabled", "", 1]]);
+  document.getElementById("sp-static").innerHTML = tbl([["Static Primary", "static-primary"], ["White", "white"], ["Disabled (static)", "white", 1]]);
+</script>
+  </main>
+</div>
+</body>
+</html>

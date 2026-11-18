@@ -1,0 +1,48 @@
+/* ==========================================================================
+   BOG UI — Summary
+   Figma: Summary (44746:30615) · _Summary item (21956:127)
+
+   A card of details users check before they confirm: each row is a title and a value.
+     <dl class="bog-summary">                                     data-state="skeleton"
+       <div class="bog-summary__item">
+         <dt class="bog-summary__title">Transfer fee</dt>
+         <dd class="bog-summary__value">1.00 ₾</dd>
+         <dd class="bog-summary__secondary">Rate updated at 10:42</dd>                         optional
+         <dd class="bog-summary__helper"><span class="bog-inline-message" data-size="small" data-status="negative">Not enough money</span></dd>   optional
+         <dd class="bog-summary__slot">…tooltip, flag or card visual…</dd>                    optional
+       </div>
+       …up to 10 rows
+     </dl>
+   Helper statuses come from Inline Message: negative stops users, warning needs attention, positive is in their favour.
+   ========================================================================== */
+
+.bog-summary {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: var(--spacing-padding-small) 0;
+  border: 1px solid var(--border-border-03);
+  border-radius: var(--radius-medium);
+  font-family: var(--font-family-bog);
+}
+.bog-summary__item {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  column-gap: var(--spacing-gap-x-small);
+  padding: var(--spacing-padding-small) var(--spacing-padding-default);
+}
+.bog-summary__item > * { grid-column: 1; margin: 0; }
+.bog-summary__title,
+.bog-summary__secondary { color: var(--text-secondary); font-size: var(--body-medium-size); line-height: var(--body-medium-line-height); font-weight: var(--body-medium-weight); }
+.bog-summary__value { color: var(--text-primary); font-size: var(--label-medium-size); line-height: var(--label-medium-line-height); font-weight: var(--label-medium-weight); }
+.bog-summary__helper { margin-top: 2px; }
+.bog-summary__slot { grid-column: 2; grid-row: 1 / span 4; display: flex; align-items: center; justify-content: center; min-width: 32px; min-height: 32px; }
+/* Skeleton: two bars per row */
+:is(.bog-summary[data-state="skeleton"] .bog-summary__item, .bog-summary__item[data-state="skeleton"]) {
+  min-height: 48px;
+  background:
+    linear-gradient(var(--support-skeleton) 0 0) 16px 12px / 168px 8px no-repeat,
+    linear-gradient(var(--support-skeleton) 0 0) 16px 32px / 96px 8px no-repeat;
+}
+:is(.bog-summary[data-state="skeleton"] .bog-summary__item, .bog-summary__item[data-state="skeleton"]) > * { visibility: hidden; }

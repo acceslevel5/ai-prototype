@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Navigation Bar — BOG UI</title>
+<link rel="stylesheet" href="../bog-ui.css">
+<link rel="stylesheet" href="docs.css">
+<script src="theme.js"></script>
+<script src="../bog-ui.js" defer></script>
+<script src="components.js" defer></script>
+<style>.dx small{display:block;margin:0 0 8px;color:var(--docs-muted);font-size:11px}.dx{display:grid;gap:24px}.dx-panel{font-family:var(--font-family-bog);font-size:14px;line-height:20px;color:var(--text-primary);padding:16px 4px}</style>
+</head>
+<body>
+<div class="docs">
+  <aside class="docs-nav">
+    <a class="docs-nav__brand" href="../index.html">BOG UI</a>
+    <nav id="bog-nav" data-current="navbar"></nav>
+  </aside>
+  <main class="docs-main">
+    <header><h1>Navigation Bar</h1><a class="figma" id="figma-link" href="#" target="_blank" rel="noopener">Open in Figma ↗</a></header>
+    <p class="lead">The bar at the top of a screen: back button, title, and up to two actions on the right. The title can carry secondary text below or a caption above. Themed follows the app theme; White and Black Static keep fixed colours over imagery. The status bar is included for mockups.</p>
+    <style>.nb-frame{width:375px;border:1px solid var(--docs-line);border-radius:16px;overflow:hidden}.nb-img-dark{background:linear-gradient(135deg,#3b1f12,#a2461c)}.nb-img-light{background:linear-gradient(135deg,#fde7d6,#f3d3ff)}</style>
+
+    <h2>Usage</h2>
+    <pre><code>&lt;header class="bog-navbar"&gt;                          &lt;!-- data-appearance="white|black" · data-divider · data-background --&gt;
+  &lt;div class="bog-statusbar"&gt;&lt;/div&gt;                   &lt;!-- mockups only --&gt;
+  &lt;div class="bog-navbar__header"&gt;
+    &lt;button class="bog-icon-btn" data-type="neutral" data-size="small" aria-label="Back"&gt;&lt;span class="bog-icon" data-icon="chevron-left"&gt;&lt;/span&gt;&lt;/button&gt;
+    &lt;div class="bog-navbar__titles"&gt;
+      &lt;h1 class="bog-navbar__title"&gt;Card details&lt;/h1&gt;
+      &lt;span class="bog-navbar__secondary"&gt;Visa •• 4821&lt;/span&gt;
+    &lt;/div&gt;
+    &lt;div class="bog-navbar__actions"&gt;
+      &lt;button class="bog-icon-btn" data-type="neutral" data-size="small" aria-label="Chat"&gt;&lt;span class="bog-icon" data-icon="chat"&gt;&lt;/span&gt;&lt;/button&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/header&gt;</code></pre>
+
+    <h2>Navigation bar</h2>
+    <div class="panel"><div class="dx" id="nb-full"></div></div>
+
+    <h2>Title configurations</h2>
+    <div class="panel"><div class="dx" id="nb-titles"></div></div>
+
+    <h2>Right slot items</h2>
+    <div class="panel"><div class="dx" id="nb-right"></div></div>
+<script>
+  const ib = (icon, label, inv) => `<button class="bog-icon-btn" data-type="neutral" data-size="small"${inv ? ' data-appearance="inverse"' : ""} aria-label="${label}"><span class="bog-icon"${icon ? ` data-icon="${icon}"` : ""}></span></button>`;
+  const nav = (o = {}) => `<header class="bog-navbar"${o.app ? ` data-appearance="${o.app}"` : ""}${o.divider ? " data-divider" : ""}>${o.status ? '<div class="bog-statusbar"></div>' : ""}` +
+    `<div class="bog-navbar__header">${o.back === false ? "" : ib("chevron-left", "Back", o.app === "white")}<div class="bog-navbar__titles">` +
+    `${o.caption ? '<span class="bog-navbar__caption">Caption text</span>' : ""}<h1 class="bog-navbar__title">Title</h1>${o.secondary ? '<span class="bog-navbar__secondary">Secondary text</span>' : ""}</div>` +
+    `<div class="bog-navbar__actions">${o.right || ib("", "Action", o.app === "white") + ib("chat", "Chat", o.app === "white")}</div></div></header>`;
+  const frame = (label, html, cls = "") => `<div><small>${label}</small><div class="nb-frame ${cls}">${html}</div></div>`;
+  document.getElementById("nb-full").innerHTML =
+    frame("Themed", nav({ status: 1 })) + frame("Themed · divider", nav({ status: 1, divider: 1 })) +
+    frame("White Static (over dark imagery)", nav({ status: 1, app: "white" }), "nb-img-dark") +
+    frame("Black Static (over light imagery)", nav({ status: 1, app: "black" }), "nb-img-light");
+  document.getElementById("nb-titles").innerHTML =
+    [["Title", {}], ["Title + Secondary text", { secondary: 1 }], ["Caption + Title", { caption: 1 }],
+     ["Title · no left slot", { back: false }], ["Title + Secondary text · no left slot", { back: false, secondary: 1 }], ["Caption + Title · no left slot", { back: false, caption: 1 }]]
+      .map(([n, o]) => frame(n, nav(o))).join("");
+  document.getElementById("nb-right").innerHTML =
+    frame("Media circle", nav({ right: '<span class="bog-avatar" data-size="32" data-type="image" style="margin:0 4px"></span>' })) +
+    frame("One icon button", nav({ right: ib("chat", "Chat") })) +
+    frame("Button", nav({ right: '<button class="bog-btn" data-type="neutral" data-size="small">Button</button>' })) +
+    frame("Timer", nav({ right: '<span class="bog-navbar__timer">00 : 45</span>' }));
+</script>
+  </main>
+</div>
+</body>
+</html>

@@ -1,0 +1,140 @@
+/* ==========================================================================
+   BOG UI — Search input
+   Figma: Search input (11564:39458) · Source = BOG Design
+
+     <div class="bog-search">                                  data-size="large" · data-placement="overlay"
+       <label class="bog-search__box">
+         <span class="bog-search__icon"></span>
+         <input class="bog-search__input" type="search" placeholder="Search" aria-label="Search">
+         <button type="button" class="bog-search__clear" aria-label="Clear"></button>
+       </label>
+       <button type="button" class="bog-search__cancel">Cancel</button>
+     </div>
+
+   States follow real interaction: Default → Active (focused, empty: outline + Cancel)
+   → Typing (focused, has text: + clear) → Filled (blurred, has text: clear only).
+   Clear and Cancel need bog-ui.js. Static mockups: data-state="active | typing | filled | skeleton".
+   Size      small (40, default) | large (56)
+   Placement page (default, grey fill) | overlay (white with a shadow, over imagery or colour)
+   ========================================================================== */
+
+.bog-search {
+  --_bg: var(--layer-alpha-01);
+  --_shadow: none;
+  --_pad-x: var(--spacing-padding-medium);
+  --_pad-y: var(--spacing-padding-small);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-gap-default);
+  width: 100%;
+  font-family: var(--font-family-bog);
+}
+.bog-search[data-size="large"] { --_pad-x: var(--spacing-padding-default); --_pad-y: var(--spacing-padding-default); }
+/* Overlay: white with Shadow/elevation/Surface-1 */
+.bog-search[data-placement="overlay"] {
+  --_bg: var(--layer-layer-05);
+  --_shadow: 0 4px 6px var(--elevation-shadow-surface-01), 0 2px 4px var(--elevation-shadow-surface-01);
+}
+
+.bog-search__box {
+  display: flex;
+  flex: 1 1 auto;
+  align-items: center;
+  gap: var(--spacing-gap-medium);
+  box-sizing: border-box;
+  min-width: 0;
+  padding: var(--spacing-padding-2x-small) var(--_pad-x);
+  border-radius: var(--radius-medium);
+  background: var(--_bg);
+  box-shadow: var(--_shadow);
+  cursor: text;
+}
+.bog-search__icon {
+  flex: none;
+  width: 16px;
+  height: 16px;
+  background-color: var(--icon-primary);
+  -webkit-mask: url("../icons/search-16.svg") center / contain no-repeat;
+          mask: url("../icons/search-16.svg") center / contain no-repeat;
+}
+.bog-search__input {
+  flex: 1 1 auto;
+  min-width: 0;
+  margin: 0 0 0 calc(var(--spacing-gap-small) - var(--spacing-gap-medium));
+  padding: var(--_pad-y) 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: var(--text-primary);
+  caret-color: var(--support-caret);
+  font: inherit;
+  font-size: var(--body-large-size);
+  line-height: var(--body-large-line-height);
+  font-weight: var(--body-large-weight);
+  -webkit-appearance: none;
+          appearance: none;
+}
+.bog-search__input::placeholder { color: var(--text-secondary); opacity: 1; }
+.bog-search__input::-webkit-search-cancel-button,
+.bog-search__input::-webkit-search-decoration { -webkit-appearance: none; }
+/* Focused: the placeholder steps back to the lighter colour, as in "Active" */
+.bog-search__input:focus::placeholder,
+.bog-search[data-state="active"] .bog-search__input::placeholder { color: var(--text-placeholder); }
+
+/* Clear (12px cross in a 32px tap area) — while there is text */
+.bog-search__clear {
+  position: relative;
+  display: none;
+  flex: none;
+  width: 20px;
+  height: 20px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.bog-search__clear::before {
+  content: "";
+  position: absolute;
+  inset: 4px;
+  background-color: var(--icon-secondary);
+  -webkit-mask: url("../icons/close-12.svg") center / contain no-repeat;
+          mask: url("../icons/close-12.svg") center / contain no-repeat;
+}
+.bog-search__clear::after { content: ""; position: absolute; inset: -6px; }
+.bog-search__input:not(:placeholder-shown) ~ .bog-search__clear,
+.bog-search:is([data-state="typing"], [data-state="filled"]) .bog-search__clear { display: block; }
+
+/* Cancel — while the field is focused */
+.bog-search__cancel {
+  position: relative;
+  display: none;
+  flex: none;
+  align-self: stretch;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--text-secondary);
+  font: inherit;
+  font-size: var(--label-medium-size);
+  line-height: var(--label-medium-line-height);
+  font-weight: var(--label-medium-weight);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Active / Typing: 1.6px outline, no shadow, Cancel shows */
+.bog-search:focus-within .bog-search__box,
+.bog-search:is([data-state="active"], [data-state="typing"]) .bog-search__box {
+  box-shadow: inset 0 0 0 var(--border-width-trick) var(--border-selected-neutral-strong);
+}
+.bog-search:focus-within .bog-search__cancel,
+.bog-search:is([data-state="active"], [data-state="typing"]) .bog-search__cancel { display: block; }
+
+/* Skeleton: the box only */
+.bog-search[data-state="skeleton"] .bog-search__box { background: var(--support-skeleton-background); box-shadow: none; }
+.bog-search[data-state="skeleton"] .bog-search__box > * { visibility: hidden; }
+.bog-search[data-state="skeleton"] .bog-search__cancel { display: none; }

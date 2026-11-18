@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Progress Tracker — BOG UI</title>
+<link rel="stylesheet" href="../bog-ui.css">
+<link rel="stylesheet" href="docs.css">
+<script src="theme.js"></script>
+<script src="../bog-ui.js" defer></script>
+<script src="components.js" defer></script>
+<style>.dx small{display:block;margin:0 0 8px;color:var(--docs-muted);font-size:11px}.dx{display:grid;gap:24px}.dx-panel{font-family:var(--font-family-bog);font-size:14px;line-height:20px;color:var(--text-primary);padding:16px 4px}</style>
+</head>
+<body>
+<div class="docs">
+  <aside class="docs-nav">
+    <a class="docs-nav__brand" href="../index.html">BOG UI</a>
+    <nav id="bog-nav" data-current="tracker"></nav>
+  </aside>
+  <main class="docs-main">
+    <header><h1>Progress Tracker</h1><a class="figma" id="figma-link" href="#" target="_blank" rel="noopener">Open in Figma ↗</a></header>
+    <p class="lead">The steps of a longer process, top to bottom — a loan application, a card delivery. Each step is completed, current, pending, or needs attention (warning, error) with a message. The line under a completed step turns green.</p>
+    <h2>Usage</h2>
+    <pre><code>&lt;ol class="bog-tracker"&gt;                                     &lt;!-- data-state="skeleton" --&gt;
+  &lt;li class="bog-tracker__step" data-state="completed"&gt;
+    &lt;span class="bog-tracker__indicator"&gt;&lt;/span&gt;
+    &lt;div class="bog-tracker__content"&gt;
+      &lt;p class="bog-tracker__title"&gt;Application sent&lt;/p&gt;
+      &lt;p class="bog-tracker__helper"&gt;3 Nov, 10:42&lt;/p&gt;
+      &lt;p class="bog-tracker__desc"&gt;We received your documents&lt;/p&gt;
+    &lt;/div&gt;
+  &lt;/li&gt;
+  &lt;li class="bog-tracker__step" data-state="current"&gt;…&lt;/li&gt;
+  &lt;li class="bog-tracker__step"&gt;&lt;span class="bog-tracker__indicator" data-number="3"&gt;&lt;/span&gt;…&lt;/li&gt;
+&lt;/ol&gt;
+&lt;!-- data-state="completed | current | warning | error | pending" · .bog-tracker__message for warning / error --&gt;</code></pre>
+    <h2>Example</h2>
+    <div class="panel"><div style="width:300px" id="tr-ex"></div></div>
+    <h2>Step states</h2>
+    <div class="panel"><div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:40px" id="tr-states"></div></div>
+<script>
+  const step = (st, t, o = {}) => `<li class="bog-tracker__step"${st ? ` data-state="${st}"` : ""}><span class="bog-tracker__indicator"${o.n ? ` data-number="${o.n}"` : ""}></span><div class="bog-tracker__content">` +
+    `<p class="bog-tracker__title">${t}</p>${o.h ? `<p class="bog-tracker__helper">${o.h}</p>` : ""}${o.d ? `<p class="bog-tracker__desc">${o.d}</p>` : ""}${o.m ? `<p class="bog-tracker__message">${o.m}</p>` : ""}</div></li>`;
+  document.getElementById("tr-ex").innerHTML = '<ol class="bog-tracker">' +
+    step("completed", "Application sent", { h: "3 Nov, 10:42", d: "We received your documents" }) +
+    step("completed", "Identity checked", { h: "3 Nov, 11:05", d: "Your ID matched" }) +
+    step("current", "Credit review", { h: "Usually 1 working day", d: "We're reviewing your application" }) +
+    step("", "Contract", { n: 4, h: "Sign in the app" }) + step("", "Money on your account", { n: 5 }) + "</ol>";
+  const all = (last) => ["current", "completed", "warning", "error", "pending"].map((s) =>
+    step(s, "Step title", { h: last ? "" : "Helper text", d: s === "warning" || s === "error" || last ? "" : "Description", m: s === "warning" || s === "error" ? "Message text" : "" })).join("");
+  document.getElementById("tr-states").innerHTML =
+    `<div><small style="display:block;margin-bottom:12px;color:var(--docs-muted);font-size:11px">Step item</small><ol class="bog-tracker">${all(false)}</ol></div>` +
+    `<div><small style="display:block;margin-bottom:12px;color:var(--docs-muted);font-size:11px">Pending with numbers</small><ol class="bog-tracker">${step("completed", "Step title")}${step("", "Step title", { n: 2 })}${step("", "Step title", { n: 3 })}</ol></div>` +
+    `<div><small style="display:block;margin-bottom:12px;color:var(--docs-muted);font-size:11px">Skeleton</small><ol class="bog-tracker" data-state="skeleton">${step("", "x")}${step("", "x")}${step("", "x")}</ol></div>`;
+</script>
+  </main>
+</div>
+</body>
+</html>

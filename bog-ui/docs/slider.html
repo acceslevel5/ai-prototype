@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Range Slider — BOG UI</title>
+<link rel="stylesheet" href="../bog-ui.css">
+<link rel="stylesheet" href="docs.css">
+<script src="theme.js"></script>
+<script src="../bog-ui.js" defer></script>
+<script src="components.js" defer></script>
+<style>.dx small{display:block;margin:0 0 8px;color:var(--docs-muted);font-size:11px}.dx{display:grid;gap:24px}.dx-panel{font-family:var(--font-family-bog);font-size:14px;line-height:20px;color:var(--text-primary);padding:16px 4px}</style>
+</head>
+<body>
+<div class="docs">
+  <aside class="docs-nav">
+    <a class="docs-nav__brand" href="../index.html">BOG UI</a>
+    <nav id="bog-nav" data-current="slider"></nav>
+  </aside>
+  <main class="docs-main">
+    <header><h1>Range Slider</h1><a class="figma" id="figma-link" href="#" target="_blank" rel="noopener">Open in Figma ↗</a></header>
+    <p class="lead">Picks a value — or a range between two values — by dragging along a line. While dragging, the handle gets an orange halo and a tooltip shows the value. Free, or snapping to 2–11 marked segments. Disabled greys it out. Each notch the handle passes plays a soft click that rises in pitch from left to right, with a haptic tick on phones.</p>
+    <h2>Usage</h2>
+    <pre><code>&lt;div class="bog-slider" data-format="{v} ₾" data-segments="5"&gt;      &lt;!-- data-feedback="off | sound | haptic" --&gt;
+  &lt;div class="bog-slider__track"&gt;
+    &lt;input type="range" min="0" max="50000" step="10000" value="10000" aria-label="From"&gt;
+    &lt;input type="range" min="0" max="50000" step="10000" value="30000" aria-label="To"&gt;      &lt;!-- Range: second handle --&gt;
+  &lt;/div&gt;
+  &lt;div class="bog-slider__amounts"&gt;&lt;span&gt;0 ₾&lt;/span&gt;&lt;span&gt;50,000 ₾&lt;/span&gt;&lt;/div&gt;
+&lt;/div&gt;</code></pre>
+    <h2>Try it</h2>
+    <p class="lead">Drag a handle or use the arrow keys. Sound plays once the page has had a tap or key press; haptics work on Android (vibration) and iOS 18+ Safari.</p>
+    <div class="docs-preview__controls" style="margin:0 0 12px"><label><input type="checkbox" id="sl-sound" checked> Sound</label><label><input type="checkbox" id="sl-haptic" checked> Haptics</label></div>
+    <div class="panel" style="padding-top:48px"><div style="width:343px;display:flex;flex-direction:column;gap:56px" id="sl-try"></div></div>
+    <h2>Variants</h2>
+    <div class="panel" style="padding-top:40px"><div style="width:343px;display:flex;flex-direction:column;gap:40px" id="sl-grid"></div></div>
+<script>
+  const sl = (o) => `<div class="bog-slider" data-format="{v} ₾"${o.seg ? ` data-segments="${o.seg}"` : ""}><div class="bog-slider__track">` +
+    o.v.map((v, i) => `<input type="range" min="0" max="50000" step="${o.seg ? 50000 / o.seg : 500}" value="${v}" aria-label="${o.v.length > 1 ? (i ? "To" : "From") : "Amount"}"${o.dis ? " disabled" : ""}>`).join("") +
+    '</div><div class="bog-slider__amounts"><span>0 ₾</span><span>50,000 ₾</span></div></div>';
+  const lab = (t, h) => `<div><small style="display:block;margin:-24px 0 8px;color:var(--docs-muted);font-size:11px">${t}</small>${h}</div>`;
+  document.getElementById("sl-try").innerHTML = lab("Range", sl({ v: [12000, 30000] })) + lab("Slider · 5 segments", sl({ v: [20000], seg: 5 }));
+  document.getElementById("sl-grid").innerHTML = lab("Range Slider", sl({ v: [10000, 25000] })) + lab("Range Slider · disabled", sl({ v: [10000, 25000], dis: 1 })) +
+    lab("Slider", sl({ v: [15000] })) + lab("Slider · disabled", sl({ v: [15000], dis: 1 })) +
+    [2, 4, 8, 11].map((s) => lab(`${s} segments`, sl({ v: [50000 / s], seg: s }))).join("");
+  document.getElementById("sl-sound").addEventListener("change", (e) => { BOG.feedback.sound = e.target.checked; });
+  document.getElementById("sl-haptic").addEventListener("change", (e) => { BOG.feedback.haptics = e.target.checked; });
+</script>
+  </main>
+</div>
+</body>
+</html>

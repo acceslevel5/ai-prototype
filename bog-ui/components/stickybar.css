@@ -1,0 +1,67 @@
+/* ==========================================================================
+   BOG UI — Sticky Bar (+ Sticky Bar Amount)
+   Figma: Sticky Bar (46589:9729) · Sticky Bar Amount (51842:12963)
+
+   The bottom action area of a screen: fades the content above it, an optional helper line,
+   then the main button (and a second one), and the iOS home indicator.
+     <footer class="bog-stickybar">                  data-placement="overlay" (in sheets / modals) · data-appearance="black"
+       <div class="bog-stickybar__slot">…</div>        optional — e.g. an amount, a checkbox to agree
+       <p class="bog-stickybar__helper">Message text</p>   optional
+       <div class="bog-stickybar__buttons">           data-layout="row" (an icon button + the main button)
+         <button class="bog-btn" data-type="primary" data-width="fill">Primary</button>
+         <button class="bog-btn" data-type="neutral" data-width="fill">Secondary</button>   optional
+       </div>
+       <span class="bog-stickybar__home"></span>      optional — iOS home indicator (34px)
+     </footer>
+   Put it last in a scrolling screen with position: sticky; bottom: 0 (or absolute at the bottom).
+   ========================================================================== */
+
+.bog-stickybar {
+  --_bg: var(--layer-layer-01);
+  --_handle: var(--layer-inverse-01);
+  --_helper: var(--text-secondary);
+  position: sticky;
+  bottom: 0;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  width: 100%;
+  padding-top: var(--spacing-padding-large);
+  background: linear-gradient(to bottom, color-mix(in srgb, var(--_bg) 0%, transparent), var(--_bg) 20%);
+  font-family: var(--font-family-bog);
+}
+.bog-stickybar[data-appearance="black"] { --_bg: var(--sticky-bar-container-page-layer-black-02); --_handle: var(--icon-white); --_helper: var(--text-white-secondary); }
+.bog-stickybar[data-appearance="black"] .bog-btn[data-type="primary"] { background: var(--button-primary-inverse-default-static); }
+.bog-stickybar[data-appearance="black"] .bog-icon-btn { background: var(--button-secondary-grey-inverse-default-static); color: var(--icon-white); }
+
+.bog-stickybar__slot { padding: var(--spacing-padding-default) var(--spacing-padding-default) 0; }
+.bog-stickybar__helper {
+  margin: 0;
+  padding: var(--spacing-padding-default) var(--spacing-padding-default) 0;
+  color: var(--_helper);
+  font-size: var(--label-small-size);
+  line-height: var(--label-small-line-height);
+  font-weight: var(--label-small-weight);
+  text-align: center;
+}
+.bog-stickybar__buttons {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-gap-small);
+  padding: var(--spacing-padding-default) var(--spacing-padding-default) 0;
+}
+.bog-stickybar__buttons[data-layout="row"] { flex-direction: row; align-items: center; gap: var(--spacing-gap-small); }
+.bog-stickybar__buttons[data-layout="row"] > .bog-btn { flex: 1 1 auto; }
+.bog-stickybar__buttons[data-layout="row"] > .bog-icon-btn { flex: none; }
+/* No home indicator: 16px of space below the buttons instead */
+.bog-stickybar:not(:has(.bog-stickybar__home)) { padding-bottom: var(--spacing-padding-default); }
+.bog-stickybar__home {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  height: 34px;
+  box-sizing: border-box;
+  padding-bottom: 8px;
+}
+.bog-stickybar__home::before { content: ""; width: 144px; height: 5px; border-radius: 100px; background: var(--_handle); }

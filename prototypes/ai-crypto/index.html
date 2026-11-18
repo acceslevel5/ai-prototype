@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="ka">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="theme-color" content="#ffffff">
+  <title>BOG AI</title>
+  <link rel="stylesheet" href="../../bog-ui/bog-ui.css">
+  <link rel="stylesheet" href="style.css?v=99">
+  <link rel="stylesheet" href="screens.css?v=99">
+  <script src="../../bog-ui/bog-ui.js" defer></script>
+  <script src="data.js?v=99" defer></script>
+  <script src="bank.js?v=99" defer></script>
+  <script type="module" src="avatar.js?v=99"></script>
+  <script src="app.js?v=99" defer></script>
+  <script src="ai-bank.js?v=99" defer></script>
+  <script src="screens.js?v=99" defer></script>
+  <script src="pfm.js?v=99" defer></script>
+  <script src="support.js?v=99" defer></script>
+</head>
+<body>
+<div class="stage">
+<div class="screen screen--crypto" data-screen="crypto">
+
+  <!-- ზედა ზოლი: სტატუს ბარი (მხოლოდ დესკტოპზე) + ნავიგაცია. AI ღილაკი ცალკე, .ai ფენაშია -->
+  <header class="topbar">
+    <div class="statusbar" aria-hidden="true">
+      <img class="statusbar__time" src="../../bog-ui/assets/status-time.svg" alt="">
+      <img class="statusbar__icons" src="../../bog-ui/assets/status-icons.svg" alt="">
+    </div>
+    <div class="topbar__row">
+      <button class="glass-btn" type="button" aria-label="უკან" data-act="back"><img src="assets/ic-chevron-left.svg" alt=""></button>
+      <span class="topbar__spacer"></span>
+      <button class="glass-btn" type="button" aria-label="ძებნა"><img src="assets/ic-search.svg" alt=""></button>
+    </div>
+  </header>
+
+  <main class="screen__body" data-scroll>
+    <div class="bog-segmented page-tabs" role="radiogroup" aria-label="კრიპტო">
+      <button class="bog-segment" role="radio" aria-checked="true">ჩემი კრიპტო</button>
+      <button class="bog-segment" role="radio" aria-checked="false">აღმოაჩინე</button>
+    </div>
+
+    <!-- Crypto Chart Header -->
+    <section class="price">
+      <p class="price__label">პორტფელი</p>
+      <div class="bog-amount" data-size="large">
+        <div class="bog-amount__main">
+          <span class="bog-amount__value"></span>
+          <span class="bog-amount__currency">$</span>
+        </div>
+      </div>
+      <p class="chg chg--up"><span class="chg__icon"></span>$0.12 (0.01%) <span class="chg__label">Today</span></p>
+      <p class="chg chg--up"><span class="chg__icon"></span>$00.12 (0.01%) <span class="chg__label">Total</span></p>
+    </section>
+
+    <!-- Chart -->
+    <div class="chart" aria-hidden="true">
+      <img class="chart__fill" src="assets/chart-fill.svg" alt="">
+      <img class="chart__line" src="assets/chart-line.svg" alt="">
+      <span class="chart__mark chart__mark--high"><i></i>100.24</span>
+      <span class="chart__mark chart__mark--low">99.87<i></i></span>
+    </div>
+
+    <div class="page">
+      <div class="bog-segmented" data-size="small" role="radiogroup" aria-label="პერიოდი">
+        <button class="bog-segment" role="radio" aria-checked="false">24 სთ</button>
+        <button class="bog-segment" role="radio" aria-checked="true">კვირა</button>
+        <button class="bog-segment" role="radio" aria-checked="false">თვე</button>
+        <button class="bog-segment" role="radio" aria-checked="false">3 თვე</button>
+        <button class="bog-segment" role="radio" aria-checked="false">წელი</button>
+        <button class="bog-segment" role="radio" aria-checked="false">სულ</button>
+      </div>
+
+      <section class="bog-section">
+        <header class="bog-section__header">
+          <div class="bog-section__heading"><h2 class="bog-section__title">პორტფელები</h2></div>
+          <div class="bog-segmented" data-size="small" role="radiogroup" aria-label="ცვლილება">
+            <button class="bog-segment" role="radio" aria-checked="true">24 სთ</button>
+            <button class="bog-segment" role="radio" aria-checked="false">სულ</button>
+          </div>
+        </header>
+        <div class="bog-section__content">
+          <div class="bog-list" id="portfolios"></div>
+        </div>
+      </section>
+
+      <section class="bog-section">
+        <header class="bog-section__header">
+          <div class="bog-section__heading"><h2 class="bog-section__title">კრიპტოვალუტები</h2></div>
+          <button class="bog-icon-btn" data-type="neutral" data-size="small" aria-label="დალაგება"><span class="bog-icon" style="--icon: url(../../prototypes/ai-crypto/assets/ic-sort.svg)"></span></button>
+        </header>
+        <div class="bog-section__content">
+          <div class="bog-list" id="stocks"></div>
+        </div>
+      </section>
+
+      <section class="bog-section" data-size="small">
+        <header class="bog-section__header">
+          <div class="bog-section__heading"><h2 class="bog-section__title">ბალანსი</h2></div>
+        </header>
+        <div class="bog-section__content">
+          <div class="bog-list">
+            <button type="button" class="bog-list-item">
+              <span class="bog-icon-holder" data-size="40"><span class="bog-icon" style="--icon: url(../../prototypes/ai-crypto/assets/ic-cash.svg)"></span></span>
+              <span class="bog-list-item__content"><span class="bog-list-item__label">საინვესტიციო თანხა</span></span>
+              <span class="bog-list-item__end"><span class="bog-list-item__value" id="cashBalance"></span></span>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <button type="button" class="bog-action-card">
+        <span class="bog-icon-holder" data-size="48"><span class="bog-icon" style="--icon: url(../../prototypes/ai-crypto/assets/ic-auto.svg)"></span></span>
+        <span class="bog-action-card__content">
+          <span class="bog-action-card__title">დაასრულე აქტივაცია</span>
+          <span class="bog-action-card__text">ატვირთე პირადობის მოწმობა ანგარიშზე წვდომა რომ არ შეგეზღუდოს</span>
+        </span>
+        <span class="bog-action-card__chevron"></span>
+      </button>
+
+      <section class="bog-section">
+        <header class="bog-section__header">
+          <div class="bog-section__heading"><h2 class="bog-section__title">ტრანზაქციები</h2></div>
+        </header>
+        <div class="bog-section__content">
+          <div class="tx-stats">
+            <div class="tx-stat"><span>მოახლოებული</span><b>3</b></div>
+            <div class="tx-stat tx-stat--done"><span>შესრულებული</span><b>123</b></div>
+          </div>
+          <div id="transactions"></div>
+          <button class="bog-btn" data-type="neutral" data-width="fill">ყველას ნახვა</button>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <!-- ტაბ ბარი — იგივე, რაც დანარჩენ ეკრანებზე (screens.js ცვლის: tabbar('my-space')) -->
+  <nav class="bog-tabbar tabbar" aria-label="მთავარი მენიუ" data-tabbar></nav>
+</div>
+</div>
+
+<!-- ===== BOG AI: ერთი ელემენტი, რომელიც ღილაკიდან → აბრად → პანელად იშლება (data-state) ===== -->
+<div class="ai-layer">
+<div class="ai-backdrop" id="aiBackdrop"></div>
+<div class="ai" id="ai" data-state="idle">
+  <span class="ai__orb" role="img" aria-label="BOG AI"></span>
+
+  <!-- აბრა (teaser): ბრუნავი ფრომფთები -->
+  <button class="ai__teaser" id="aiTeaser" type="button" aria-label="BOG AI-ის გახსნა">
+    <span class="ai__teaser-text" id="aiTeaserText"></span>
+  </button>
+
+  <!-- პანელი -->
+  <div class="ai__panel" id="aiPanel">
+    <div class="ai__chat" id="aiChat">
+      <div class="ai__inner" id="aiInner">
+        <div class="ai__brand">BOG AI</div>
+        <div class="ai__thread" id="aiThread"></div>
+      </div>
+    </div>
+    <form class="ai__bar" id="aiForm" autocomplete="off">
+      <button class="ai__round" type="button" aria-label="დამატება"><img src="assets/ic-plus.svg" alt=""></button>
+      <label class="ai__field">
+        <textarea id="aiInput" rows="1" placeholder="ჰკითხე BOG AI-ს" enterkeyhint="send" autocomplete="off" spellcheck="false"></textarea>
+      </label>
+      <button class="ai__round" id="aiMic" type="button" aria-label="ხმით"><img src="assets/ic-mic.svg" alt=""></button>
+    </form>
+  </div>
+</div>
+</div>
+</body>
+</html>

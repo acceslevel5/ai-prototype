@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Banner — BOG UI</title>
+<link rel="stylesheet" href="../bog-ui.css">
+<link rel="stylesheet" href="docs.css">
+<script src="theme.js"></script>
+<script src="../bog-ui.js" defer></script>
+<script src="components.js" defer></script>
+<style>.dx small{display:block;margin:0 0 8px;color:var(--docs-muted);font-size:11px}.dx{display:grid;gap:24px}.dx-panel{font-family:var(--font-family-bog);font-size:14px;line-height:20px;color:var(--text-primary);padding:16px 4px}</style>
+</head>
+<body>
+<div class="docs">
+  <aside class="docs-nav">
+    <a class="docs-nav__brand" href="../index.html">BOG UI</a>
+    <nav id="bog-nav" data-current="banner"></nav>
+  </aside>
+  <main class="docs-main">
+    <header><h1>Banner</h1><a class="figma" id="figma-link" href="#" target="_blank" rel="noopener">Open in Figma ↗</a></header>
+    <p class="lead">A suggestion or next step inside a screen's content — save automatically, finish your profile, a new offer. A title and a line of description, optionally an amount, an image, buttons and a × to dismiss. Image Only and Promo Banner carry a picture across the whole card.</p>
+    <h2>Usage</h2>
+    <pre><code>&lt;a class="bog-banner" href="…"&gt;
+  &lt;span class="bog-banner__text"&gt;
+    &lt;span class="bog-banner__title"&gt;Save automatically&lt;/span&gt;
+    &lt;span class="bog-banner__desc"&gt;Move 10% of every salary to savings.&lt;/span&gt;
+  &lt;/span&gt;
+  &lt;span class="bog-banner__media"&gt;&lt;img src="…" alt=""&gt;&lt;/span&gt;          &lt;!-- optional --&gt;
+  &lt;button class="bog-banner__close" aria-label="Close"&gt;&lt;/button&gt;        &lt;!-- optional: × removes the banner --&gt;
+&lt;/a&gt;
+&lt;a class="bog-banner" data-type="image"&gt;&lt;img src="…" alt="Offer"&gt;&lt;/a&gt;
+&lt;a class="bog-banner" data-type="promo" data-tone="dark" style="--image:url(…)"&gt;…&lt;/a&gt;</code></pre>
+    <h2>Banner</h2>
+    <p class="lead">Press and hold to see the pressed state; × removes the banner.</p>
+    <div class="panel" style="display:grid;grid-template-columns:repeat(2,343px);gap:24px;align-items:start">
+      <div class="dx"><div><small>Text</small><a class="bog-banner" href="#" onclick="return false" style="width:343px"><span class="bog-banner__text"><span class="bog-banner__title">Save automatically</span><span class="bog-banner__desc">Move 10% of every salary to your savings account.</span></span></a></div>
+      <div><small>Text + image</small><a class="bog-banner" href="#" onclick="return false" style="width:343px"><span class="bog-banner__text"><span class="bog-banner__title">Finish your profile</span><span class="bog-banner__desc">Add your workplace to get better offers.</span></span><span class="bog-banner__media"></span></a></div>
+      <div><small>Dismissible</small><a class="bog-banner" href="#" onclick="return false" style="width:343px"><span class="bog-banner__text"><span class="bog-banner__title">New: split the bill</span><span class="bog-banner__desc">Share any payment with friends in two taps.</span></span><button class="bog-banner__close" aria-label="Close"></button></a></div>
+      <div><small>Amount</small><a class="bog-banner" href="#" onclick="return false" style="width:343px"><span class="bog-banner__text"><span class="bog-banner__title">Savings interest</span><span class="bog-banner__desc">If you keep this balance for a year</span><span class="bog-banner__amount">1,070.00 ₾</span><span class="bog-banner__helper">+70.00 ₾ at 7.00 %</span></span><span class="bog-banner__media"></span></a></div></div>
+      <div class="dx"><div><small>Actions</small><div class="bog-banner" style="width:343px"><span class="bog-banner__text"><span class="bog-banner__title">Turn on notifications</span><span class="bog-banner__desc">Know about every payment as it happens.</span></span><span class="bog-banner__actions"><span class="bog-btn" data-type="primary" data-size="small">Turn on</span><span class="bog-btn" data-type="ghost" data-size="small">Later</span></span></div></div>
+      <div><small>Actions + image + ×</small><div class="bog-banner" style="width:343px"><span class="bog-banner__text"><span class="bog-banner__title">Get a credit card</span><span class="bog-banner__desc">Up to 10,000 ₾, no fee for the first year.</span></span><span class="bog-banner__media"></span><span class="bog-banner__actions"><span class="bog-btn" data-type="primary" data-size="small">Turn on</span><span class="bog-btn" data-type="ghost" data-size="small">Later</span></span><button class="bog-banner__close" aria-label="Close"></button></div></div>
+      <div><small>Skeleton</small><div class="bog-banner" data-state="skeleton" style="width:343px"><span class="bog-banner__text"><span class="bog-banner__title">Title</span><span class="bog-banner__desc">Description</span></span><span class="bog-banner__media"></span></div></div></div>
+    </div>
+    <h2>Banner Image Only</h2>
+    <div class="panel" style="display:flex;gap:24px;flex-wrap:wrap"><a class="bog-banner" data-type="image" href="#" onclick="return false" style="width:343px" aria-label="Offer"></a><div class="bog-banner" data-type="image" data-state="skeleton" style="width:343px"></div></div>
+    <h2>Promo Banner</h2>
+    <div class="panel" style="display:flex;gap:24px;flex-wrap:wrap;align-items:start">
+      <div><small style="display:block;margin:0 0 8px;color:var(--docs-muted);font-size:11px">Dark</small><a class="bog-banner" data-type="promo" data-tone="dark" href="#" onclick="return false" style="width:343px"><span class="bog-banner__text"><span class="bog-banner__title">Travel insurance</span><span class="bog-banner__desc">From 1 ₾ a day, in the app.</span></span><button class="bog-banner__close" aria-label="Close"></button></a></div>
+      <div><small style="display:block;margin:0 0 8px;color:var(--docs-muted);font-size:11px">Light</small><a class="bog-banner" data-type="promo" data-tone="light" href="#" onclick="return false" style="width:343px"><span class="bog-banner__text"><span class="bog-banner__title">Travel insurance</span><span class="bog-banner__desc">From 1 ₾ a day, in the app.</span></span><button class="bog-banner__close" aria-label="Close"></button></a></div>
+    </div>
+  </main>
+</div>
+</body>
+</html>

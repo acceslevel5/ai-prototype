@@ -1,0 +1,65 @@
+/* ==========================================================================
+   BOG UI — Status Icon Badge
+   Figma: Status Icon Badge (15920:42344)
+
+     <span class="bog-status-icon" data-status="positive" role="img" aria-label="Done"></span>      IconOnly
+     <span class="bog-status-icon" data-status="negative">99+</span>                               Numeric (32+ only)
+
+   data-status    positive (check) | warning (!) | negative (!) | info (i)
+   data-size      x-small (16) | small (24) | medium (32, default) | large (40) | x-large (64)
+   data-contrast  low — tinted circle with a coloured glyph (default: high, solid circle)
+   data-state     skeleton
+   ========================================================================== */
+
+.bog-status-icon {
+  --_bg: var(--status-success-02);
+  --_fg: var(--text-inverse-primary);
+  --_glyph: url("../icons/check-16.svg");
+  --_g: 0.5;                                   /* glyph size as part of the circle */
+  --_d: 32px;
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  width: var(--_d);
+  height: var(--_d);
+  border-radius: var(--radius-full);
+  background: var(--_bg);
+  color: var(--_fg);
+  font-family: var(--font-family-bog);
+  font-size: var(--label-small-size);
+  line-height: var(--label-small-line-height);
+  font-weight: var(--label-small-weight);
+  white-space: nowrap;
+  overflow: hidden;
+}
+.bog-status-icon[data-size="x-small"] { --_d: 16px; }
+.bog-status-icon[data-size="small"]   { --_d: 24px; }
+.bog-status-icon[data-size="large"]   { --_d: 40px; }
+.bog-status-icon[data-size="x-large"] { --_d: 64px; font-size: var(--label-large-size); line-height: var(--label-large-line-height); }
+
+.bog-status-icon[data-status="warning"]  { --_bg: var(--status-warning-02); --_fg: var(--icon-black); --_glyph: url("../icons/glyph-alert-48.svg"); --_g: 0.75; }
+.bog-status-icon[data-status="negative"] { --_bg: var(--status-error-02);   --_glyph: url("../icons/glyph-alert-48.svg"); --_g: 0.75; }
+.bog-status-icon[data-status="info"]     { --_bg: var(--status-info-02);    --_glyph: url("../icons/glyph-info-48.svg"); --_g: 0.75; }
+
+/* Low contrast: tinted circle, glyph in the status colour */
+.bog-status-icon[data-contrast="low"]                          { --_bg: var(--status-success-alpha-01); --_fg: var(--text-success); }
+.bog-status-icon[data-contrast="low"][data-status="warning"]  { --_bg: var(--status-warning-alpha-01); --_fg: var(--text-warning); }
+.bog-status-icon[data-contrast="low"][data-status="negative"] { --_bg: var(--status-error-alpha-01);   --_fg: var(--text-error); }
+.bog-status-icon[data-contrast="low"][data-status="info"]     { --_bg: var(--status-info-alpha-01);    --_fg: var(--text-info); }
+
+/* IconOnly: the glyph (only when the badge has no text) */
+.bog-status-icon:empty::before {
+  content: "";
+  width: calc(var(--_d) * var(--_g));
+  height: calc(var(--_d) * var(--_g));
+  background-color: currentColor;
+  -webkit-mask: var(--_glyph) center / contain no-repeat;
+          mask: var(--_glyph) center / contain no-repeat;
+}
+.bog-status-icon[data-size="x-small"]:empty::before { width: 14px; height: 14px; }
+.bog-status-icon[data-size="x-small"]:is(:not([data-status]), [data-status="positive"]):empty::before { width: 10px; height: 10px; }
+
+.bog-status-icon[data-state="skeleton"] { --_bg: var(--support-skeleton); color: transparent; }
+.bog-status-icon[data-state="skeleton"]::before { display: none; }

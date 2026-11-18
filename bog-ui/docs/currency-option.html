@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Currency Option — BOG UI</title>
+<link rel="stylesheet" href="../bog-ui.css">
+<link rel="stylesheet" href="docs.css">
+<script src="theme.js"></script>
+<script src="../bog-ui.js" defer></script>
+<script src="components.js" defer></script>
+<style>.dx small{display:block;margin:0 0 8px;color:var(--docs-muted);font-size:11px}.dx{display:grid;gap:24px}.dx-panel{font-family:var(--font-family-bog);font-size:14px;line-height:20px;color:var(--text-primary);padding:16px 4px}</style>
+</head>
+<body>
+<div class="docs">
+  <aside class="docs-nav">
+    <a class="docs-nav__brand" href="../index.html">BOG UI</a>
+    <nav id="bog-nav" data-current="currency-option"></nav>
+  </aside>
+  <main class="docs-main">
+    <header><h1>Currency Option</h1><a class="figma" id="figma-link" href="#" target="_blank" rel="noopener">Open in Figma ↗</a></header>
+    <p class="lead">A currency shown as its flag and code — the building block of Currency Selector and of currency lists. Subtitle/Medium uppercase next to a round 16 px flag. Disabled greys both.</p>
+    <h2>Usage</h2>
+    <pre><code>&lt;span class="bog-currency-option"&gt;&lt;img src="bog-ui/assets/flags/us.svg" alt=""&gt;USD&lt;/span&gt;
+&lt;span class="bog-currency-option" data-disabled&gt;&lt;img src="bog-ui/assets/flags/gb.svg" alt=""&gt;GBP&lt;/span&gt;</code></pre>
+    <h2>Currencies</h2>
+    <div class="panel"><div style="display:grid;grid-template-columns:repeat(8,auto);gap:16px 24px;justify-content:start" id="co-grid"></div></div>
+<script>
+  const C = [["us", "USD"], ["gb", "GBP"], ["ae", "AED"], ["ch", "CHF"], ["ge", "GEL"], ["eu", "EUR"], ["tr", "TRY"], ["il", "ILS"]];
+  const opt = (f, c, d) => `<span class="bog-currency-option"${d ? " data-disabled" : ""}><img src="../assets/flags/${f}.svg" alt="">${c}</span>`;
+  document.getElementById("co-grid").innerHTML = C.map(([f, c]) => opt(f, c)).join("") + C.map(([f, c]) => opt(f, c, 1)).join("");
+</script>
+  </main>
+</div>
+</body>
+</html>

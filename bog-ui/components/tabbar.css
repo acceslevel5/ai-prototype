@@ -1,0 +1,106 @@
+/* ==========================================================================
+   BOG UI — Tab Bar (iOS)
+   Figma: Tab Bar (63155:50769 Tab Bar - iOS · 63155:50790 _Tab items)
+
+     <nav class="bog-tabbar" aria-label="Main">               data-mode="dark" (over darker content)
+       <div class="bog-tabbar__bar">
+         <a class="bog-tabbar__item" href="#" data-page="home" aria-current="page">Home</a>
+         <a class="bog-tabbar__item" href="#" data-page="my-space">My Space</a>
+         <a class="bog-tabbar__item" href="#" data-page="payments" data-badge>Payments</a>
+         <a class="bog-tabbar__item" href="#" data-page="offers">Offers</a>
+         <a class="bog-tabbar__item" href="#" data-page="hub">Hub</a>
+       </div>
+     </nav>
+
+   Pages: home · my-space · payments · offers · hub · transactions (outline icon, filled when current).
+   aria-current="page" marks the selected tab; data-badge adds the red notification dot.
+   The floating glass pill sits 16px above the content and 25px above the home indicator.
+   bog-ui.js moves the selection on tap (links still navigate).
+   ========================================================================== */
+
+.bog-tabbar {
+  box-sizing: border-box;
+  width: 100%;
+  padding: var(--spacing-padding-default) var(--spacing-padding-large) 25px;
+  font-family: var(--font-family-bog);
+}
+/* Liquid Glass – Regular – Small: frosted white pill with a hairline edge */
+.bog-tabbar__bar {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 0 2px;
+  border-radius: var(--radius-full);
+}
+.bog-tabbar__bar::before {
+  content: "";
+  position: absolute;
+  inset: -4px;
+  border-radius: var(--radius-full);
+  background: rgba(247, 247, 247, 0.82);
+  box-shadow: 1.25px 0 0 -0.75px #d0d0d0, -1.25px 0 0 -0.75px #d0d0d0, 0 0 0 0.5px #e8e8e8, 0 8px 15px rgba(0, 0, 0, 0.02);
+  -webkit-backdrop-filter: blur(12px) saturate(1.4);
+          backdrop-filter: blur(12px) saturate(1.4);
+}
+.bog-tabbar[data-mode="dark"] .bog-tabbar__bar::before { background: rgba(205, 215, 208, 0.55); }
+
+.bog-tabbar__item {
+  --_icon: url("../icons/tabbar/home.svg");
+  position: relative;
+  display: flex;
+  flex: 1 1 0;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1px;
+  min-width: 0;
+  margin-right: -8px;
+  padding: var(--spacing-padding-m-small, 6px) var(--spacing-padding-small) 7px;
+  color: var(--text-black);
+  font-size: 8px;
+  line-height: 12px;
+  font-weight: 500;
+  letter-spacing: -0.1px;
+  text-align: center;
+  text-decoration: none;
+  white-space: nowrap;
+  -webkit-tap-highlight-color: transparent;
+}
+.bog-tabbar__item:last-child { margin-right: 0; }
+.bog-tabbar__item::before {
+  content: "";
+  flex: none;
+  width: 24px;
+  height: 24px;
+  background-color: currentColor;
+  -webkit-mask: var(--_icon) center / contain no-repeat;
+          mask: var(--_icon) center / contain no-repeat;
+}
+/* Selection pill behind the current tab */
+.bog-tabbar__item[aria-current="page"] { font-weight: 600; }
+.bog-tabbar__item[aria-current="page"]::after {
+  content: "";
+  position: absolute;
+  inset: 0 -2px;
+  z-index: -1;
+  border-radius: 100px;
+  background: #ededed;
+}
+.bog-tabbar__item { z-index: 0; isolation: isolate; }
+.bog-tabbar[data-mode="dark"] .bog-tabbar__item[aria-current="page"]::after { background: #ffffff; }
+/* Notification dot */
+.bog-tabbar__item[data-badge] { background-image: radial-gradient(circle, var(--status-error-02) 3.5px, transparent 3.6px); background-repeat: no-repeat; background-size: 7px 7px; background-position: right 17px top 6px; }
+
+/* Icons: outline, filled when current (Payments has one icon) */
+.bog-tabbar__item[data-page="home"]                          { --_icon: url("../icons/tabbar/home.svg"); }
+.bog-tabbar__item[data-page="home"][aria-current="page"]     { --_icon: url("../icons/tabbar/home-fill.svg"); }
+.bog-tabbar__item[data-page="my-space"]                      { --_icon: url("../icons/tabbar/products.svg"); }
+.bog-tabbar__item[data-page="my-space"][aria-current="page"] { --_icon: url("../icons/tabbar/products-fill.svg"); }
+.bog-tabbar__item[data-page="payments"]                      { --_icon: url("../icons/tabbar/payment.svg"); }
+.bog-tabbar__item[data-page="offers"]                        { --_icon: url("../icons/tabbar/offer.svg"); }
+.bog-tabbar__item[data-page="offers"][aria-current="page"]   { --_icon: url("../icons/tabbar/offer-fill.svg"); }
+.bog-tabbar__item[data-page="hub"]                           { --_icon: url("../icons/tabbar/dashboard.svg"); }
+.bog-tabbar__item[data-page="hub"][aria-current="page"]      { --_icon: url("../icons/tabbar/dashboard-fill.svg"); }
+.bog-tabbar__item[data-page="transactions"]                  { --_icon: url("../icons/tabbar/pfm.svg"); }
+.bog-tabbar__item[data-page="transactions"][aria-current="page"] { --_icon: url("../icons/tabbar/pfm-fill.svg"); }

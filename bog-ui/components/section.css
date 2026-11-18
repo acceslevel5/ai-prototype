@@ -1,0 +1,76 @@
+/* ==========================================================================
+   BOG UI — Section, Section Page, Widget (BETA)
+   Figma: Section Page (67525:40008) · _SECTION (44297:19894) · _SectionHeader Small (71165:5328)
+          · _SectionHeader Medium (71166:468) · Widget (BETA) (71171:6571) · _Footer (71155:623)
+
+   Section — a header and its content (list items, cards, chips…):
+     <section class="bog-section">                                 data-size="small" (14px title) · data-state="skeleton"
+       <header class="bog-section__header">
+         <a class="bog-section__heading" href="#">                  <div> when not interactive; <a> adds the chevron
+           <h2 class="bog-section__title">Added cards <span class="bog-badge-dot"></span></h2>   dot optional
+           <p class="bog-section__desc">Description</p>             optional
+         </a>
+         <button class="bog-btn" data-type="neutral" data-size="small">Button</button>   optional slot
+       </header>
+       <div class="bog-section__content">…</div>
+     </section>
+
+   Section Page — sections 32px apart, 16px from the screen edges:
+     <main class="bog-section-page"> <section class="bog-section">…</section> … </main>
+
+   Widget (BETA) — a white card on the home screen, a section with an optional footer button:
+     <article class="bog-widget"> <header class="bog-section__header">…</header>
+       <div class="bog-widget__content">…</div>
+       <footer class="bog-widget__footer"><a class="bog-btn" data-type="neutral" data-size="small" data-width="fill">See all</a></footer>
+     </article>
+   ========================================================================== */
+
+.bog-section { display: flex; flex-direction: column; gap: var(--spacing-gap-default); font-family: var(--font-family-bog); }
+.bog-section__header { display: flex; align-items: center; gap: var(--spacing-gap-medium); min-height: 42px; }
+.bog-section__heading { display: flex; flex: 1 1 auto; flex-direction: column; gap: var(--spacing-gap-x-small); min-width: 0; color: inherit; text-decoration: none; -webkit-tap-highlight-color: transparent; }
+.bog-section__title {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-gap-x-small);
+  margin: 0;
+  color: var(--text-primary);
+  font-size: 17px;
+  line-height: 20px;
+  font-weight: 600;
+}
+.bog-section[data-size="small"] .bog-section__title { font-size: 14px; }
+.bog-section__title > .bog-badge-dot { position: static; }
+a.bog-section__heading .bog-section__title::after {
+  content: "";
+  flex: none;
+  width: 16px;
+  height: 16px;
+  background: var(--icon-primary);
+  -webkit-mask: url("../icons/chevron-right.svg") center / contain no-repeat;
+          mask: url("../icons/chevron-right.svg") center / contain no-repeat;
+}
+a.bog-section__heading:active { opacity: 0.6; }
+.bog-section__desc { margin: 0; color: var(--text-secondary); font-size: var(--body-small-size); line-height: var(--body-small-line-height); font-weight: var(--body-small-weight); }
+.bog-section__content { display: flex; flex-direction: column; gap: var(--spacing-gap-medium); }
+/* Skeleton: two bars instead of the header */
+.bog-section[data-state="skeleton"] .bog-section__header > * { visibility: hidden; }
+.bog-section[data-state="skeleton"] .bog-section__header { background: linear-gradient(var(--support-skeleton) 0 0) 0 6px / 96px 12px no-repeat, linear-gradient(var(--support-skeleton) 0 0) 0 26px / 154px 8px no-repeat; }
+
+.bog-section-page { display: flex; flex-direction: column; gap: 32px; box-sizing: border-box; padding: var(--spacing-padding-large) var(--spacing-padding-default) 32px; }
+
+.bog-widget {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border-radius: 24px;
+  background: var(--layer-layer-01);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.06), 0 10px 15px rgba(0, 0, 0, 0.06);
+  font-family: var(--font-family-bog);
+}
+.bog-widget > .bog-section__header { padding: var(--spacing-padding-default) var(--spacing-padding-default) 0; }
+.bog-widget__content { display: flex; flex-direction: column; gap: var(--spacing-gap-default); padding: var(--spacing-padding-default); }
+.bog-widget__footer { padding: 0 var(--spacing-padding-default) var(--spacing-padding-default); }
+.bog-widget[data-state="skeleton"] > .bog-section__header > * { visibility: hidden; }
+.bog-widget[data-state="skeleton"] > .bog-section__header { background: linear-gradient(var(--support-skeleton) 0 0) 16px 22px / 96px 12px no-repeat, linear-gradient(var(--support-skeleton) 0 0) 16px 42px / 154px 8px no-repeat; }
+.bog-widget[data-state="skeleton"] .bog-widget__content > * { visibility: hidden; }
+.bog-widget[data-state="skeleton"] .bog-widget__footer .bog-btn { color: transparent; background: var(--support-skeleton); pointer-events: none; }

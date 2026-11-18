@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OTP Verification — BOG UI</title>
+<link rel="stylesheet" href="../bog-ui.css">
+<link rel="stylesheet" href="docs.css">
+<script src="theme.js"></script>
+<script src="../bog-ui.js" defer></script>
+<script src="components.js" defer></script>
+<style>.dx small{display:block;margin:0 0 8px;color:var(--docs-muted);font-size:11px}.dx{display:grid;gap:24px}.dx-panel{font-family:var(--font-family-bog);font-size:14px;line-height:20px;color:var(--text-primary);padding:16px 4px}</style>
+</head>
+<body>
+<div class="docs">
+  <aside class="docs-nav">
+    <a class="docs-nav__brand" href="../index.html">BOG UI</a>
+    <nav id="bog-nav" data-current="otp"></nav>
+  </aside>
+  <main class="docs-main">
+    <header><h1>OTP Verification</h1><a class="figma" id="figma-link" href="#" target="_blank" rel="noopener">Open in Figma ↗</a></header>
+    <p class="lead">The one-time-code step: choose where to get the code (SMS or Email), type it, see where it went, and wait out the countdown before asking for a new one. States: counting down, sending (loading), expired, and ready to resend. Without the selector it's the "Hard" version — just the field and the message.</p>
+    <h2>Usage</h2>
+    <pre><code>&lt;div class="bog-otp"&gt;                                     &lt;!-- data-state="loading | expired" · data-appearance="inverse" --&gt;
+  &lt;fieldset class="bog-radio-group" data-direction="horizontal" data-deselectable="false"&gt;…SMS / Email…&lt;/fieldset&gt;
+  &lt;div class="bog-field"&gt;…&lt;input class="bog-field__input" inputmode="numeric" maxlength="4"&gt;…&lt;/div&gt;
+  &lt;div class="bog-otp__info"&gt;
+    &lt;p class="bog-otp__sent"&gt;We've sent a verification code to ••• •• 56 78&lt;/p&gt;
+    &lt;p class="bog-otp__expired"&gt;This verification code has expired&lt;/p&gt;
+    &lt;p class="bog-otp__timer" data-otp-timer="35"&gt;Resend code in &lt;b&gt;00:35&lt;/b&gt;&lt;/p&gt;
+    &lt;button type="button" class="bog-otp__resend"&gt;Resend code&lt;/button&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+    <h2>Try it</h2>
+    <p class="lead">The countdown is 10 seconds here; then Resend becomes active.</p>
+    <div class="panel"><div style="width:326px" id="otp-try"></div></div>
+    <h2>States</h2>
+    <div class="panel"><div style="display:grid;grid-template-columns:repeat(auto-fill,326px);gap:40px" id="otp-grid"></div></div>
+<script>
+  let n = 0;
+  const otp = (o = {}) => {
+    const name = "otp" + n++;
+    return `<div class="bog-otp"${o.state ? ` data-state="${o.state}"` : ""}>` +
+      (o.selector === false ? "" : `<fieldset class="bog-radio-group" data-direction="horizontal" data-deselectable="false"><legend class="bog-radio-group__label">Where should we send the verification code?</legend><div class="bog-radio-group__options">` +
+        ["SMS", "Email"].map((t, i) => `<label class="bog-radio"><span class="bog-radio__row"><input type="radio" class="bog-radio__input" name="${name}"${i === 0 ? " checked" : ""}${o.state === "loading" && i === 0 ? "" : ""}><span class="bog-radio__text"><span class="bog-radio__title">${t}</span></span></span></label>`).join("") + "</div></fieldset>") +
+      `<div class="bog-field"><label class="bog-field__box"><span class="bog-field__text"><span class="bog-field__label">Enter 4-digit code</span><input class="bog-field__input" inputmode="numeric" maxlength="4" placeholder=" "></span></label></div>` +
+      `<div class="bog-otp__info"><p class="bog-otp__sent">We've sent a verification code to ••• •• 56 78</p><p class="bog-otp__expired">This verification code has expired</p>` +
+      (o.timer === false ? "" : `<p class="bog-otp__timer"${o.live ? ` data-otp-timer="${o.live}"` : ""}>Resend code in <b>00:35</b></p>`) +
+      (o.resend === false ? "" : `<button type="button" class="bog-otp__resend"${o.resendOff ? " disabled" : ""}>Resend code</button>`) + "</div></div>";
+  };
+  document.getElementById("otp-try").innerHTML = otp({ live: 10, resendOff: 1 });
+  const lab = (t, h) => `<div><small style="display:block;margin-bottom:12px;color:var(--docs-muted);font-size:11px">${t}</small>${h}</div>`;
+  document.getElementById("otp-grid").innerHTML =
+    lab("Default — counting down", otp({ resend: false })) + lab("Loading — sending the code", otp({ state: "loading", resendOff: 1 })) +
+    lab("Expired", otp({ state: "expired", timer: false })) + lab("Resend", otp({})) +
+    lab("Hard — no selector", otp({ selector: false, timer: false, resend: false })) + lab("Skeleton", '<div style="display:flex;flex-direction:column;gap:12px"><span class="bog-skeleton-text"></span><div style="display:flex;gap:16px"><span class="bog-skeleton-text" style="width:120px"></span><span class="bog-skeleton-text" style="width:120px"></span></div><span class="bog-skeleton" style="width:100%;height:56px;border-radius:12px"></span><span class="bog-skeleton-text" style="width:120px"></span><span class="bog-skeleton-text" style="width:90px"></span></div>');
+</script>
+  </main>
+</div>
+</body>
+</html>

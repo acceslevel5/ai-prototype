@@ -1,0 +1,95 @@
+/* ==========================================================================
+   BOG UI — Data Visualization: Donut Chart, Card Chart, Sparkline
+   Figma: Donut Chart (60325:10457) · Card Chart (60325:10608) · _Sparkline chart (53111:758)
+
+   Donut — bog-ui.js draws the ring from data-values:
+     <div class="bog-donut" data-values="25,16,3,3,13,12,24" aria-label="Spending by category">
+       <div class="bog-donut__center"><span class="bog-donut__label">Spent</span><span class="bog-donut__value">124.00 ₾</span></div>
+     </div>
+     data-size    large (240, default) | mini (60)
+     data-max     a target: below it the rest is a dashed red outline (Incomplete); above it the extra
+                  is hatched red with a tick at 100 % (Overflow); equal is Complete (green value)
+     data-colors  CSS colours, comma separated (default: the Categorical palette in order)
+     data-labels  labels shown in badges beside the segments, comma separated (Data Labels)
+     data-selectable  tap a segment to select it (it thickens, the others fade); fires "segmentselect"
+   Empty (no values / all 0): a grey ring.
+
+   Card Chart:
+     <div class="bog-chart-card"><div class="bog-donut" data-size="mini" data-values="…" data-max="100">…</div>
+       <div class="bog-chart-card__text"><p class="bog-chart-card__title">Incomplete</p><p class="bog-chart-card__desc">…</p></div></div>
+
+   Sparkline — <svg class="bog-sparkline" data-values="3,5,5,8,10,9,7,9,4,2,1"></svg>   data-trend="negative" turns it red
+   ========================================================================== */
+
+.bog-donut {
+  /* Data Visualization/Categorical tokens (tokens-colors.css) */
+  --dv-01: var(--data-visualization-categorical-01); --dv-02: var(--data-visualization-categorical-02); --dv-03: var(--data-visualization-categorical-03); --dv-05: var(--data-visualization-categorical-05); --dv-06: var(--data-visualization-categorical-06); --dv-07: var(--data-visualization-categorical-07);
+  --dv-08: var(--data-visualization-categorical-08); --dv-09: var(--data-visualization-categorical-09); --dv-10: var(--data-visualization-categorical-10); --dv-15: var(--data-visualization-categorical-15); --dv-17: var(--data-visualization-categorical-17); --dv-18: var(--data-visualization-categorical-18);
+  --_d: 240px;
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  width: var(--_d);
+  height: var(--_d);
+  font-family: var(--font-family-bog);
+}
+.bog-donut[data-size="mini"] { --_d: 60px; }
+.bog-donut > svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+.bog-donut__rail { fill: var(--layer-alpha-03); }
+.bog-donut__seg { transition: opacity 200ms ease, d 250ms cubic-bezier(0.33, 0, 0.13, 1); cursor: default; }
+.bog-donut[data-selectable] .bog-donut__seg { cursor: pointer; }
+.bog-donut[data-selected] .bog-donut__seg:not([data-on]) { opacity: 0.35; }
+.bog-donut__rest { fill: none; stroke: var(--border-error); stroke-width: 0.8; stroke-dasharray: 2 2; vector-effect: none; }
+.bog-donut__over { stroke: var(--border-inverse-primary, #f4f4f4); stroke-width: 1.2; }
+.bog-donut__tick { stroke: var(--border-error); stroke-width: 1.2; }
+.bog-donut__center { position: relative; display: flex; flex-direction: column; align-items: center; max-width: 68%; text-align: center; }
+.bog-donut__label { color: var(--text-secondary); font-size: var(--body-large-size, 16px); line-height: var(--body-large-line-height, 20px); font-weight: 500; }
+.bog-donut__value { color: var(--text-primary); font-size: 18px; line-height: 24px; font-weight: 600; }
+.bog-donut__center > :first-child:is(.bog-donut__value) + .bog-donut__label { order: 1; }
+.bog-donut[data-size="mini"] .bog-donut__center { max-width: 70%; }
+.bog-donut[data-size="mini"] .bog-donut__value { font-size: 11px; line-height: 16px; font-weight: 700; }
+.bog-donut[data-size="mini"] .bog-donut__label { display: none; }
+.bog-donut:is([data-status="incomplete"], [data-status="overflow"], [data-status="empty"]) .bog-donut__value { color: var(--text-error); }
+.bog-donut[data-status="complete"] .bog-donut__value { color: var(--text-success); }
+/* Data labels: grey badges around the ring */
+.bog-donut__tag {
+  position: absolute;
+  translate: -50% -50%;
+  padding: 4px 8px;
+  border-radius: var(--radius-full);
+  background: var(--support-alpha-01);
+  color: var(--text-black);
+  font-size: var(--label-small-size);
+  line-height: var(--label-small-line-height);
+  font-weight: var(--label-small-weight);
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+/* Card Chart */
+.bog-chart-card {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-gap-default);
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 343px;
+  padding: var(--spacing-padding-default);
+  border: 1px solid var(--border-border-03);
+  border-radius: var(--radius-default);
+  font-family: var(--font-family-bog);
+}
+.bog-chart-card__text { display: flex; flex: 1 1 auto; flex-direction: column; gap: 2px; min-width: 0; }
+.bog-chart-card__text > p { margin: 0; }
+.bog-chart-card__title { color: var(--text-primary); font-size: var(--label-large-size); line-height: var(--label-large-line-height); font-weight: var(--label-large-weight); }
+.bog-chart-card__desc { color: var(--text-secondary); font-size: var(--body-small-size); line-height: var(--body-small-line-height); font-weight: var(--body-small-weight); }
+.bog-chart-card:has(.bog-donut:is([data-status="incomplete"], [data-status="overflow"])) .bog-chart-card__title { color: var(--text-error); }
+.bog-chart-card .bog-donut[data-status="incomplete"] .bog-donut__value { color: var(--text-primary); }
+
+/* Sparkline */
+.bog-sparkline { --_c: #4fd155;   /* Figma: sparkline green */ display: block; width: 228px; height: 144px; overflow: visible; }
+.bog-sparkline[data-trend="negative"] { --_c: var(--data-visualization-categorical-01); }
+.bog-sparkline .bog-sparkline__line { fill: none; stroke: var(--_c); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; vector-effect: non-scaling-stroke; }
+.bog-sparkline .bog-sparkline__area { fill: var(--_c); fill-opacity: 0.1; -webkit-mask: linear-gradient(#000 40%, transparent); mask: linear-gradient(#000 40%, transparent); }
+@media (prefers-reduced-motion: reduce) { .bog-donut__seg { transition: none; } }

@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>File uploader — BOG UI</title>
+<link rel="stylesheet" href="../bog-ui.css">
+<link rel="stylesheet" href="docs.css">
+<script src="theme.js"></script>
+<script src="../bog-ui.js" defer></script>
+<script src="components.js" defer></script>
+<style>.dx small{display:block;margin:0 0 8px;color:var(--docs-muted);font-size:11px}.dx{display:grid;gap:24px}.dx-panel{font-family:var(--font-family-bog);font-size:14px;line-height:20px;color:var(--text-primary);padding:16px 4px}</style>
+</head>
+<body>
+<div class="docs">
+  <aside class="docs-nav">
+    <a class="docs-nav__brand" href="../index.html">BOG UI</a>
+    <nav id="bog-nav" data-current="file-uploader"></nav>
+  </aside>
+  <main class="docs-main">
+    <header><h1>File uploader</h1><a class="figma" id="figma-link" href="#" target="_blank" rel="noopener">Open in Figma ↗</a></header>
+    <p class="lead">Adds several files of one kind for one purpose — receipts for an insurance claim. It shows the limits first, then lists each file with its progress, result and × to remove it; a failed file gets Retry. Rows come in Default, Media (with a thumbnail) and Compact. For named documents with their own rules, use File Attachment.</p>
+    <h2>Usage</h2>
+    <pre><code>&lt;div class="bog-uploader"&gt;                                    &lt;!-- data-state="error | skeleton" · data-disabled --&gt;
+  &lt;p class="bog-uploader__title"&gt;Upload files&lt;/p&gt;
+  &lt;p class="bog-uploader__limits"&gt;Max file size: 10 MB • Up to 5 files&lt;/p&gt;
+  &lt;button class="bog-btn" data-type="neutral" data-size="small" data-width="fill"&gt;&lt;span class="bog-icon" data-icon="upload"&gt;&lt;/span&gt;Add file&lt;/button&gt;
+  &lt;p class="bog-uploader__message"&gt;Add at least one receipt to continue&lt;/p&gt;
+  &lt;ul class="bog-uploader__files"&gt;                             &lt;!-- data-type="compact" --&gt;
+    &lt;li class="bog-file" data-state="loading" style="--value: 40%"&gt;
+      &lt;span class="bog-file__info"&gt;&lt;span class="bog-file__name"&gt;receipt.pdf&lt;/span&gt;&lt;span class="bog-file__bar"&gt;&lt;/span&gt;&lt;span class="bog-file__size"&gt;3.4 MB&lt;/span&gt;&lt;/span&gt;
+      &lt;button class="bog-file__remove" aria-label="Remove receipt.pdf"&gt;&lt;/button&gt;
+    &lt;/li&gt;
+    &lt;li class="bog-file" data-state="success"&gt;…&lt;span class="bog-file__status"&gt;Uploaded&lt;/span&gt;…&lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/div&gt;</code></pre>
+    <h2>Try it</h2>
+    <p class="lead">Add file simulates an upload; the third one fails.</p>
+    <div class="panel"><div style="width:360px" id="fu-try"></div></div>
+    <h2>States</h2>
+    <div class="panel"><div style="display:grid;grid-template-columns:repeat(auto-fill,360px);gap:24px" id="fu-grid"></div></div>
+    <h2>File rows</h2>
+    <div class="panel"><div style="display:grid;grid-template-columns:repeat(auto-fill,360px);gap:24px" id="fu-rows"></div></div>
+<script>
+  const row = (st, o = {}) => `<li class="bog-file" data-state="${st}"${st === "loading" ? ` style="--value:${o.v || 40}%"` : ""}>` + (o.media ? '<span class="bog-file__thumb"></span>' : "") +
+    `<span class="bog-file__info"><span class="bog-file__name">${o.name || "Filename.doc"}</span><span class="bog-file__bar"></span><span class="bog-file__size">3.4 MB</span>` +
+    (st === "loading" ? "" : `<span class="bog-file__status">${o.msg || "Message text"}</span>`) +
+    (st === "warning" ? '<span class="bog-file__note">There is not enough information in the file. Please correct the file contents and upload again.</span><button class="bog-btn" data-type="text-primary" data-size="small" style="padding:0;text-decoration:underline">Button</button>' : "") + "</span>" +
+    (st === "error" ? `<button class="bog-file__retry" aria-label="Retry ${o.name || "Filename.doc"}"></button>` : "") + `<button class="bog-file__remove" aria-label="Remove ${o.name || "Filename.doc"}"></button></li>`;
+  const up = (o = {}) => `<div class="bog-uploader"${o.st ? ` data-state="${o.st}"` : ""}${o.dis ? " data-disabled" : ""}><p class="bog-uploader__title">Upload files</p><p class="bog-uploader__limits">Max file size: 10 MB • Up to 5 files</p>` +
+    `<button class="bog-btn" data-type="neutral" data-size="small" data-width="fill"${o.dis ? " disabled" : ""}><span class="bog-icon" data-icon="upload"></span>Add file</button><p class="bog-uploader__message">${o.msg || "Message text"}</p><ul class="bog-uploader__files"${o.type ? ` data-type="${o.type}"` : ""}>${o.files || ""}</ul></div>`;
+  const lab = (t, h) => `<div><small style="display:block;margin-bottom:8px;color:var(--docs-muted);font-size:11px">${t}</small>${h}</div>`;
+  document.getElementById("fu-grid").innerHTML = lab("Default", up()) + lab("With files", up({ files: row("loading") + row("success") + row("success") })) + lab("Error", up({ st: "error" })) + lab("Disabled", up({ dis: 1 })) + lab("Skeleton", up({ st: "skeleton" }));
+  const STS = ["loading", "success", "info", "error", "warning"];
+  document.getElementById("fu-rows").innerHTML = lab("Default", `<ul class="bog-uploader__files" style="margin:0">${STS.map((s) => row(s)).join("")}</ul>`) +
+    lab("Media", `<ul class="bog-uploader__files" style="margin:0">${STS.map((s) => row(s, { media: 1 })).join("")}</ul>`) +
+    lab("Compact (Infinite)", `<ul class="bog-uploader__files" data-type="compact" style="margin:0">${["loading", "success", "error"].map((s) => row(s)).join("")}</ul>`);
+  // Try it: fake uploads
+  const tryEl = document.getElementById("fu-try"); tryEl.innerHTML = up({ msg: "Add at least one receipt to continue" });
+  const box = tryEl.querySelector(".bog-uploader"), list = box.querySelector(".bog-uploader__files"); let k = 0;
+  box.querySelector(".bog-btn").addEventListener("click", () => {
+    if (list.children.length >= 5) return;
+    box.removeAttribute("data-state"); k++; const bad = k % 3 === 0;
+    const name = `receipt_${k}.pdf`; list.insertAdjacentHTML("beforeend", row("loading", { name, v: 0 }));
+    const li = list.lastElementChild; let v = 0;
+    const t = setInterval(() => {
+      v += 20; li.style.setProperty("--value", v + "%");
+      if (v >= 100) { clearInterval(t); li.dataset.state = bad ? "error" : "success";
+        li.querySelector(".bog-file__info").insertAdjacentHTML("beforeend", `<span class="bog-file__status">${bad ? "Upload failed. Check your connection and retry" : "Uploaded"}</span>`);
+        if (bad) li.querySelector(".bog-file__remove").insertAdjacentHTML("beforebegin", `<button class="bog-file__retry" aria-label="Retry ${name}"></button>`); }
+    }, 300);
+  });
+  list.addEventListener("fileremove", () => setTimeout(() => { if (!list.children.length) box.dataset.state = "error"; }));
+</script>
+  </main>
+</div>
+</body>
+</html>

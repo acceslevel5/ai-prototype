@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Discovery Card — BOG UI</title>
+<link rel="stylesheet" href="../bog-ui.css">
+<link rel="stylesheet" href="docs.css">
+<script src="theme.js"></script>
+<script src="../bog-ui.js" defer></script>
+<script src="components.js" defer></script>
+<style>.dx small{display:block;margin:0 0 8px;color:var(--docs-muted);font-size:11px}.dx{display:grid;gap:24px}.dx-panel{font-family:var(--font-family-bog);font-size:14px;line-height:20px;color:var(--text-primary);padding:16px 4px}</style>
+</head>
+<body>
+<div class="docs">
+  <aside class="docs-nav">
+    <a class="docs-nav__brand" href="../index.html">BOG UI</a>
+    <nav id="bog-nav" data-current="discovery-card"></nav>
+  </aside>
+  <main class="docs-main">
+    <header><h1>Discovery Card</h1><a class="figma" id="figma-link" href="#" target="_blank" rel="noopener">Open in Figma ↗</a></header>
+    <p class="lead">A picture with a short title, in a row that scrolls sideways — stories, guides or offers to explore. Ones users have already opened fade to Seen, so the new ones stand out.</p>
+    <h2>Usage</h2>
+    <pre><code>&lt;div class="bog-discovery"&gt;
+  &lt;a class="bog-discovery__card" href="…"&gt;                   &lt;!-- data-seen · data-state="skeleton" --&gt;
+    &lt;span class="bog-discovery__media"&gt;&lt;img src="…" alt=""&gt;&lt;/span&gt;
+    &lt;span class="bog-discovery__title"&gt;Card Title&lt;/span&gt;
+  &lt;/a&gt;
+&lt;/div&gt;</code></pre>
+    <h2>Group</h2>
+    <p class="lead">Tap a card — it turns to Seen.</p>
+    <div class="panel"><div class="bog-discovery" id="disc" style="width:375px;padding:0 16px;box-sizing:border-box"><a class="bog-discovery__card" href="#" onclick="return false"><span class="bog-discovery__media"></span><span class="bog-discovery__title">Travel insurance in a minute</span></a><a class="bog-discovery__card" href="#" onclick="return false"><span class="bog-discovery__media"></span><span class="bog-discovery__title">How cashback works</span></a><a class="bog-discovery__card" href="#" onclick="return false"><span class="bog-discovery__media"></span><span class="bog-discovery__title">Split the bill</span></a><a class="bog-discovery__card" href="#" onclick="return false" data-seen><span class="bog-discovery__media"></span><span class="bog-discovery__title">Your year in numbers</span></a><a class="bog-discovery__card" href="#" onclick="return false" data-seen><span class="bog-discovery__media"></span><span class="bog-discovery__title">Save with goals</span></a></div></div>
+    <h2>States</h2>
+    <div class="panel" style="display:flex;gap:16px;flex-wrap:wrap;align-items:flex-start">
+      <div><small style="display:block;margin:0 0 8px;color:var(--docs-muted);font-size:11px">Default</small><a class="bog-discovery__card" href="#" onclick="return false"><span class="bog-discovery__media"></span><span class="bog-discovery__title">Card Title</span></a></div><div><small style="display:block;margin:0 0 8px;color:var(--docs-muted);font-size:11px">Pressed</small><a class="bog-discovery__card" href="#" onclick="return false" data-pressed><span class="bog-discovery__media"></span><span class="bog-discovery__title">Card Title</span></a></div><div><small style="display:block;margin:0 0 8px;color:var(--docs-muted);font-size:11px">Seen</small><a class="bog-discovery__card" href="#" onclick="return false" data-seen><span class="bog-discovery__media"></span><span class="bog-discovery__title">Card Title</span></a></div><div><small style="display:block;margin:0 0 8px;color:var(--docs-muted);font-size:11px">Skeleton</small><a class="bog-discovery__card" href="#" onclick="return false" data-state="skeleton"><span class="bog-discovery__media"></span><span class="bog-discovery__title">Card Title</span></a></div>
+    </div>
+<script>document.getElementById("disc").addEventListener("click", (e) => { const c = e.target.closest(".bog-discovery__card"); if (c) c.setAttribute("data-seen", ""); });</script>
+  </main>
+</div>
+</body>
+</html>

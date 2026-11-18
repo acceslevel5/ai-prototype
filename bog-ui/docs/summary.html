@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Summary — BOG UI</title>
+<link rel="stylesheet" href="../bog-ui.css">
+<link rel="stylesheet" href="docs.css">
+<script src="theme.js"></script>
+<script src="../bog-ui.js" defer></script>
+<script src="components.js" defer></script>
+<style>.dx small{display:block;margin:0 0 8px;color:var(--docs-muted);font-size:11px}.dx{display:grid;gap:24px}.dx-panel{font-family:var(--font-family-bog);font-size:14px;line-height:20px;color:var(--text-primary);padding:16px 4px}</style>
+</head>
+<body>
+<div class="docs">
+  <aside class="docs-nav">
+    <a class="docs-nav__brand" href="../index.html">BOG UI</a>
+    <nav id="bog-nav" data-current="summary"></nav>
+  </aside>
+  <main class="docs-main">
+    <header><h1>Summary</h1><a class="figma" id="figma-link" href="#" target="_blank" rel="noopener">Open in Figma ↗</a></header>
+    <p class="lead">A card of the details users check before they confirm a transfer or a payment: each row a title and a value, with optional secondary text, a helper message and a slot on the right for an info icon, a flag or a card. Helper messages show a problem (negative), something to check (warning) or good news (positive).</p>
+    <h2>Usage</h2>
+    <pre><code>&lt;dl class="bog-summary"&gt;                                      &lt;!-- data-state="skeleton" --&gt;
+  &lt;div class="bog-summary__item"&gt;
+    &lt;dt class="bog-summary__title"&gt;Transfer fee&lt;/dt&gt;
+    &lt;dd class="bog-summary__value"&gt;1.00 ₾&lt;/dd&gt;
+    &lt;dd class="bog-summary__secondary"&gt;Charged by the receiving bank&lt;/dd&gt;     &lt;!-- optional --&gt;
+    &lt;dd class="bog-summary__helper"&gt;&lt;span class="bog-inline-message" data-size="small" data-status="negative"&gt;…&lt;/span&gt;&lt;/dd&gt;
+    &lt;dd class="bog-summary__slot"&gt;…tooltip, flag or card…&lt;/dd&gt;             &lt;!-- optional --&gt;
+  &lt;/div&gt;
+&lt;/dl&gt;</code></pre>
+    <h2>Example — a transfer</h2>
+    <div class="panel" style="display:flex;gap:24px;flex-wrap:wrap;align-items:flex-start">
+      <dl class="bog-summary" style="width:343px">
+        <div class="bog-summary__item"><dt class="bog-summary__title">From</dt><dd class="bog-summary__value">Visa Gold •••• 7348</dd><dd class="bog-summary__secondary">Balance 1,240.00 ₾</dd><dd class="bog-summary__slot"><span class="bog-card-art" data-size="24"></span></dd></div>
+        <div class="bog-summary__item"><dt class="bog-summary__title">Recipient country</dt><dd class="bog-summary__value">Switzerland</dd><dd class="bog-summary__slot"><span class="bog-flag" data-size="24"><img src="../assets/flags/ch.svg" alt=""></span></dd></div>
+        <div class="bog-summary__item"><dt class="bog-summary__title">Amount</dt><dd class="bog-summary__value">500.00 ₾</dd></div>
+        <div class="bog-summary__item"><dt class="bog-summary__title">Transfer fee</dt><dd class="bog-summary__value">1.00 ₾</dd><dd class="bog-summary__slot"><span class="bog-tooltip" data-align="right"><button class="bog-tooltip__trigger" aria-label="More about the fee" aria-expanded="false"></button><span class="bog-tooltip__bubble" role="tooltip">The receiving bank may charge more</span></span></dd></div>
+        <div class="bog-summary__item"><dt class="bog-summary__title">Total</dt><dd class="bog-summary__value">501.00 ₾</dd><dd class="bog-summary__helper"><span class="bog-inline-message" data-size="small" data-status="positive">No fee for transfers over 100 ₾ this month</span></dd></div>
+      </dl>
+      <dl class="bog-summary" data-state="skeleton" style="width:343px"><div class="bog-summary__item"><dt class="bog-summary__title">a</dt><dd class="bog-summary__value">b</dd></div><div class="bog-summary__item"><dt class="bog-summary__title">a</dt><dd class="bog-summary__value">b</dd></div><div class="bog-summary__item"><dt class="bog-summary__title">a</dt><dd class="bog-summary__value">b</dd></div><div class="bog-summary__item"><dt class="bog-summary__title">a</dt><dd class="bog-summary__value">b</dd></div><div class="bog-summary__item"><dt class="bog-summary__title">a</dt><dd class="bog-summary__value">b</dd></div></dl>
+    </div>
+    <h2>Row statuses</h2>
+    <div class="panel"><dl class="bog-summary" style="width:343px">
+      <div class="bog-summary__item"><dt class="bog-summary__title">Summary title</dt><dd class="bog-summary__value">0.00 ₾</dd></div>
+      <div class="bog-summary__item"><dt class="bog-summary__title">Summary title</dt><dd class="bog-summary__value">0.00 ₾</dd><dd class="bog-summary__helper"><span class="bog-inline-message" data-size="small" data-status="negative">Message text</span></dd></div>
+      <div class="bog-summary__item"><dt class="bog-summary__title">Summary title</dt><dd class="bog-summary__value">0.00 ₾</dd><dd class="bog-summary__helper"><span class="bog-inline-message" data-size="small" data-status="positive">Message text</span></dd></div>
+      <div class="bog-summary__item"><dt class="bog-summary__title">Summary title</dt><dd class="bog-summary__value">0.00 ₾</dd><dd class="bog-summary__helper"><span class="bog-inline-message" data-size="small" data-status="warning">Message text</span></dd></div>
+      <div class="bog-summary__item"><dt class="bog-summary__title">Summary title</dt><dd class="bog-summary__value">0.00 ₾</dd><dd class="bog-summary__secondary">Secondary text</dd></div>
+      <div class="bog-summary__item" data-state="skeleton"><dt class="bog-summary__title">Summary title</dt><dd class="bog-summary__value">0.00 ₾</dd></div>
+    </dl></div>
+  </main>
+</div>
+</body>
+</html>

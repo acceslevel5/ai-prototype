@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PIN code Input — BOG UI</title>
+<link rel="stylesheet" href="../bog-ui.css">
+<link rel="stylesheet" href="docs.css">
+<script src="theme.js"></script>
+<script src="../bog-ui.js" defer></script>
+<script src="components.js" defer></script>
+<style>.dx small{display:block;margin:0 0 8px;color:var(--docs-muted);font-size:11px}.dx{display:grid;gap:24px}.dx-panel{font-family:var(--font-family-bog);font-size:14px;line-height:20px;color:var(--text-primary);padding:16px 4px}</style>
+</head>
+<body>
+<div class="docs">
+  <aside class="docs-nav">
+    <a class="docs-nav__brand" href="../index.html">BOG UI</a>
+    <nav id="bog-nav" data-current="pin"></nav>
+  </aside>
+  <main class="docs-main">
+    <header><h1>PIN code Input</h1><a class="figma" id="figma-link" href="#" target="_blank" rel="noopener">Open in Figma ↗</a></header>
+    <p class="lead">Asks for a short numeric PIN: a title, a helper line and one dot per digit that fills as users type — from the phone's keyboard or from Keyboard Numeric. Error turns the dots and the helper red and gives a short shake. Themed, White Static and Black Static.</p>
+    <h2>Usage</h2>
+    <pre><code>&lt;label class="bog-pin"&gt;                              &lt;!-- data-appearance="white | black" · data-state="error" --&gt;
+  &lt;span class="bog-pin__title"&gt;Enter your PIN&lt;/span&gt;
+  &lt;span class="bog-pin__helper"&gt;Please enter your 4-digit code&lt;/span&gt;
+  &lt;span class="bog-pin__dots"&gt;&lt;i&gt;&lt;/i&gt;&lt;i&gt;&lt;/i&gt;&lt;i&gt;&lt;/i&gt;&lt;i&gt;&lt;/i&gt;&lt;/span&gt;
+  &lt;input class="bog-pin__input" id="pin" type="password" inputmode="numeric" maxlength="4"&gt;
+&lt;/label&gt;
+&lt;script&gt;
+  pin.closest(".bog-pin").addEventListener("pincomplete", (e) =&gt; { /* check e.detail.value */ });
+&lt;/script&gt;</code></pre>
+    <h2>Try it</h2>
+    <p class="lead">Type with the keypad (or your keyboard). The right PIN is 1234 — anything else shows the error.</p>
+    <div class="panel"><div style="width:326px;display:flex;flex-direction:column;align-items:center;gap:24px">
+      <label class="bog-pin" id="pin-try"><span class="bog-pin__title">Enter your PIN</span><span class="bog-pin__helper">Please enter your 4-digit code</span><span class="bog-pin__dots"><i></i><i></i><i></i><i></i></span><input class="bog-pin__input" id="pin-in" type="password" inputmode="numeric" maxlength="4" aria-label="PIN"></label>
+      <div class="bog-keypad" data-for="pin-in"><button class="bog-keypad__key" value="1">1</button><button class="bog-keypad__key" value="2">2</button><button class="bog-keypad__key" value="3">3</button><button class="bog-keypad__key" value="4">4</button><button class="bog-keypad__key" value="5">5</button><button class="bog-keypad__key" value="6">6</button><button class="bog-keypad__key" value="7">7</button><button class="bog-keypad__key" value="8">8</button><button class="bog-keypad__key" value="9">9</button><button class="bog-keypad__key" data-key="face-id" aria-label="Face ID"></button><button class="bog-keypad__key" value="0">0</button><button class="bog-keypad__key" data-key="backspace" aria-label="Delete"></button></div>
+    </div></div>
+    <h2>States</h2>
+    <div class="panel"><div style="display:grid;grid-template-columns:repeat(3,264px);gap:32px 24px" id="pin-grid"></div></div>
+<script>
+  const pinEl = document.getElementById("pin-try"), pinIn = document.getElementById("pin-in");
+  pinEl.addEventListener("pincomplete", (e) => {
+    setTimeout(() => {
+      if (e.detail.value === "1234") { pinEl.querySelector(".bog-pin__helper").textContent = "PIN accepted"; return; }
+      pinEl.dataset.state = "error"; pinEl.querySelector(".bog-pin__helper").textContent = "Invalid PIN. Please try again";
+      pinIn.value = ""; pinEl.querySelectorAll("i").forEach((d) => d.removeAttribute("data-filled"));
+    }, 200);
+  });
+  pinIn.addEventListener("input", () => { if (pinIn.value.length === 1) pinEl.querySelector(".bog-pin__helper").textContent = "Please enter your 4-digit code"; });
+  const pin = (app, st) => `<div style="padding:16px;border-radius:12px;${app === "white" ? "background:#3b1f12" : app === "black" ? "background:#fde7d6" : ""}"><div class="bog-pin"${app ? ` data-appearance="${app}"` : ""}${st === "error" ? ' data-state="error"' : ""}><span class="bog-pin__title">Enter your PIN</span><span class="bog-pin__helper">${st === "error" ? "Invalid PIN. Please try again" : "Please enter your 4-digit code"}</span><span class="bog-pin__dots">${(st === "filled" ? "<i data-filled></i>" : "<i></i>").repeat(4)}</span></div></div>`;
+  document.getElementById("pin-grid").innerHTML = ["", "filled", "error"].map((st) => ["", "white", "black"].map((a) => pin(a, st)).join("")).join("");
+</script>
+  </main>
+</div>
+</body>
+</html>

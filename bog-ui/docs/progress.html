@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Progress Bar — BOG UI</title>
+<link rel="stylesheet" href="../bog-ui.css">
+<link rel="stylesheet" href="docs.css">
+<script src="theme.js"></script>
+<script src="../bog-ui.js" defer></script>
+<script src="components.js" defer></script>
+<style>.dx small{display:block;margin:0 0 8px;color:var(--docs-muted);font-size:11px}.dx{display:grid;gap:24px}.dx-panel{font-family:var(--font-family-bog);font-size:14px;line-height:20px;color:var(--text-primary);padding:16px 4px}</style>
+</head>
+<body>
+<div class="docs">
+  <aside class="docs-nav">
+    <a class="docs-nav__brand" href="../index.html">BOG UI</a>
+    <nav id="bog-nav" data-current="progress"></nav>
+  </aside>
+  <main class="docs-main">
+    <header><h1>Progress Bar</h1><a class="figma" id="figma-link" href="#" target="_blank" rel="noopener">Open in Figma ↗</a></header>
+    <p class="lead">How far something has come toward a known end — a savings goal, a spending limit or the steps of a short flow. Single fills one bar; Segmented splits it into 2–10 equal steps. Colour carries the status: Accent while in progress, Positive when a goal is reached, Warning near a limit, Negative at the limit, Neutral with no status. Labels give the numbers. Read-only.</p>
+    <h2>Usage</h2>
+    <pre><code>&lt;div class="bog-progress" data-size="thick" style="--value: 48%" role="progressbar" aria-valuenow="48"&gt;
+  &lt;div class="bog-progress__track"&gt;&lt;span class="bog-progress__fill"&gt;&lt;/span&gt;&lt;/div&gt;
+  &lt;div class="bog-progress__text"&gt;
+    &lt;div&gt;&lt;span class="bog-progress__label"&gt;2,400.00 ₾&lt;/span&gt;&lt;span class="bog-progress__helper"&gt;Saved&lt;/span&gt;&lt;/div&gt;
+    &lt;div&gt;&lt;span class="bog-progress__label"&gt;5,000.00 ₾&lt;/span&gt;&lt;span class="bog-progress__helper"&gt;Goal&lt;/span&gt;&lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;!-- Segmented: one span per step, data-done on the reached ones --&gt;
+&lt;div class="bog-progress" data-progress="segmented"&gt;
+  &lt;div class="bog-progress__track"&gt;&lt;span data-done&gt;&lt;/span&gt;&lt;span data-done&gt;&lt;/span&gt;&lt;span&gt;&lt;/span&gt;&lt;span&gt;&lt;/span&gt;&lt;/div&gt;
+&lt;/div&gt;</code></pre>
+    <h2>Try it</h2>
+    <div class="panel"><div style="width:343px" id="pb-try"></div>
+      <div style="display:flex;gap:8px;margin-top:16px"><button class="bog-btn" data-type="neutral" data-size="small" id="pb-add">+ 500.00 ₾</button><button class="bog-btn" data-type="neutral" data-size="small" id="pb-reset">Reset</button></div></div>
+    <h2>Single</h2>
+    <div class="panel"><div class="dx" style="width:343px" id="pb-single"></div></div>
+    <h2>Segmented</h2>
+    <div class="panel"><div class="dx" style="width:343px" id="pb-seg"></div></div>
+<script>
+  const TYPES = [["accent", "Accent"], ["positive", "Positive"], ["warning", "Warning"], ["negative", "Negative"], ["neutral", "Neutral-inverse"]];
+  const text = (a = "Progress label", b = "Helper text", c = "Progress label", d = "Helper text") => `<div class="bog-progress__text"><div><span class="bog-progress__label">${a}</span><span class="bog-progress__helper">${b}</span></div><div><span class="bog-progress__label">${c}</span><span class="bog-progress__helper">${d}</span></div></div>`;
+  const single = (type, size, v, extra = "") => `<div class="bog-progress" data-type="${type}"${size ? ` data-size="${size}"` : ""} style="--value:${v}%"${extra}><div class="bog-progress__track"><span class="bog-progress__fill"></span></div>${text()}</div>`;
+  const seg = (type, size, done, n = 10) => `<div class="bog-progress" data-progress="segmented" data-type="${type}"${size ? ` data-size="${size}"` : ""}><div class="bog-progress__track">${Array.from({ length: n }, (_, i) => `<span${i < done ? " data-done" : ""}></span>`).join("")}</div>${text()}</div>`;
+  document.getElementById("pb-single").innerHTML = TYPES.map(([t, n]) => `<div><small>${n} · Thin</small>${single(t, "", 28)}</div>`).join("") + TYPES.map(([t, n]) => `<div><small>${n} · Thick</small>${single(t, "thick", t === "accent" ? 15 : 28)}</div>`).join("") +
+    `<div><small>Skeleton</small>${single("accent", "", 40, ' data-state="skeleton"')}</div>`;
+  document.getElementById("pb-seg").innerHTML = TYPES.map(([t, n]) => `<div><small>${n} · Thin</small>${seg(t, "", 10)}</div>`).join("") + TYPES.map(([t, n]) => `<div><small>${n} · Thick</small>${seg(t, "thick", 4)}</div>`).join("");
+  let saved = 2400; const goal = 5000, el = document.getElementById("pb-try");
+  const render = () => {
+    const ex = el.querySelector(".bog-progress");
+    if (ex) { const p = Math.min(100, saved / goal * 100); ex.style.setProperty("--value", p + "%"); ex.dataset.type = saved >= goal ? "positive" : "accent"; ex.querySelector(".bog-progress__label").textContent = saved.toLocaleString("en-US", { minimumFractionDigits: 2 }) + " \u20be"; ex.querySelector(".bog-progress__helper").textContent = saved >= goal ? "Goal reached" : "Saved"; return; }
+    const p = Math.min(100, saved / goal * 100), type = saved >= goal ? "positive" : "accent";
+    el.innerHTML = `<div class="bog-progress" data-size="thick" data-type="${type}" style="--value:${p}%" role="progressbar" aria-valuenow="${Math.round(p)}"><div class="bog-progress__track"><span class="bog-progress__fill"></span></div>` +
+      text(saved.toLocaleString("en-US", { minimumFractionDigits: 2 }) + " ₾", saved >= goal ? "Goal reached" : "Saved", "5,000.00 ₾", "Goal") + "</div>";
+  };
+  render();
+  document.getElementById("pb-add").onclick = () => { saved = Math.min(goal, saved + 500); const f = el.querySelector(".bog-progress"); render(); };
+  document.getElementById("pb-reset").onclick = () => { saved = 2400; render(); };
+</script>
+  </main>
+</div>
+</body>
+</html>

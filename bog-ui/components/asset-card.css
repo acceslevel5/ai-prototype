@@ -1,0 +1,84 @@
+/* ==========================================================================
+   BOG UI — Asset Card (+ Asset Card group)
+   Figma: Asset Card (46034:5934) · Asset Card group (46034:10486)
+
+   One holding in an investment portfolio — a ticker, its name, today's change and the value.
+     <a class="bog-asset" href="#" data-trend="positive">            positive | negative | neutral · data-state="skeleton"
+       <span class="bog-asset__head">
+         <span class="bog-asset__label"><span class="bog-asset__ticker">BTC</span><span class="bog-asset__name">Bitcoin</span></span>
+         <span class="bog-media-circle" data-size="32"><img src="…" alt=""></span>
+       </span>
+       <span class="bog-asset__foot">
+         <span class="bog-asset__trend">+4.00%</span>
+         <span class="bog-asset__value">1,250.00 $</span>
+       </span>
+     </a>
+   Group: <div class="bog-asset-group">…cards…</div> — a row that scrolls sideways, 12px apart.
+
+   Load-in (bog-ui.js): data-animate="left | right | bottom | top" on the group, or
+   BOG.assetIn(group, { from, stagger }) — the cards fade in and move into place one after another,
+   70 ms apart (data-stagger). Reduce Motion: they just appear.
+   ========================================================================== */
+
+.bog-asset {
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  gap: 32px;
+  box-sizing: border-box;
+  width: 152px;
+  padding: var(--spacing-padding-default);
+  border: 1px solid var(--border-border-03);
+  border-radius: var(--radius-medium);
+  color: inherit;
+  font-family: var(--font-family-bog);
+  text-decoration: none;
+  -webkit-tap-highlight-color: transparent;
+  transition: background-color 120ms ease;
+}
+.bog-asset:is(:active, [data-pressed]):not([data-state="skeleton"]) { background: var(--layer-alpha-pressed-01); }
+.bog-asset__head { display: flex; align-items: flex-start; gap: var(--spacing-gap-x-small); }
+.bog-asset__label { display: flex; flex: 1 1 auto; flex-direction: column; min-width: 0; }
+.bog-asset__ticker,
+.bog-asset__name { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.bog-asset__ticker { color: var(--text-primary); font-size: 14px; line-height: 20px; font-weight: 600; text-transform: uppercase; }
+.bog-asset__name { color: var(--text-secondary); font-size: var(--body-small-size); line-height: var(--body-small-line-height); font-weight: var(--body-small-weight); }
+.bog-asset__foot { display: flex; flex-direction: column; gap: var(--spacing-gap-x-small); min-width: 0; }
+.bog-asset__trend {
+  --_c: var(--text-secondary);
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  color: var(--_c);
+  font-size: 11px;
+  line-height: 16px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+.bog-asset__trend::before {
+  content: "";
+  width: 12px;
+  height: 12px;
+  background: currentColor;
+  -webkit-mask: var(--_icon, none) center / contain no-repeat;
+          mask: var(--_icon, none) center / contain no-repeat;
+}
+.bog-asset[data-trend="neutral"] .bog-asset__trend::before,
+.bog-asset:not([data-trend]) .bog-asset__trend::before { display: none; }
+.bog-asset[data-trend="positive"] .bog-asset__trend { --_c: var(--text-success); --_icon: url("../icons/price-up-12.svg"); }
+.bog-asset[data-trend="negative"] .bog-asset__trend { --_c: var(--text-error); --_icon: url("../icons/price-down-12.svg"); }
+.bog-asset__value { overflow: hidden; color: var(--text-primary); font-size: var(--label-large-size); line-height: var(--label-large-line-height); font-weight: var(--label-large-weight); white-space: nowrap; text-overflow: ellipsis; }
+
+/* Skeleton: bars where the text goes, a grey circle */
+.bog-asset[data-state="skeleton"] { pointer-events: none; }
+.bog-asset[data-state="skeleton"] :is(.bog-asset__ticker, .bog-asset__name, .bog-asset__trend, .bog-asset__value) { width: fit-content; color: transparent; border-radius: var(--radius-2x-small); background: var(--support-skeleton); background-clip: content-box; padding: 4px 0; }
+.bog-asset[data-state="skeleton"] .bog-asset__trend::before { display: none; }
+.bog-asset[data-state="skeleton"] .bog-media-circle { background: var(--support-skeleton); }
+.bog-asset[data-state="skeleton"] .bog-media-circle > * { visibility: hidden; }
+
+.bog-asset-group { display: flex; gap: var(--spacing-gap-medium); overflow-x: auto; scrollbar-width: none; scroll-snap-type: x proximity; scroll-padding-inline: 16px; }   /* snap keeps the 16px screen margin */
+/* Load-in: cards stay hidden until bog-ui.js starts it, so they don't flash in first */
+.bog-asset-group[data-animate]:not([data-animated]) > .bog-asset { opacity: 0; }
+@media (prefers-reduced-motion: reduce) { .bog-asset-group[data-animate] > .bog-asset { opacity: 1 !important; } }
+.bog-asset-group::-webkit-scrollbar { display: none; }
+.bog-asset-group > * { scroll-snap-align: start; }
